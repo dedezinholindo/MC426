@@ -2,10 +2,10 @@
 
 Projeto de Engenharia de Software Unicamp (MC426)
 
-#Tema 
+# Tema 
 
 Segurança Pública - Projeto destinado ao aumento da segurança pública na cidade de Campinas
 
-#Objetivo
+# Objetivo
 
 Criar uma aplicação que ajuda a garantir a segurança geral no local. 
