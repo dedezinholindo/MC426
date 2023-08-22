@@ -8,4 +8,8 @@ Segurança Pública - Projeto destinado ao aumento da segurança pública na cid
 
 # Objetivo
 
-Criar uma aplicação que ajuda a garantir a segurança geral no local. 
+Criar uma aplicação que ajuda a garantir a segurança geral no local.
+
+# Integrantes
+
+Wallace Gustavo Santos Lima (RA 195512)
