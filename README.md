@@ -12,6 +12,8 @@ Criar uma aplicação que ajuda a garantir a segurança geral no local.
 
 # Integrantes
 
+André Ricardo Pereira Silva (RA 2313191)
+
 Isabela Paulino de Souza (RA 247178)
 
 João Vitor Rebouças Farias (RA 256452)
