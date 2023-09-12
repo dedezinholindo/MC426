@@ -5,4 +5,5 @@ final getIt = GetIt.instance;
 
 setupProviders() {
   getIt.registerLazySingleton<HelloWorldRepository>(() => HelloWorldApiRepository());
+  getIt.registerLazySingleton<HelloWorldUsecase>(() => HelloWorldUsecase(getIt.get<HelloWorldRepository>()));
 }

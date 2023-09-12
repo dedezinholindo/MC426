@@ -7,12 +7,12 @@ part 'hello_world_state.dart';
 class HelloWorldBloc extends Cubit<HelloWorldState> {
   HelloWorldBloc() : super(const HelloWorldLoadingState());
 
-  final repository = GetIt.instance.get<HelloWorldRepository>();
+  final usecase = GetIt.instance.get<HelloWorldUsecase>();
 
   void init() async {
     try {
       emit(const HelloWorldLoadingState());
-      final result = await repository.getHelloWorld();
+      final result = await usecase.call();
       emit(HelloWorldSuccessState(helloWorld: result));
     } catch (e) {
       emit(const HelloWorldFailedState());
