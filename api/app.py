@@ -11,6 +11,7 @@ post_id = 0
 
 
 @app.route('/posts', methods=['POST'])
+# Posting and requesting of posts.
 def create_post():
     """
     Creates a new post.
@@ -22,6 +23,7 @@ def create_post():
 
     global post_id
 
+    # TODO: get user info
     data = request.get_json()
     title = data.get('title')
     content = data.get('content')
@@ -32,6 +34,7 @@ def create_post():
     post = {'title': title, 'content': content}
     post['id'] = post_id
     post_id += 1
+    post['likes'] = 0
 
     posts.append(post)
 
@@ -46,6 +49,19 @@ def get_posts():
     :return: All posts in JSON format.
     '''
     return jsonify({'posts': posts})
+
+
+# Implementation of post likes.
+@app.route('/posts/<int:post_id>/like', methods=['POST'])
+def like_post(post_id):
+    post = next((p for p in posts if p['id'] == post_id), None)
+    
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
+
+    post['likes'] += 1
+    return jsonify({'message': 'Post liked successfully'}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
