@@ -62,6 +62,15 @@ def like_post(post_id):
     post['likes'] += 1
     return jsonify({'message': 'Post liked successfully'}), 200
 
+@app.route('/posts/<int:post_id>/likes', methods=['GET'])
+def get_post_likes(post_id):
+    post = next((p for p in posts if p['id'] == post_id), None)
+    
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
+
+    return jsonify({'likes': post['likes']}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
