@@ -20,7 +20,7 @@ void main() {
     registerFallbackValue(signUpMock);
   });
 
-  group("signIn", () {
+  group("signUp", () {
     blocTest<SignUpBloc, SignUpState>(
       'should return AuthenticationResult success when the request is completed',
       build: () {
