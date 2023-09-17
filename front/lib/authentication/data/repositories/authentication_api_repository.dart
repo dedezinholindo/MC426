@@ -5,10 +5,14 @@ import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/common/common.dart';
 
 class AuthenticationApiRepository extends AuthenticationRepository {
+  final http.Client client;
+
+  AuthenticationApiRepository(this.client);
+
   @override
   Future<AuthenticationResult> signIn(SignInEntity signInEntity) async {
     try {
-      final result = await http.post(
+      final result = await client.post(
         Uri.parse("${BASE_URL}login"),
         headers: {
           'Content-Type': 'application/json',
@@ -24,7 +28,7 @@ class AuthenticationApiRepository extends AuthenticationRepository {
   @override
   Future<AuthenticationResult> signup(SignUpEntity signUpEntity) async {
     try {
-      final result = await http.post(
+      final result = await client.post(
         Uri.parse("${BASE_URL}cadastro"),
         headers: {
           'Content-Type': 'application/json',

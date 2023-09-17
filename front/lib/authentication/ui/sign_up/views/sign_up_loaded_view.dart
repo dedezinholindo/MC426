@@ -72,7 +72,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
           ElevatedButton(
             onPressed: () => widget.signUp(
                 usernameController.text, passwordController.text, ageController.text, nameController.text, emailController.text),
-            child: const Text('Cadastrar'),
+            child: widget.isLoading ? const CircularProgressIndicator() : const Text('Cadastrar'),
           ),
         ],
       ),

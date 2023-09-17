@@ -40,7 +40,7 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => widget.signIn(usernameController.text, passwordController.text),
-            child: const Text('Login'),
+            child: widget.isLoading ? const CircularProgressIndicator() : const Text('Login'),
           ),
         ],
       ),

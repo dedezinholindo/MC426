@@ -51,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Login"),
+            title: const Text("Cadastro"),
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back_ios_new),
