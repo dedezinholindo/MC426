@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'develop'
       - 'feature/pipeline_implementation' # Branch to test the pipeline implementation
 
 jobs:
@@ -22,6 +23,7 @@ jobs:
         run: |
           cd backend/login/docker/
           ./run.sh
+          curl 0.0.0.0:4010
           docker-compose stop
       - run: echo "This job's status is ${{ job.status }}."
   
