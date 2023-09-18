@@ -14,7 +14,7 @@ ENV TIMEOUT 300
 ENV LOG_LEVEL "INFO"
 EXPOSE 4010
 
-CMD gunicorn emotion-server:app \
+CMD gunicorn login_registration:app \
     -w ${N_WORKERS} \
     -b 0.0.0.0:${PORT} \
     --log-level ${LOG_LEVEL} \
