@@ -4,6 +4,7 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 COPY login_registration.py /app/login_registration.py
 
+RUN apt update -y && apt install -y curl
 RUN pip install -r requirements.txt
 
 ENV PWD="/app"
