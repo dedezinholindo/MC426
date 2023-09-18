@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify, make_response
+import logging
 import json
 import os
 
 app = Flask(__name__)
+gunicorn_info_logger = logging.getLogger("gunicorn.info")
+app.logger.handlers.extend(gunicorn_info_logger.handlers)
+app.logger.setLevel(logging.INFO)
 
 # Function to read and write user data to a local text file
 def read_users_from_file():
