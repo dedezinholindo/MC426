@@ -1,8 +1,8 @@
 FROM python:3.11
 
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-COPY login_registration.py /app/login_registration.py
+COPY backend/login/requirements.txt /app/requirements.txt
+COPY backend/login/login_registration.py /app/login_registration.py
 
 RUN pip install -r requirements.txt
 
