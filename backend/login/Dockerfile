@@ -10,10 +10,14 @@ RUN pip install -r requirements.txt
 ENV PWD="/app"
 ENV PORT 4010
 ENV N_WORKERS 1
-ENV KEEPALIVE 300
-ENV TIMEOUT 300
-ENV LOG_JSON True
+ENV KEEPALIVE 1000
+ENV TIMEOUT 1000
 ENV LOG_LEVEL "INFO"
 EXPOSE 4010
 
-CMD ["flask", "run", "-h", "0.0.0.0", "-p", ${PORT}]
+CMD gunicorn login_registration:app \
+    -w ${N_WORKERS} \
+    -b 0.0.0.0:${PORT} \
+    --log-level ${LOG_LEVEL} \
+    --timeout ${TIMEOUT} \
+    --keep-alive ${KEEPALIVE}
