@@ -20,8 +20,8 @@ jobs:
           ./build.sh
       - name: Running the aplication inside of a container, with the image created in build.
         run: |
+          cd backend/login/docker/
           ./run.sh
-          cd ../../../
       - run: echo "This job's status is ${{ job.status }}."
   
   build-creation-of-complaint:
