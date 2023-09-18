@@ -18,6 +18,7 @@ jobs:
         run: |
           cd backend/login/docker/
           ./build.sh
+          ./run.sh
           cd ../../../
       - run: echo "This job's status is ${{ job.status }}."
   
