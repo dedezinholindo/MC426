@@ -8,7 +8,8 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile
-    ports:
-      - 4010:4010
+    network_mode: host
+    #ports:
+     # - 4010:4010
     shm_size: "128mb"
     
