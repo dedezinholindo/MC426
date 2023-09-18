@@ -54,7 +54,7 @@ class TestPosts(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_likes_post0_equal_2(self):
-        # Add another like on post 0
+        # Add another unlike on post 0
         post_id = 0
         response = self.client.post(f'/posts/{post_id}/like')
 
@@ -62,6 +62,21 @@ class TestPosts(unittest.TestCase):
         response = self.client.get(f'/posts/{post_id}/likes')
         self.assertEqual(response.json['likes'], 2)
 
+    def test_unlike_post_0(self):
+        post_id = 0
+        response = self.client.post(f'/posts/{post_id}/unlike')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_unlikes_post0_equal_3(self):
+        # Add other 2 unlikes on post 0
+        post_id = 0
+        response = self.client.post(f'/posts/{post_id}/unlike')
+        response = self.client.post(f'/posts/{post_id}/unlike')
+
+        # Retrieves number of likes of post 0
+        response = self.client.get(f'/posts/{post_id}/unlikes')
+        self.assertEqual(response.json['unlikes'], 3)
 
 if __name__ == '__main__':
     unittest.main()
