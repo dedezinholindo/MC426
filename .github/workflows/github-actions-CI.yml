@@ -22,6 +22,7 @@ jobs:
         run: |
           cd backend/login/docker/
           ./run.sh
+          docker-compose stop
       - run: echo "This job's status is ${{ job.status }}."
   
   build-creation-of-complaint:

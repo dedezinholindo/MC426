@@ -17,6 +17,13 @@ def write_users_to_file(users):
     with open("users.txt", "w") as file:
         json.dump(users, file)
 
+@app.route("/", methods=["GET"])
+def healthcheck():
+    """
+    If the route is working, returns a 'healthy!' string.
+    """
+    return "healthy!"
+
 # Route for user registration (registration)
 @app.route('/registration', methods=['POST'])
 def registration():
