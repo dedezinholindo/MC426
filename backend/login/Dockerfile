@@ -16,9 +16,4 @@ ENV LOG_JSON True
 ENV LOG_LEVEL "INFO"
 EXPOSE 4010
 
-CMD gunicorn login_registration:app \
-    -w ${N_WORKERS} \
-    -b 0.0.0.0:${PORT} \
-    --log-level ${LOG_LEVEL} \
-    --timeout ${TIMEOUT} \
-    --keep-alive ${KEEPALIVE}
+CMD ["flask", "run", "-h", "0.0.0.0", "-p", ${PORT}]
