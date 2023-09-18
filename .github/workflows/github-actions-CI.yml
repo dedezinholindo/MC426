@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - 'main'
-      #- 'feature/pipeline_implementation'
+      - 'feature/pipeline_implementation' # Branch to test the pipeline implementation
 
 jobs:
 
@@ -16,7 +16,7 @@ jobs:
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: Building the aplication of sign in and sign up functionality
         run: |
-          echo "The build will be implemented here."
+          docker build -t login_registration_backend:latest -f backend/login/Dockerfile .
       - run: echo "This job's status is ${{ job.status }}."
   
   build-creation-of-complaint:
