@@ -18,6 +18,8 @@ jobs:
         run: |
           cd backend/login/docker/
           ./build.sh
+      - name: Running the aplication inside of a container, with the image created in build.
+        run: |
           ./run.sh
           cd ../../../
       - run: echo "This job's status is ${{ job.status }}."
