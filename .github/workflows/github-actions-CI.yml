@@ -16,7 +16,9 @@ jobs:
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: Building the aplication of sign in and sign up functionality
         run: |
-          ./backend/login/docker/build.sh
+          cd backend/login/docker/
+          ./build.sh
+          cd ../../../
       - run: echo "This job's status is ${{ job.status }}."
   
   build-creation-of-complaint:
