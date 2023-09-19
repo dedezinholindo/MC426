@@ -41,7 +41,7 @@ jobs:
           cd backend/posts/docker/
           ./run.sh
           echo "Doing the healthy check test."
-          docker stop login_registration_backend
+          docker stop posts_backend
       - run: echo "This job's status is ${{ job.status }}."
 
   test-sign-in-up:
@@ -61,7 +61,7 @@ jobs:
           pip install -r requirements.txt
       - name: Testing the aplication of sign in and sign up functionalitiy
         run: |
-          pytest test_registration_login.py
+          python3 test_registration_login.py
       - run: echo "This job's status is ${{ job.status }}."
   
   test-creation-of-complaint:
@@ -81,5 +81,5 @@ jobs:
           pip install -r requirements.txt
       - name: Testing the aplication of sign in and sign up functionalitiy
         run: |
-          pytest test_app.py
+          python3 test_app.py
       - run: echo "This job's status is ${{ job.status }}."
