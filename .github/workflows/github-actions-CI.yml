@@ -24,7 +24,7 @@ jobs:
           cd backend/login/docker/
           ./run.sh
           echo "Doing the healthy check test."
-          curl http://0.0.0.0:5000
+          curl http://172.18.0.2:5000
           docker stop login_registration_backend
       - run: echo "This job's status is ${{ job.status }}."
   
@@ -42,7 +42,7 @@ jobs:
           cd backend/posts/docker/
           ./run.sh
           echo "Doing the healthy check test."
-          curl http://0.0.0.0:5000
+          curl http://172.18.0.2:5000
           docker stop login_registration_backend
       - run: echo "This job's status is ${{ job.status }}."
 
