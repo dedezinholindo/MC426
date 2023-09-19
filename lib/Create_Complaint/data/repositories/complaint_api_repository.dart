@@ -11,7 +11,7 @@ class ComplaintApiRepository extends ComplaintRepository {
   Future<ComplaintResult> createComplaint(Complaint complaint) async {
     try {
     final result = await client.post(
-      Uri.parse("${BASE_URL}login"),
+      Uri.parse("${BASE_URL}complaints"),
       headers: {
           'Content-Type': 'application/json',
         },
@@ -19,15 +19,15 @@ class ComplaintApiRepository extends ComplaintRepository {
       );
 
       if (result.statusCode == 201) {
-        return ComplaintResult(
+        return const ComplaintResult(
           isSuccess: true,
           message: "Denúncia criada com sucesso!",
-          complaint: Complaint.fromMap(jsonDecode(result.body))
         );
       } else {
-        return const ComplaintResult(
+        var responseJson = jsonDecode(result.body);
+        return ComplaintResult(
           isSuccess: false,
-          message: "Falha ao criar denúncia"
+          message: "Falha ao criar denúncia: ${responseJson['error'] ?? 'Erro desconhecido'}",
         );
       }
 
