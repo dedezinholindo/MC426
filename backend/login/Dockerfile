@@ -8,16 +8,5 @@ RUN apt update -y && apt install -y curl
 RUN pip install -r requirements.txt
 
 ENV PWD="/app"
-ENV PORT 4010
-ENV N_WORKERS 1
-ENV KEEPALIVE 1000
-ENV TIMEOUT 1000
-ENV LOG_LEVEL "INFO"
-EXPOSE 4010
 
-CMD gunicorn login_registration:app \
-    -w ${N_WORKERS} \
-    -b 0.0.0.0:${PORT} \
-    --log-level ${LOG_LEVEL} \
-    --timeout ${TIMEOUT} \
-    --keep-alive ${KEEPALIVE}
+CMD [ "flask", "--app", "login_registration", "run", "--host","0.0.0.0", "-p", "5000"]

@@ -4,12 +4,10 @@ services:
   login_registration_backend:
     image: login_registration_backend:latest
     container_name: login_registration_backend
-    dns: 8.8.8.8
     build:
       context: ../
       dockerfile: Dockerfile
-    network_mode: host
-    #ports:
-     # - 4010:4010
+    ports:
+      - 5000:5000
     shm_size: "128mb"
     
