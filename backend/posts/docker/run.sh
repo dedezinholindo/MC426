@@ -1,1 +1,1 @@
-docker-compose -f compose.yml up --detach
+docker-compose -f compose.yml up
