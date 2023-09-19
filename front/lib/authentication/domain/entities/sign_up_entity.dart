@@ -15,9 +15,9 @@ class SignUpEntity {
 
   Map<String, dynamic> get toMap => {
         "username": username,
-        "senha": password,
-        "nome": name,
-        "idade": age,
+        "password": password,
+        "name": name,
+        "age": age,
         "email": email,
       };
 }

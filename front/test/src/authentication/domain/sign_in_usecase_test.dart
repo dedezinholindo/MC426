@@ -22,7 +22,7 @@ void main() {
         () => repository.signIn(any()),
       ).thenAnswer((invocation) async => AuthenticationResult(
             isSuccess: true,
-            message: resultSignInSuccess["mensagem"] ?? "",
+            message: resultSignInSuccess["message"] ?? "",
           ));
 
       final result = await usecase.call(signInMock);
@@ -35,7 +35,7 @@ void main() {
         () => repository.signIn(any()),
       ).thenAnswer((invocation) async => AuthenticationResult(
             isSuccess: false,
-            message: resultError["mensagem"] ?? "",
+            message: resultError["message"] ?? "",
           ));
 
       final result = await usecase.call(signInMock);

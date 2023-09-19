@@ -6,6 +6,6 @@ class SignInEntity {
 
   Map<String, dynamic> get toMap => {
         "username": username,
-        "senha": password,
+        "password": password,
       };
 }

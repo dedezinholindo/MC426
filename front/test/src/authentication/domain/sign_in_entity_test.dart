@@ -8,7 +8,7 @@ void main() {
       final result = signInMock.toMap;
 
       expect(result["username"], "username_test");
-      expect(result["senha"], "password_test");
+      expect(result["password"], "password_test");
     });
   });
 }

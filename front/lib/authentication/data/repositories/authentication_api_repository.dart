@@ -19,7 +19,7 @@ class AuthenticationApiRepository extends AuthenticationRepository {
         },
         body: jsonEncode(signInEntity.toMap),
       );
-      return AuthenticationResult(isSuccess: result.statusCode == 200, message: jsonDecode(result.body)["mensagem"]);
+      return AuthenticationResult(isSuccess: result.statusCode == 200, message: jsonDecode(result.body)["message"]);
     } catch (e) {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
     }
@@ -29,13 +29,13 @@ class AuthenticationApiRepository extends AuthenticationRepository {
   Future<AuthenticationResult> signup(SignUpEntity signUpEntity) async {
     try {
       final result = await client.post(
-        Uri.parse("${BASE_URL}cadastro"),
+        Uri.parse("${BASE_URL}registration"),
         headers: {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(signUpEntity.toMap),
       );
-      return AuthenticationResult(isSuccess: result.statusCode == 201, message: jsonDecode(result.body)["mensagem"]);
+      return AuthenticationResult(isSuccess: result.statusCode == 201, message: jsonDecode(result.body)["message"]);
     } catch (e) {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
     }

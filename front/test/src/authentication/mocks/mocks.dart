@@ -13,8 +13,8 @@ const signUpMock = SignUpEntity(
   email: "email_test@gmail.com",
 );
 
-const resultSignInSuccess = {"mensagem": "Autenticação bem-sucedida"};
+const resultSignInSuccess = {"message": "Autenticação bem-sucedida"};
 
-const resultSignUpSuccess = {"mensagem": "Usuário cadastrado com sucesso"};
+const resultSignUpSuccess = {"message": "Usuário cadastrado com sucesso"};
 
-const resultError = {"mensagem": "Senha inválida"};
+const resultError = {"message": "Senha inválida"};

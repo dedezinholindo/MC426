@@ -26,7 +26,7 @@ void main() {
       build: () {
         when(() => signInUsecase.call(any())).thenAnswer((_) async => AuthenticationResult(
               isSuccess: true,
-              message: resultSignInSuccess["mensagem"] ?? "",
+              message: resultSignInSuccess["message"] ?? "",
             ));
         return SignInBloc();
       },
@@ -42,7 +42,7 @@ void main() {
       build: () {
         when(() => signInUsecase.call(any())).thenAnswer((_) async => AuthenticationResult(
               isSuccess: false,
-              message: resultError["mensagem"] ?? "",
+              message: resultError["message"] ?? "",
             ));
         return SignInBloc();
       },

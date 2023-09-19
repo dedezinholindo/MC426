@@ -22,7 +22,7 @@ void main() {
         () => repository.signup(any()),
       ).thenAnswer((invocation) async => AuthenticationResult(
             isSuccess: true,
-            message: resultSignUpSuccess["mensagem"] ?? "",
+            message: resultSignUpSuccess["message"] ?? "",
           ));
 
       final result = await usecase.call(signUpMock);
@@ -35,7 +35,7 @@ void main() {
         () => repository.signup(any()),
       ).thenAnswer((invocation) async => AuthenticationResult(
             isSuccess: false,
-            message: resultError["mensagem"] ?? "",
+            message: resultError["message"] ?? "",
           ));
 
       final result = await usecase.call(signUpMock);
