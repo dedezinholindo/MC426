@@ -8,7 +8,6 @@ final getIt = GetIt.instance;
 
 setupProviders() {
   final http.Client client = http.Client();
-  getIt.registerLazySingleton<http.Client>(() => client);
   getIt.registerLazySingleton<ComplaintRepository>(() => ComplaintApiRepository(client));
   getIt.registerLazySingleton<CreateComplaintUsecase>(() => CreateComplaintUsecase(getIt.get<ComplaintRepository>()));
 }

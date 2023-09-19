@@ -4,7 +4,6 @@ import 'package:mc426_front/Create_Complaint/data/repositories/complaint_api_rep
 import 'package:mc426_front/Create_Complaint/domain/entities/complaint.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-//import '../mocks/mocks.dart';
 
 class ClientMock extends Mock implements http.Client {}
 
@@ -30,14 +29,14 @@ void main() {
         ),
       ).thenAnswer(
         (invocation) async => http.Response(
-          jsonEncode({"message": "Complaint created successfully"}),
+          jsonEncode({"mensagem": "Denúncia criada com sucesso!"}),
           201,
         ),
       );
 
       final result = await repository.createComplaint(mockComplaint);
       expect(result.isSuccess, true);
-      expect(result.message, "Complaint created successfully");
+      expect(result.message, "Denúncia criada com sucesso!");
     });
 
     test("should return Complaint result fails when request fails", () async {
@@ -51,14 +50,14 @@ void main() {
         ),
       ).thenAnswer(
         (invocation) async => http.Response(
-          jsonEncode({"message": "Failed to create complaint"}),
+          jsonEncode({"mensagem": "Falha ao criar denúncia"}),
           400,
         ),
       );
 
       final result = await repository.createComplaint(mockComplaint);
       expect(result.isSuccess, false);
-      expect(result.message, "Failed to create complaint");
+      expect(result.message, "Falha ao criar denúncia");
     });
 
     test("should return Complaint result fails when request throws Exception", () async {
@@ -74,7 +73,7 @@ void main() {
 
       final result = await repository.createComplaint(mockComplaint);
       expect(result.isSuccess, false);
-      expect(result.message, "Unable to complete the request");
+      expect(result.message, "Não foi possível concluir a solicitação: ${Exception()}");
     });
   });
 }
