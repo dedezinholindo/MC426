@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 import json
+import os
 
 app = Flask(__name__)
 
@@ -15,6 +16,13 @@ def read_users_from_file():
 def write_users_to_file(users):
     with open("users.txt", "w") as file:
         json.dump(users, file)
+
+@app.route("/", methods=["GET"])
+def healthcheck():
+    """
+    If the route is working, returns a 'healthy!' string.
+    """
+    return "healthy!"
 
 # Route for user registration (registration)
 @app.route('/registration', methods=['POST'])
@@ -85,4 +93,9 @@ def login():
     return jsonify({"message": "Invalid username or password"}), 401
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        threaded=False,
+        debug=True,
+        )
