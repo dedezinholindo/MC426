@@ -9,6 +9,12 @@ complaint_id = 0
 
 # API routes
 
+@app.route("/", methods=["GET"])
+def healthcheck():
+    """
+    If the route is working, returns a 'healthy!' string.
+    """
+    return "healthy!"
 
 @app.route('/complaints', methods=['POST'])
 # Posting and requesting of complaints.
