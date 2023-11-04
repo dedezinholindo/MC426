@@ -1,10 +1,28 @@
 from flask import Flask, request, jsonify
+import sqlite3
 
 app = Flask(__name__)
 
 # Save the application's posts.
 # TODO: Save and retrieve from a file.
-complaints = []
+
+# Complaint database
+conn = sqlite3.connect('complaints.db', check_same_thread=False)
+
+cursor = conn.cursor()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS complaints (
+        id INTEGER PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        address TEXT NOT NULL,
+        is_anonymous BOOLEAN NOT NULL,
+        likes INTEGER NOT NULL,
+        unlikes INTEGER NOT NULL
+    )
+''')
+conn.commit()
+
 complaint_id = 0
 
 # API routes
@@ -29,9 +47,8 @@ def create_complaint():
     :return: Success or error message.
     """
 
-    global complaint_id
-
     # TODO: get user info
+
     data = request.get_json()
     title = data.get('title')
     description = data.get('description')
@@ -40,6 +57,7 @@ def create_complaint():
 
     # Checks missing 
     missing = []
+
     if title == None:
         missing.append('title')
     if description == None:
@@ -48,21 +66,16 @@ def create_complaint():
         missing.append('address')
     if is_anonymous == None:
         missing.append('is_anonymous')
+
     if missing != []:
         return jsonify({'error': f'Missing values: ' + ', '.join(missing)}), 400
 
-    complaint = {
-        'id': complaint_id,
-        'title': title,
-        'description': description,
-        'address': address,
-        'is_anonymous': is_anonymous,
-        'likes': 0,
-        'unlikes': 0,
-    }
-    complaint_id += 1
-
-    complaints.append(complaint)
+    # Saves the new complaint in DB
+    cursor.execute('''
+    INSERT INTO complaints (title, description, address, is_anonymous, likes, unlikes)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ''', (title, description, address, is_anonymous, 0, 0))
+    conn.commit()
 
     return jsonify({'message': 'Complaint created successfully'}), 201
 
@@ -75,48 +88,77 @@ def get_complaints():
 
     :return: All complaints in JSON format.
     '''
-    return jsonify({'complaints': complaints})
 
+    cursor.execute('SELECT * FROM complaints')
+    complaints = cursor.fetchall()
+    complaints = [
+        {
+            'id': c[0],
+            'title': c[1],
+            'description': c[2],
+            'address': c[3],
+            'is_anonymous': bool(c[4]),
+            'likes': c[5],
+            'unlikes': c[6]
+        } for c in complaints
+    ]
+    return jsonify({'complaints': complaints})
 
 # Implementation of complaint likes.
 @app.route('/complaints/<int:complaint_id>/like', methods=['POST'])
 def like_complaint(complaint_id):
-    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
+    cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+    current_likes = cursor.fetchone()
     
-    if complaint is None:
+    if current_likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    complaint['likes'] += 1
+    current_likes = current_likes[0]  
+    new_likes = current_likes + 1
+    cursor.execute("UPDATE complaints SET likes = ? WHERE id = ?", (new_likes, complaint_id))
+    conn.commit()
+
     return jsonify({'message': 'Complaint liked successfully'}), 200
 
 @app.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
 def get_complaint_likes(complaint_id):
-    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
+    cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+    current_likes = cursor.fetchone()
     
-    if complaint is None:
+    if current_likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    return jsonify({'likes': complaint['likes']}), 200
+    current_likes = current_likes[0]  
+
+    return jsonify({'likes': current_likes}), 200
 
 # Implementation of complaint unlikes.
 @app.route('/complaints/<int:complaint_id>/unlike', methods=['POST'])
 def unlike_complaint(complaint_id):
-    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
+    cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+    current_unlikes = cursor.fetchone()
     
-    if complaint is None:
+    if current_unlikes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    complaint['unlikes'] += 1
+    current_unlikes = current_unlikes[0]  
+    new_unlikes = current_unlikes + 1
+    cursor.execute("UPDATE complaints SET unlikes = ? WHERE id = ?", (new_unlikes, complaint_id))
+    conn.commit()
+
     return jsonify({'message': 'Complaint unliked successfully'}), 200
 
 @app.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
 def get_complaint_unlikes(complaint_id):
-    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
+    cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+    current_unlikes = cursor.fetchone()
     
-    if complaint is None:
+    if current_unlikes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    return jsonify({'unlikes': complaint['unlikes']}), 200
+    current_unlikes = current_unlikes[0]  
+
+    return jsonify({'unlikes': current_unlikes}), 200
 
 
 if __name__ == '__main__':
