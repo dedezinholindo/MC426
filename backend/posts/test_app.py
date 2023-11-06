@@ -1,10 +1,23 @@
 import unittest
 import app
+import sqlite3
 
+clear_complaints = True
 
 class TestComplaints(unittest.TestCase):
 
     def setUp(self) -> None:
+        global clear_complaints
+        
+        if clear_complaints:
+            conn = sqlite3.connect('complaints.db')
+            cursor = conn.cursor()
+
+            cursor.execute("DELETE FROM complaints")
+            conn.commit()
+            conn.close()
+            clear_complaints = False
+        
         # Configurar o cliente de teste Flask
         self.client = app.app.test_client()
 
@@ -79,36 +92,36 @@ class TestComplaints(unittest.TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_like_complaint_0(self):
-        complaint_id = 0
+    def test_like_complaint_1(self):
+        complaint_id = 1
         response = self.client.post(f'/complaints/{complaint_id}/like')
 
         self.assertEqual(response.status_code, 200)
 
     def test_get_likes_complaint_not_found(self):
-        complaint_id = 4
+        complaint_id = 5
         response = self.client.get(f'/complaints/{complaint_id}/likes')
 
         self.assertEqual(response.status_code, 404)
 
-    def test_likes_complaint0_equal_2(self):
+    def test_likes_complaint1_equal_2(self):
         # Add another unlike on complaint 0
-        complaint_id = 0
+        complaint_id = 1
         response = self.client.post(f'/complaints/{complaint_id}/like')
 
         # Retrieves number of likes of complaint 0
         response = self.client.get(f'/complaints/{complaint_id}/likes')
         self.assertEqual(response.json['likes'], 2)
 
-    def test_unlike_complaint_0(self):
-        complaint_id = 0
+    def test_unlike_complaint_1(self):
+        complaint_id = 1
         response = self.client.post(f'/complaints/{complaint_id}/unlike')
 
         self.assertEqual(response.status_code, 200)
 
-    def test_unlikes_complaint0_equal_3(self):
+    def test_unlikes_complaint1_equal_3(self):
         # Add other 2 unlikes on complaint 0
-        complaint_id = 0
+        complaint_id = 1
         response = self.client.post(f'/complaints/{complaint_id}/unlike')
         response = self.client.post(f'/complaints/{complaint_id}/unlike')
 
