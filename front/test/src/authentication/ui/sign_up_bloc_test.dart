@@ -30,10 +30,21 @@ void main() {
             ));
         return SignUpBloc();
       },
-      act: (bloc) => bloc.signUp(username: "", password: "", age: "", name: "", email: ""),
+      act: (bloc) => bloc.signUp(
+        name: "name_test",
+        username: "username_test",
+        email: "email_test@gmail.com",
+        age: "20",
+        phone: "phone_test",
+        password: "password_test",
+        verifyPassword: "password_test",
+        address: "address_test",
+        photo: "photo_test",
+        safetyNumber: "190",
+      ),
       expect: () => [
         isA<SignUpLoadedState>().having((s) => s.isLoading, "is loading", true),
-        isA<SignUpLoadedState>().having((s) => s.isLoading, "is loading", false),
+        isA<SignUpLoadedState>().having((s) => s.result?.isSuccess, "success", true).having((s) => s.isLoading, "is loading", false),
       ],
     );
 
@@ -46,10 +57,44 @@ void main() {
             ));
         return SignUpBloc();
       },
-      act: (bloc) => bloc.signUp(username: "", password: "", age: "", name: "", email: ""),
+      act: (bloc) => bloc.signUp(
+        name: "name_test",
+        username: "username_test",
+        email: "email_test@gmail.com",
+        age: "20",
+        phone: "phone_test",
+        password: "password_test",
+        verifyPassword: "password_test",
+        address: "address_test",
+        photo: "photo_test",
+        safetyNumber: "190",
+      ),
       expect: () => [
         isA<SignUpLoadedState>().having((s) => s.isLoading, "is loading", true),
-        isA<SignUpLoadedState>().having((s) => s.isLoading, "is loading", false),
+        isA<SignUpLoadedState>().having((s) => s.result?.isSuccess, "success", false).having((s) => s.isLoading, "is loading", false),
+      ],
+    );
+
+    blocTest<SignUpBloc, SignUpState>(
+      'should return AuthenticationResult fails when password does not match',
+      build: () {
+        return SignUpBloc();
+      },
+      act: (bloc) => bloc.signUp(
+        name: "name_test",
+        username: "username_test",
+        email: "email_test@gmail.com",
+        age: "20",
+        phone: "phone_test",
+        password: "password_test",
+        verifyPassword: "password_test_123",
+        address: "address_test",
+        photo: "photo_test",
+        safetyNumber: "190",
+      ),
+      expect: () => [
+        isA<SignUpLoadedState>().having((s) => s.isLoading, "is loading", true),
+        isA<SignUpLoadedState>().having((s) => s.result?.isSuccess, "success", false).having((s) => s.isLoading, "is loading", false),
       ],
     );
   });

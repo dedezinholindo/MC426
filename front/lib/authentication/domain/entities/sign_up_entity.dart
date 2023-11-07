@@ -1,23 +1,35 @@
 class SignUpEntity {
-  final String username;
-  final String password;
   final String name;
-  final String age;
+  final String username;
   final String email;
+  final String age;
+  final String phone;
+  final String password;
+  final String? address;
+  final String? photo;
+  final String? safetyNumber;
 
   const SignUpEntity({
-    required this.username,
-    required this.password,
     required this.name,
-    required this.age,
+    required this.username,
     required this.email,
+    required this.age,
+    required this.phone,
+    required this.password,
+    this.address,
+    this.photo,
+    this.safetyNumber,
   });
 
   Map<String, dynamic> get toMap => {
-        "username": username,
-        "password": password,
         "name": name,
-        "age": age,
+        "username": username,
         "email": email,
+        "age": age,
+        "phone": phone,
+        "password": password,
+        "address": address,
+        "photo": photo,
+        "safetyNumber": safetyNumber,
       };
 }

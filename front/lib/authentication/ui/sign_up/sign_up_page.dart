@@ -33,28 +33,41 @@ class _SignUpPageState extends State<SignUpPage> {
           SignUpLoadedState() => SignUpLoadedView(
               isLoading: state.isLoading,
               signUp: (
-                username,
-                password,
-                age,
                 name,
+                username,
                 email,
+                age,
+                phone,
+                password,
+                verifyPassword,
+                address,
+                photo,
+                safetyNumber,
               ) =>
                   _bloc.signUp(
-                username: username,
-                password: password,
-                age: age,
                 name: name,
+                username: username,
                 email: email,
+                age: age,
+                phone: phone,
+                password: password,
+                verifyPassword: verifyPassword,
+                address: address,
+                photo: photo,
+                safetyNumber: safetyNumber,
               ),
             ),
         };
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Cadastro"),
+            backgroundColor: Colors.black,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back_ios_new),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+              ),
             ),
           ),
           body: body,

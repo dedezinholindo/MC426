@@ -10,19 +10,40 @@ class SignUpBloc extends Cubit<SignUpState> {
   final signupUsecase = GetIt.instance.get<SignUpUsecase>();
 
   void signUp({
-    required String username,
-    required String password,
-    required String age,
     required String name,
+    required String username,
     required String email,
+    required String age,
+    required String phone,
+    required String password,
+    required String verifyPassword,
+    String? address,
+    String? photo,
+    String? safetyNumber,
   }) async {
     emit(SignUpLoadedState(isLoading: true));
+
+    if (password != verifyPassword) {
+      return emit(
+        SignUpLoadedState(
+          result: const AuthenticationResult(
+            isSuccess: false,
+            message: "A senhas não batem, tente novamente",
+          ),
+        ),
+      );
+    }
+
     final result = await signupUsecase.call(SignUpEntity(
+      name: name,
       username: username,
-      password: password,
       email: email,
       age: age,
-      name: name,
+      phone: phone,
+      password: password,
+      address: address,
+      photo: photo,
+      safetyNumber: safetyNumber,
     ));
     emit(SignUpLoadedState(result: result));
   }

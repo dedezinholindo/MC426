@@ -13,18 +13,48 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final border = OutlineInputBorder(
+      borderSide: const BorderSide(width: 1, color: Color(0x0A0A0AD9)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Press2Safe',
       routes: {
-        AuthenticationPage.routeName: (context) => const AuthenticationPage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
       },
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.black,
+          primary: const Color(0xFF4CE5B1),
+          background: Colors.black,
+        ),
         useMaterial3: true,
+        fontFamily: "Mulish",
+        primaryColor: const Color(0xFF4CE5B1),
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: border,
+          disabledBorder: border,
+          focusedBorder: border,
+          focusedErrorBorder: border,
+          errorBorder: border,
+          filled: true,
+          fillColor: const Color(0xFF141414),
+          labelStyle: const TextStyle(
+            color: Color(0xFF5F5F5F),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF4CE5B1)),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          ),
+        ),
       ),
-      home: const AuthenticationPage(),
+      home: const SignInPage(),
     );
   }
 }
