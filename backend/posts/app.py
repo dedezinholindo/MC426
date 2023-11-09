@@ -4,8 +4,8 @@ app = Flask(__name__)
 
 # Save the application's posts.
 # TODO: Save and retrieve from a file.
-posts = []
-post_id = 0
+complaints = []
+complaint_id = 0
 
 # API routes
 
@@ -16,87 +16,107 @@ def healthcheck():
     """
     return "healthy!"
 
-@app.route('/posts', methods=['POST'])
-# Posting and requesting of posts.
-def create_post():
+@app.route('/complaints', methods=['POST'])
+# Posting and requesting of complaints.
+def create_complaint():
     """
-    Creates a new post.
+    Creates a new complaint post.
 
-    :param title: Post's title.
-    :param content: Post's content.
+    :param title: Complaint's title.
+    :param description: Complaint's description.
+    :param address: Complaint's address.
+    :param is_anonymous: True if the complaint mode is anonymous.
     :return: Success or error message.
     """
 
-    global post_id
+    global complaint_id
 
     # TODO: get user info
     data = request.get_json()
     title = data.get('title')
-    content = data.get('content')
+    description = data.get('description')
+    address = data.get('address')
+    is_anonymous = data.get('is_anonymous')
 
-    if not title or not content:
-        return jsonify({'error': 'Title and content are required'}), 400
+    # Checks missing 
+    missing = []
+    if title == None:
+        missing.append('title')
+    if description == None:
+        missing.append('description')
+    if address == None:
+        missing.append('address')
+    if is_anonymous == None:
+        missing.append('is_anonymous')
+    if missing != []:
+        return jsonify({'error': f'Missing values: ' + ', '.join(missing)}), 400
 
-    post = {'title': title, 'content': content}
-    post['id'] = post_id
-    post_id += 1
-    post['likes'] = 0
-    post['unlikes'] = 0
+    complaint = {
+        'id': complaint_id,
+        'title': title,
+        'description': description,
+        'address': address,
+        'is_anonymous': is_anonymous,
+        'likes': 0,
+        'unlikes': 0,
+    }
+    complaint_id += 1
 
-    posts.append(post)
+    complaints.append(complaint)
 
-    return jsonify({'message': 'Post created successfully'}), 201
+    return jsonify({'message': 'Complaint created successfully'}), 201
 
+# TODO: Create route to retrive a complaint by id
 
-@app.route('/posts', methods=['GET'])
-def get_posts():
+@app.route('/complaints', methods=['GET'])
+def get_complaints():
     '''
-    Retrieve all posts.
+    Retrieve all complaints.
 
-    :return: All posts in JSON format.
+    :return: All complaints in JSON format.
     '''
-    return jsonify({'posts': posts})
+    return jsonify({'complaints': complaints})
 
 
-# Implementation of post likes.
-@app.route('/posts/<int:post_id>/like', methods=['POST'])
-def like_post(post_id):
-    post = next((p for p in posts if p['id'] == post_id), None)
+# Implementation of complaint likes.
+@app.route('/complaints/<int:complaint_id>/like', methods=['POST'])
+def like_complaint(complaint_id):
+    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
     
-    if post is None:
-        return jsonify({'error': 'Post not found'}), 404
+    if complaint is None:
+        return jsonify({'error': 'Complaint not found'}), 404
 
-    post['likes'] += 1
-    return jsonify({'message': 'Post liked successfully'}), 200
+    complaint['likes'] += 1
+    return jsonify({'message': 'Complaint liked successfully'}), 200
 
-@app.route('/posts/<int:post_id>/likes', methods=['GET'])
-def get_post_likes(post_id):
-    post = next((p for p in posts if p['id'] == post_id), None)
+@app.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
+def get_complaint_likes(complaint_id):
+    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
     
-    if post is None:
-        return jsonify({'error': 'Post not found'}), 404
+    if complaint is None:
+        return jsonify({'error': 'Complaint not found'}), 404
 
-    return jsonify({'likes': post['likes']}), 200
+    return jsonify({'likes': complaint['likes']}), 200
 
-# Implementation of post unlikes.
-@app.route('/posts/<int:post_id>/unlike', methods=['POST'])
-def unlike_post(post_id):
-    post = next((p for p in posts if p['id'] == post_id), None)
+# Implementation of complaint unlikes.
+@app.route('/complaints/<int:complaint_id>/unlike', methods=['POST'])
+def unlike_complaint(complaint_id):
+    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
     
-    if post is None:
-        return jsonify({'error': 'Post not found'}), 404
+    if complaint is None:
+        return jsonify({'error': 'Complaint not found'}), 404
 
-    post['unlikes'] += 1
-    return jsonify({'message': 'Post unliked successfully'}), 200
+    complaint['unlikes'] += 1
+    return jsonify({'message': 'Complaint unliked successfully'}), 200
 
-@app.route('/posts/<int:post_id>/unlikes', methods=['GET'])
-def get_post_unlikes(post_id):
-    post = next((p for p in posts if p['id'] == post_id), None)
+@app.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
+def get_complaint_unlikes(complaint_id):
+    complaint = next((c for c in complaints if c['id'] == complaint_id), None)
     
-    if post is None:
-        return jsonify({'error': 'Post not found'}), 404
+    if complaint is None:
+        return jsonify({'error': 'Complaint not found'}), 404
 
-    return jsonify({'unlikes': post['unlikes']}), 200
+    return jsonify({'unlikes': complaint['unlikes']}), 200
 
 
 if __name__ == '__main__':
