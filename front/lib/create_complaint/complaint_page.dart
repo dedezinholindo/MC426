@@ -61,11 +61,9 @@ TextEditingController titleController = TextEditingController();
                     controller: titleController,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
-                      labelText: 'Título',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelText: 'Escreva um título para a denúncia',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
                       labelStyle: TextStyle(color: Color(0xFF5F5F5F)),
-                      hintText: 'Escreva um título para a denúncia',
-                      hintStyle: TextStyle(color: Color(0xFF5F5F5F)),
                       fillColor: Color(0xFF141414),
                       filled: true,
                       border: OutlineInputBorder(
@@ -78,11 +76,9 @@ TextEditingController titleController = TextEditingController();
                     controller: addressController,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
-                      labelText: 'Endereço',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelText: 'Informe o endereço da denúncia',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
                       labelStyle: TextStyle(color: Color(0xFF5F5F5F)),
-                      hintText: 'Informe o endereço da denúncia',
-                      hintStyle: TextStyle(color: Color(0xFF5F5F5F)),
                       fillColor: Color(0xFF141414),
                       filled: true,
                       border: OutlineInputBorder(
@@ -91,19 +87,16 @@ TextEditingController titleController = TextEditingController();
                     ),
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    height: 200.0,
+                  SingleChildScrollView(
                     child: TextFormField(
+                      maxLines: 8,
                       controller: descriptionController,
                       style: const TextStyle(color: Colors.white),
-                      maxLines: null,
                       decoration: const InputDecoration(
-                        labelText: 'Descrição',
-                        contentPadding: EdgeInsets.symmetric(vertical: 80.0, horizontal: 10.0),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Descreva a denúncia',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                         labelStyle: TextStyle(color: Color(0xFF5F5F5F)),
-                        hintText: 'Descreva a denúncia',
-                        hintStyle: TextStyle(color: Color(0xFF5F5F5F)),
                         fillColor: Color(0xFF141414),
                         filled: true,
                         border: OutlineInputBorder(
