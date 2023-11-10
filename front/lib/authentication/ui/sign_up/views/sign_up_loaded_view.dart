@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUpLoadedView extends StatefulWidget {
   final bool isLoading;
@@ -23,7 +26,7 @@ class SignUpLoadedView extends StatefulWidget {
 }
 
 class _SignUpLoadedViewState extends State<SignUpLoadedView> {
-
+  String? photo;
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -32,8 +35,19 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController verifyPasswordController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController photoController = TextEditingController();
   TextEditingController safetyNumberController = TextEditingController();
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      setState(() => photo = image.path);
+    } on PlatformException catch (e) {
+      if (kDebugMode) {
+        print('Failed to pick image: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,29 +269,29 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 24),
             //photoController
-            const Text(
-              "FOTO DE PERFIL",
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                color: Color(0xFFCDCDCD),
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 3,
+            ElevatedButton(
+              onPressed: pickImage,
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "FOTO DE PERFIL",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 3,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Icon(
+                    Icons.photo,
+                    color: Colors.white,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: photoController,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Escolha uma foto',
-              ),
-            ),
+
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => widget.signUp(
@@ -289,7 +303,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 passwordController.text,
                 verifyPasswordController.text,
                 addressController.text,
-                photoController.text,
+                photo,
                 safetyNumberController.text,
               ),
               child: Row(

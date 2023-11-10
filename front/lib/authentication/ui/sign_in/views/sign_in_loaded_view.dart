@@ -13,7 +13,7 @@ class SignInLoadedView extends StatefulWidget {
 }
 
 class _SignInLoadedViewState extends State<SignInLoadedView> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
@@ -41,7 +41,7 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "USERNAME",
+                "EMAIL",
                 style: TextStyle(
                   color: Color(0xFFCDCDCD),
                   fontSize: 12,
@@ -51,7 +51,7 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                controller: usernameController,
+                controller: emailController,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -59,7 +59,7 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
                 ),
                 decoration: const InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                  labelText: 'Informe seu username ou email',
+                  labelText: 'Informe seu email',
                 ),
               ),
             ],
@@ -110,7 +110,7 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () => widget.signIn(usernameController.text, passwordController.text),
+            onPressed: () => widget.signIn(emailController.text, passwordController.text),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
