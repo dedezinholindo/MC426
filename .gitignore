@@ -47,3 +47,5 @@ app.*.map.json
 
 # Database files
 *.db
+
+/front/build/
