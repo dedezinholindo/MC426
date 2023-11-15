@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 import json
+import uuid  # Import the UUID module
 
 app = Flask(__name__)
 
@@ -45,7 +46,11 @@ def registration():
         if user['username'] == username:
             return jsonify({"message": "Username already exists"}), 400
 
+    # Generate a unique ID for the new user
+    user_id = str(uuid.uuid4())
+
     new_user = {
+        "id": user_id,
         "username": username,
         "password": password,
         "name": name,
@@ -56,7 +61,7 @@ def registration():
     users.append(new_user)
     write_users_to_file(users)
 
-    response = make_response(jsonify({"message": "User registered successfully"}), 201)
+    response = make_response(jsonify({"message": "User registered successfully", "id": user_id}), 201)
     response.set_cookie('username', username)
     return response
 
@@ -78,7 +83,7 @@ def login():
     # Check if the username and password match a registered user
     for user in users:
         if user['username'] == username and user['password'] == password:
-            response = make_response(jsonify({"message": "Authentication successful"}), 200)
+            response = make_response(jsonify({"message": "Authentication successful", "id": user['id']}), 200)
             response.set_cookie('username', username)
             return response
 
