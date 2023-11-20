@@ -43,20 +43,21 @@ TextEditingController titleController = TextEditingController();
             title: const Text(
               'Criar Denúncia',
               style: TextStyle(
-              fontSize: 26.0,
+              fontSize: 24.0,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               ),
             ),
             backgroundColor: const Color(0xFF4CE5B1),
           ),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 150.0, right: 16.0, left: 16.0),
-            child: SingleChildScrollView(  // Adicionado SingleChildScrollView
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: 148),
                   TextFormField(
                     controller: titleController,
                     style: const TextStyle(color: Colors.white),
@@ -87,8 +88,7 @@ TextEditingController titleController = TextEditingController();
                     ),
                   ),
                   const SizedBox(height: 16),
-                  SingleChildScrollView(
-                    child: TextFormField(
+                    TextFormField(
                       maxLines: 8,
                       controller: descriptionController,
                       style: const TextStyle(color: Colors.white),
@@ -104,7 +104,6 @@ TextEditingController titleController = TextEditingController();
                         ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

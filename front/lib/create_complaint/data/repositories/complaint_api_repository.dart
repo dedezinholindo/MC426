@@ -14,6 +14,7 @@ class ComplaintApiRepository extends ComplaintRepository {
       Uri.parse("${BASE_URL}complaints"),
       headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: jsonEncode(complaint.toMap()), 
       );
