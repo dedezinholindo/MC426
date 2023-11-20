@@ -1,6 +1,5 @@
 import unittest
-import json
-from login_registration import app
+from login_registration import app 
 
 class FlaskAppTestCase(unittest.TestCase):
 
@@ -8,13 +7,17 @@ class FlaskAppTestCase(unittest.TestCase):
         app.config['TESTING'] = True
         self.app = app.test_client()
 
-    def register_user(self, username, password, name, age, email):
+    def register_user(self, username, password, name, age, email, phone, address, photo, safety_number):
         user_data = {
             "username": username,
             "password": password,
             "name": name,
             "age": age,
-            "email": email
+            "email": email,
+            "phone": phone,
+            "address": address,
+            "photo": photo,
+            "safetyNumber": safety_number
         }
         response = self.app.post('/registration', json=user_data)
         return response
@@ -28,97 +31,110 @@ class FlaskAppTestCase(unittest.TestCase):
         return response
 
     def test_registration(self):
-        response = self.register_user("testuser1", "password123", "Test User", "25", "test@example.com")
+        # Valid registration
+        response = self.register_user("testuser1", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"User registered successfully", response.data)
 
-        response = self.register_user("", "password123", "Test User", "25", "test@example.com")
+        # Missing required fields
+        response = self.register_user("", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Missing required fields", response.data)
 
-
-    def test_login(self):
-        self.register_user("testuser2", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser2", "password123")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Authentication successful", response.data)
-
-        response = self.login_user("invaliduser", "password123")
-        self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
-
-        response = self.login_user("testuser2", "invalidpassword")
-        self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
-
-    def test_registration_invalid_age(self):
-        response = self.register_user("testuser3", "password123", "Test User", "invalid_age", "test@example.com")
+        # Invalid phone number (less than 11 digits)
+        response = self.register_user("testuser2", "password123", "Test User", "25", "test@example.com", "123", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Age must contain only numbers", response.data)
+        self.assertIn(b"Phone number must be an 11-digit number", response.data)
 
-    def test_registration_short_password(self):
-        response = self.register_user("testuser4", "123", "Test User", "25", "test@example.com")
+        # Invalid safetyNumber (less than 11 digits)
+        response = self.register_user("testuser3", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "123")
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+        self.assertIn(b"Safety number must be an 11-digit number", response.data)
 
-    def test_registration_long_password(self):
-        long_password = "a" * 21
-        response = self.register_user("testuser5", long_password, "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
-
-    def test_registration_duplicate_username(self):
-        self.register_user("testuser6", "password123", "Test User", "25", "test@example.com")
-        response = self.register_user("testuser6", "anotherpassword", "Another User", "30", "another@example.com")
+        # Duplicate username
+        self.register_user("testuser4", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        response = self.register_user("testuser4", "anotherpassword", "Another User", "30", "another@example.com", "98765432109", "Another Address", "another.jpg", "78901234567")
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Username already exists", response.data)
 
-    def test_login_missing_username(self):
-        response = self.login_user("", "password123")
+        # Invalid email format
+        response = self.register_user("testuser5", "password123", "Test User", "25", "invalidemail", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Missing required fields", response.data)
+        self.assertIn(b"Invalid email address", response.data)
 
-    def test_login_missing_password(self):
-        response = self.login_user("testuser7", "")
+        # Invalid age format
+        response = self.register_user("testuser6", "password123", "Test User", "invalid_age", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Missing required fields", response.data)
+        self.assertIn(b"Age must be a number between 1 and 150", response.data)
 
-    def test_login_nonexistent_username(self):
+        # Short password
+        response = self.register_user("testuser7", "123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+
+        # Long password
+        long_password = "a" * 21
+        response = self.register_user("testuser8", long_password, "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+
+    def test_login(self):
+        # Valid login
+        self.register_user("testuser9", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        response = self.login_user("testuser9", "password123")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Authentication successful", response.data)
+
+        # Nonexistent username
         response = self.login_user("nonexistentuser", "password123")
         self.assertEqual(response.status_code, 401)
         self.assertIn(b"Invalid username or password", response.data)
 
-    def test_login_incorrect_password(self):
-        self.register_user("testuser8", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser8", "incorrectpassword")
+        # Incorrect password
+        response = self.login_user("testuser9", "incorrectpassword")
         self.assertEqual(response.status_code, 401)
         self.assertIn(b"Invalid username or password", response.data)
 
+        # Missing username
+        response = self.login_user("", "password123")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Missing required fields", response.data)
+
+        # Missing password
+        response = self.login_user("testuser10", "")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Missing required fields", response.data)
+
     def test_registration_valid_data(self):
-        response = self.register_user("testuser9", "password123", "Test User", "25", "test@example.com")
+        # Valid registration with all fields
+        response = self.register_user("testuser11", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"User registered successfully", response.data)
 
     def test_login_valid_credentials(self):
-        self.register_user("testuser10", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser10", "password123")
+        # Valid login with all fields
+        self.register_user("testuser12", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        response = self.login_user("testuser12", "password123")
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Authentication successful", response.data)
 
     def test_registration_maximum_password_length(self):
+        # Valid registration with maximum password length
         long_password = "a" * 20
-        response = self.register_user("testuser11", long_password, "Test User", "25", "test@example.com")
+        response = self.register_user("testuser13", long_password, "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"User registered successfully", response.data)
 
     def test_registration_minimum_age(self):
-        response = self.register_user("testuser12", "password123", "Test User", "0", "test@example.com")
+        # Valid registration with minimum age
+        response = self.register_user("testuser14", "password123", "Test User", "1", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 201)
         self.assertIn(b"User registered successfully", response.data)
 
     def test_login_maximum_username_length(self):
-        long_username = "a" * 255
-        response = self.register_user(long_username, "password123", "Test User", "25", "test@example.com")
+        # Valid registration and login with maximum username length
+        long_username = "a" * 20
+        response = self.register_user(long_username, "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 201)
         response = self.login_user(long_username, "password123")
         self.assertEqual(response.status_code, 200)
@@ -127,7 +143,3 @@ class FlaskAppTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-

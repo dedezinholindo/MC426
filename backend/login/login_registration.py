@@ -24,22 +24,48 @@ def registration():
     if not user_data:
         return jsonify({"message": "Invalid request"}), 400
 
-    username = user_data.get("username")
-    password = user_data.get("password")
-    name = user_data.get("name")
-    age = user_data.get("age")
-    email = user_data.get("email")
+    required_fields = ["name", "username", "email", "age", "phone", "password", "address", "photo", "safetyNumber"]
 
-    if not (username and password and name and age and email):
-        return jsonify({"message": "Missing required fields"}), 400
+    for field in required_fields:
+        if (field not in user_data) or user_data[f'{field}'] == "":
+            return jsonify({"message": f"Missing required fields"}), 400
+
+    name = user_data.get("name")
+    username = user_data.get("username")
+    email = user_data.get("email")
+    age = user_data.get("age")
+    phone = user_data.get("phone")
+    password = user_data.get("password")
+    address = user_data.get("address")
+    photo = user_data.get("photo")
+    safety_number = user_data.get("safetyNumber")
+
+    # Check specific criteria for each field
+    if not (1 <= len(name) <= 50):
+        return jsonify({"message": "Name must be between 1 and 50 characters"}), 400
+
+    if not (3 <= len(username) <= 20):
+        return jsonify({"message": "Username must be between 3 and 20 characters"}), 400
+
+    if not email or '@' not in email or '.' not in email:
+        return jsonify({"message": "Invalid email address"}), 400
+
+    if not age.isdigit() or not (1 <= int(age) <= 150):
+        return jsonify({"message": "Age must be a number between 1 and 150"}), 400
+
+    if not phone.isdigit() or len(phone) != 11:
+        return jsonify({"message": "Phone number must be an 11-digit number"}), 400
+    
+    if not safety_number.isdigit() or len(safety_number) != 11:
+        return jsonify({"message": "Safety number must be an 11-digit number"}), 400
 
     if not (8 <= len(password) <= 20):
         return jsonify({"message": "Password must be between 8 and 20 characters"}), 400
 
-    if not age.isdigit():
-        return jsonify({"message": "Age must contain only numbers"}), 400
+    if not address:
+        return jsonify({"message": "Address is required"}), 400
 
-    users = read_users_from_file()
+    users = read_users_from_file() #change this for database
 
     # Check if the username already exists
     for user in users:
@@ -51,11 +77,15 @@ def registration():
 
     new_user = {
         "id": user_id,
-        "username": username,
-        "password": password,
         "name": name,
+        "username": username,
+        "email": email,
         "age": age,
-        "email": email
+        "phone": phone,
+        "password": password,
+        "address": address,
+        "photo": photo,
+        "safetyNumber": safety_number
     }
 
     users.append(new_user)
@@ -64,6 +94,7 @@ def registration():
     response = make_response(jsonify({"message": "User registered successfully", "id": user_id}), 201)
     response.set_cookie('username', username)
     return response
+
 
 # Route for user login (authentication)
 @app.route('/login', methods=['POST'])
