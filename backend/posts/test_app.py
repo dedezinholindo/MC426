@@ -28,7 +28,7 @@ class TestComplaints(unittest.TestCase):
                 "title": "Minha denúncia",
                 "description": "Descrição da minha denúncia.",
                 "address": "Endereço da Denúncia",
-                "is_anonymous": False}
+                "isAnonymous": False}
         )
         # Verifica se a resposta é 201 Created
         self.assertEqual(response.status_code, 201)
@@ -39,7 +39,7 @@ class TestComplaints(unittest.TestCase):
             json={
                 "description": "Descrição da minha denúncia.",
                 "address": "Endereço da Denúncia",
-                "is_anonymous": False}
+                "isAnonymous": False}
         )
         # Verifica se a resposta é 400 Bad Request
         self.assertEqual(response.status_code, 400)
@@ -64,7 +64,7 @@ class TestComplaints(unittest.TestCase):
                 "title": "Denúncia",
                 "description": "Descrição.",
                 "address": "Endereço",
-                "is_anonymous": True}
+                "isAnonymous": True}
         )
         self.client.post(
             '/complaints',
@@ -72,7 +72,7 @@ class TestComplaints(unittest.TestCase):
                 "title": "Denúncia",
                 "description": "Descrição.",
                 "address": "Endereço",
-                "is_anonymous": True}
+                "isAnonymous": True}
         )
         self.client.post(
             '/complaints',
@@ -80,7 +80,7 @@ class TestComplaints(unittest.TestCase):
                 "title1": "Denúncia", # typed incorrectly
                 "description": "Descrição.",
                 "address": "Endereço",
-                "is_anonymous": True}
+                "isAnonymous": True}
         )
         #
         response = self.client.get('/complaints')
