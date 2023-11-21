@@ -19,6 +19,6 @@ const signUpMock = SignUpEntity(
 
 const resultSignInSuccess = {"message": "Autenticação bem-sucedida"};
 
-const resultSignUpSuccess = {"message": "Usuário cadastrado com sucesso"};
+const resultSignUpSuccess = {"message": "Usuário cadastrado com sucesso", "id": "id"};
 
 const resultError = {"message": "Senha inválida"};

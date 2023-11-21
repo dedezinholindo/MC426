@@ -5,7 +5,7 @@ class SignUpEntity {
   final String age;
   final String phone;
   final String password;
-  final String? address;
+  final String address;
   final String? photo;
   final String? safetyNumber;
 
@@ -16,10 +16,29 @@ class SignUpEntity {
     required this.age,
     required this.phone,
     required this.password,
-    this.address,
+    required this.address,
     this.photo,
     this.safetyNumber,
   });
+
+  bool get isAvailable =>
+      name.isNotEmpty &&
+      username.isNotEmpty &&
+      email.isNotEmpty &&
+      age.isNotEmpty &&
+      phone.isNotEmpty &&
+      password.isNotEmpty &&
+      address.isNotEmpty;
+
+  factory SignUpEntity.empty() => const SignUpEntity(
+        name: "",
+        username: "",
+        email: "",
+        age: "",
+        phone: "",
+        password: "",
+        address: "",
+      );
 
   Map<String, dynamic> get toMap => {
         "name": name,
@@ -32,4 +51,28 @@ class SignUpEntity {
         "photo": photo,
         "safetyNumber": safetyNumber,
       };
+
+  SignUpEntity copyWith({
+    String? name,
+    String? username,
+    String? email,
+    String? age,
+    String? phone,
+    String? password,
+    String? address,
+    String? photo,
+    String? safetyNumber,
+  }) {
+    return SignUpEntity(
+      name: name ?? this.name,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      age: age ?? this.age,
+      phone: phone ?? this.phone,
+      password: password ?? this.password,
+      address: address ?? this.address,
+      photo: photo ?? this.photo,
+      safetyNumber: safetyNumber ?? this.safetyNumber,
+    );
+  }
 }

@@ -19,7 +19,13 @@ class AuthenticationApiRepository extends AuthenticationRepository {
         },
         body: jsonEncode(signInEntity.toMap),
       );
-      return AuthenticationResult(isSuccess: result.statusCode == 200, message: jsonDecode(result.body)["message"]);
+      final body = jsonDecode(result.body);
+
+      return AuthenticationResult(
+        isSuccess: result.statusCode == 200,
+        message: body["message"],
+        id: body["id"],
+      );
     } catch (e) {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
     }
@@ -35,7 +41,12 @@ class AuthenticationApiRepository extends AuthenticationRepository {
         },
         body: jsonEncode(signUpEntity.toMap),
       );
-      return AuthenticationResult(isSuccess: result.statusCode == 201, message: jsonDecode(result.body)["message"]);
+      final body = jsonDecode(result.body);
+      return AuthenticationResult(
+        isSuccess: result.statusCode == 201,
+        message: body["message"],
+        id: body["id"],
+      );
     } catch (e) {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
     }

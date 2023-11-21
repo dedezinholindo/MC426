@@ -3,8 +3,8 @@ import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/injection/injection.dart';
 
 void main() {
-  setupProviders();
   runApp(const MyApp());
+  setupProviders();
 }
 
 class MyApp extends StatelessWidget {
@@ -40,6 +40,11 @@ class MyApp extends StatelessWidget {
           focusedErrorBorder: border,
           errorBorder: border,
           filled: true,
+          errorStyle: const TextStyle(
+            color: Color(0xFFFF0000),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
           fillColor: const Color(0xFF141414),
           labelStyle: const TextStyle(
             color: Color(0xFF5F5F5F),
@@ -49,7 +54,12 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF4CE5B1)),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) return const Color(0xFFCDCDCD);
+                return const Color(0xFF4CE5B1); // Use the component's default.
+              },
+            ),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),

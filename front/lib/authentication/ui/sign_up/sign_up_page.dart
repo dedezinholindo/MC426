@@ -30,33 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       builder: (context, state) {
         Widget? body = switch (state) {
-          SignUpLoadedState() => SignUpLoadedView(
-              isLoading: state.isLoading,
-              signUp: (
-                name,
-                username,
-                email,
-                age,
-                phone,
-                password,
-                verifyPassword,
-                address,
-                photo,
-                safetyNumber,
-              ) =>
-                  _bloc.signUp(
-                name: name,
-                username: username,
-                email: email,
-                age: age,
-                phone: phone,
-                password: password,
-                verifyPassword: verifyPassword,
-                address: address,
-                photo: photo,
-                safetyNumber: safetyNumber,
-              ),
-            ),
+          SignUpLoadedState() => SignUpLoadedView(key: UniqueKey(), onChange: _bloc.changeForms),
         };
 
         return Scaffold(
@@ -70,7 +44,37 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
           ),
-          body: body,
+          body: Scaffold(
+            primary: false,
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: _bloc.isAvailable,
+                  builder: (context, value, child) {
+                    return ElevatedButton(
+                      onPressed: value ? _bloc.signUp : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _bloc.state.params.isLoading
+                              ? const CircularProgressIndicator()
+                              : const Text(
+                                  'Cadastrar',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            body: body,
+          ),
         );
       },
     );

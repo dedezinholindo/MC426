@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
@@ -5,27 +6,28 @@ import 'package:mc426_front/authentication/authentication.dart';
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Cubit<SignUpState> {
-  SignUpBloc() : super(SignUpLoadedState());
+  SignUpBloc() : super(SignUpLoadedState(const SignUpStateParams()));
 
   final signupUsecase = GetIt.instance.get<SignUpUsecase>();
 
-  void signUp({
-    required String name,
-    required String username,
-    required String email,
-    required String age,
-    required String phone,
-    required String password,
-    required String verifyPassword,
-    String? address,
-    String? photo,
-    String? safetyNumber,
-  }) async {
-    emit(SignUpLoadedState(isLoading: true));
+  ValueNotifier<bool> isAvailable = ValueNotifier<bool>(false);
 
-    if (password != verifyPassword) {
+  var _signUpEntity = SignUpEntity.empty();
+  bool passwordMatch = false;
+
+  @override
+  Future<void> close() async {
+    isAvailable.dispose();
+    super.close();
+  }
+
+  void signUp() async {
+    emit(SignUpLoadedState(state.params.copyWith(isLoading: true)));
+
+    if (!passwordMatch) {
       return emit(
         SignUpLoadedState(
+          state.params.copyWith(isLoading: false),
           result: const AuthenticationResult(
             isSuccess: false,
             message: "A senhas não batem, tente novamente",
@@ -34,7 +36,24 @@ class SignUpBloc extends Cubit<SignUpState> {
       );
     }
 
-    final result = await signupUsecase.call(SignUpEntity(
+    final result = await signupUsecase.call(_signUpEntity);
+
+    emit(SignUpLoadedState(state.params.copyWith(isLoading: false), result: result));
+  }
+
+  void changeForms({
+    String? name,
+    String? username,
+    String? email,
+    String? age,
+    String? phone,
+    String? password,
+    String? address,
+    String? photo,
+    String? safetyNumber,
+    bool? passwordMatchParam,
+  }) async {
+    _signUpEntity = _signUpEntity.copyWith(
       name: name,
       username: username,
       email: email,
@@ -44,7 +63,9 @@ class SignUpBloc extends Cubit<SignUpState> {
       address: address,
       photo: photo,
       safetyNumber: safetyNumber,
-    ));
-    emit(SignUpLoadedState(result: result));
+    );
+
+    passwordMatch = passwordMatchParam ?? passwordMatch;
+    isAvailable.value = _signUpEntity.isAvailable && passwordMatch;
   }
 }

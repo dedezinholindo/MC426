@@ -5,21 +5,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignUpLoadedView extends StatefulWidget {
-  final bool isLoading;
-  final void Function(
-    String name,
-    String username,
-    String email,
-    String age,
-    String phone,
-    String password,
-    String verifyPassword,
+  final void Function({
+    String? name,
+    String? username,
+    String? email,
+    String? age,
+    String? phone,
+    String? password,
     String? address,
     String? photo,
     String? safetyNumber,
-  ) signUp;
+    bool? passwordMatchParam,
+  }) onChange;
 
-  const SignUpLoadedView({super.key, required this.isLoading, required this.signUp});
+  const SignUpLoadedView({super.key, required this.onChange});
 
   @override
   State<SignUpLoadedView> createState() => _SignUpLoadedViewState();
@@ -36,12 +35,14 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
   TextEditingController verifyPasswordController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController safetyNumberController = TextEditingController();
+  ValueNotifier<bool> passwordMatch = ValueNotifier<bool>(true);
 
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       setState(() => photo = image.path);
+      widget.onChange(photo: photo);
     } on PlatformException catch (e) {
       if (kDebugMode) {
         print('Failed to pick image: $e');
@@ -50,10 +51,25 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    ageController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    verifyPasswordController.dispose();
+    addressController.dispose();
+    safetyNumberController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +95,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             const SizedBox(height: 24),
             //nome
             const Text(
-              "NOME",
+              "NOME*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -100,11 +116,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu nome',
               ),
+              onChanged: (value) => widget.onChange(name: value),
             ),
             const SizedBox(height: 24),
             //username
             const Text(
-              "USERNAME",
+              "USERNAME*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -125,11 +142,38 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu username',
               ),
+              onChanged: (value) => widget.onChange(username: value),
+            ),
+            const SizedBox(height: 24),
+            //email
+            const Text(
+              "EMAIL*",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: Color(0xFFCDCDCD),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 3,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: emailController,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+              decoration: const InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                labelText: 'Digite seu email',
+              ),
+              onChanged: (value) => widget.onChange(email: value),
             ),
             const SizedBox(height: 24),
             //idade
             const Text(
-              "IDADE",
+              "IDADE*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -150,11 +194,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite sua idade',
               ),
+              onChanged: (value) => widget.onChange(age: value),
             ),
             const SizedBox(height: 24),
             //telefone
             const Text(
-              "CELULAR",
+              "CELULAR*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -175,11 +220,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu número de celular',
               ),
+              onChanged: (value) => widget.onChange(phone: value),
             ),
             const SizedBox(height: 24),
             //senha
             const Text(
-              "SENHA",
+              "SENHA*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -201,26 +247,41 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite sua senha',
               ),
+              onChanged: (value) => widget.onChange(password: value),
             ),
             //senha verificacao
             const SizedBox(height: 12),
-            TextFormField(
-              controller: verifyPasswordController,
-              obscureText: true,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite a senha novamente',
-              ),
+            ValueListenableBuilder<bool>(
+              valueListenable: passwordMatch,
+              builder: (context, value, child) {
+                return TextFormField(
+                  controller: verifyPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    labelText: 'Digite a senha novamente',
+                    errorText: !value ? "As senhas não correspondem" : null,
+                  ),
+                  onChanged: (value) {
+                    if (value != phoneController.text && value != "") {
+                      passwordMatch.value = false;
+                    } else {
+                      passwordMatch.value = true;
+                    }
+                    widget.onChange(passwordMatchParam: passwordMatch.value);
+                  },
+                );
+              },
             ),
             const SizedBox(height: 24),
             //endereço
             const Text(
-              "ENDEREÇO",
+              "ENDEREÇO*",
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Color(0xFFCDCDCD),
@@ -241,6 +302,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu endereço',
               ),
+              onChanged: (value) => widget.onChange(address: value),
             ),
             const SizedBox(height: 24),
             //numero de emergência
@@ -266,6 +328,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite um número de emergência',
               ),
+              onChanged: (value) => widget.onChange(safetyNumber: value),
             ),
             const SizedBox(height: 24),
             //photoController
@@ -291,37 +354,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 ],
               ),
             ),
-
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => widget.signUp(
-                nameController.text,
-                usernameController.text,
-                emailController.text,
-                ageController.text,
-                phoneController.text,
-                passwordController.text,
-                verifyPasswordController.text,
-                addressController.text,
-                photo,
-                safetyNumberController.text,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  widget.isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text(
-                          'Cadastrar',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 48),
           ],
         ),
       ),
