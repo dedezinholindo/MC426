@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/injection/injection.dart';
+import 'package:mc426_front/create_complaint/complaint_page.dart';
+import 'create_complaint/complaint.dart';
 
 void main() {
   setupProviders();
@@ -10,21 +12,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Aplicativo de Denúncias',
       routes: {
         AuthenticationPage.routeName: (context) => const AuthenticationPage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
       },
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(background: Colors.black, seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home: const AuthenticationPage(),
+      home: const ComplaintPage(),
     );
   }
 }
