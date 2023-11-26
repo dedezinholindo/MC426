@@ -1,11 +1,16 @@
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/common/common.dart';
+import 'package:mc426_front/storage/storage.dart';
 
 class SignInUsecase {
   final AuthenticationRepository repository;
+  final StorageInterface storage;
 
-  SignInUsecase(this.repository);
+  const SignInUsecase(this.repository, this.storage);
 
   Future<AuthenticationResult> call(SignInEntity signInEntity) async {
-    return await repository.signIn(signInEntity);
+    final result = await repository.signIn(signInEntity);
+    await storage.setString(USER_ID, result.id != null ? result.id! : "logged_out");
+    return result;
   }
 }
