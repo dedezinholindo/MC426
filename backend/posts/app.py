@@ -16,7 +16,7 @@ cursor.execute('''
         title TEXT NOT NULL,
         description TEXT NOT NULL,
         address TEXT NOT NULL,
-        is_anonymous BOOLEAN NOT NULL,
+        isAnonymous BOOLEAN NOT NULL,
         likes INTEGER NOT NULL,
         unlikes INTEGER NOT NULL
     )
@@ -43,7 +43,7 @@ def create_complaint():
     :param title: Complaint's title.
     :param description: Complaint's description.
     :param address: Complaint's address.
-    :param is_anonymous: True if the complaint mode is anonymous.
+    :param isAnonymous: True if the complaint mode is anonymous.
     :return: Success or error message.
     """
 
@@ -53,28 +53,36 @@ def create_complaint():
     title = data.get('title')
     description = data.get('description')
     address = data.get('address')
-    is_anonymous = data.get('is_anonymous')
+    isAnonymous = data.get('isAnonymous')
 
-    # Checks missing 
+     # Checks missing 
     missing = []
 
-    if title == None:
+    if not title:
         missing.append('title')
-    if description == None:
+    if not description:
         missing.append('description')
-    if address == None:
+    if not address:
         missing.append('address')
-    if is_anonymous == None:
-        missing.append('is_anonymous')
+    if isAnonymous == None:
+        missing.append('isAnonymous')
 
-    if missing != []:
-        return jsonify({'error': f'Missing values: ' + ', '.join(missing)}), 400
+    if missing:
+        if len(missing) == 1:
+            error_msg = f"O campo {missing[0]} é obrigatório."
+        elif len(missing) == 2:
+            error_msg = f"Os campos {missing[0]} e {missing[1]} são obrigatórios."
+        else:
+            fields_str = ', '.join(missing[:-1])
+            error_msg = f"Os campos {fields_str} e {missing[-1]} são obrigatórios."
+
+        return jsonify({'error': error_msg}), 400
 
     # Saves the new complaint in DB
     cursor.execute('''
-    INSERT INTO complaints (title, description, address, is_anonymous, likes, unlikes)
+    INSERT INTO complaints (title, description, address, isAnonymous, likes, unlikes)
     VALUES (?, ?, ?, ?, ?, ?)
-    ''', (title, description, address, is_anonymous, 0, 0))
+    ''', (title, description, address, isAnonymous, 0, 0))
     conn.commit()
 
     return jsonify({'message': 'Complaint created successfully'}), 201
@@ -97,7 +105,7 @@ def get_complaints():
             'title': c[1],
             'description': c[2],
             'address': c[3],
-            'is_anonymous': bool(c[4]),
+            'isAnonymous': bool(c[4]),
             'likes': c[5],
             'unlikes': c[6]
         } for c in complaints

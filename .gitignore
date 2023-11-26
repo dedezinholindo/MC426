@@ -21,8 +21,6 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-__pycache__
-
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
@@ -44,6 +42,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+__pycache__
+
 
 # Database files
 *.db
