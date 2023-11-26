@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/create_complaint/data/repositories/complaint_api_repository.dart';
 import 'package:mc426_front/create_complaint/domain/entities/complaint.dart';
@@ -57,7 +58,7 @@ void main() {
 
       final result = await repository.createComplaint(mockComplaint);
       expect(result.isSuccess, false);
-      expect(result.message, "Falha ao criar denúncia");
+      expect(result.message, "Falha ao criar denúncia: Erro desconhecido");
     });
 
     test("should return Complaint result fails when request throws Exception", () async {

@@ -6,15 +6,19 @@ const signInMock = SignInEntity(
 );
 
 const signUpMock = SignUpEntity(
-  username: "username_test",
-  password: "password_test",
   name: "name_test",
-  age: "20",
+  username: "username_test",
   email: "email_test@gmail.com",
+  age: "20",
+  phone: "phone_test",
+  password: "password_test",
+  address: "address_test",
+  photo: "photo_test",
+  safetyNumber: "190",
 );
 
 const resultSignInSuccess = {"message": "Autenticação bem-sucedida"};
 
-const resultSignUpSuccess = {"message": "Usuário cadastrado com sucesso"};
+const resultSignUpSuccess = {"message": "Usuário cadastrado com sucesso", "id": "id"};
 
 const resultError = {"message": "Senha inválida"};

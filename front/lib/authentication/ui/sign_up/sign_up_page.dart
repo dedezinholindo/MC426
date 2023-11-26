@@ -30,34 +30,51 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       builder: (context, state) {
         Widget? body = switch (state) {
-          SignUpLoadedState() => SignUpLoadedView(
-              isLoading: state.isLoading,
-              signUp: (
-                username,
-                password,
-                age,
-                name,
-                email,
-              ) =>
-                  _bloc.signUp(
-                username: username,
-                password: password,
-                age: age,
-                name: name,
-                email: email,
-              ),
-            ),
+          SignUpLoadedState() => SignUpLoadedView(key: UniqueKey(), onChange: _bloc.changeForms),
         };
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Cadastro"),
+            backgroundColor: Colors.black,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back_ios_new),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+              ),
             ),
           ),
-          body: body,
+          body: Scaffold(
+            primary: false,
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: _bloc.isAvailable,
+                  builder: (context, value, child) {
+                    return ElevatedButton(
+                      onPressed: value ? _bloc.signUp : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _bloc.state.params.isLoading
+                              ? const CircularProgressIndicator()
+                              : const Text(
+                                  'Cadastrar',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            body: body,
+          ),
         );
       },
     );
