@@ -13,7 +13,7 @@ class AuthenticationApiRepository extends AuthenticationRepository {
   Future<AuthenticationResult> signIn(SignInEntity signInEntity) async {
     try {
       final result = await client.post(
-        Uri.parse("${BASE_URL}login"),
+        Uri.parse("${base_Url}login"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -35,7 +35,7 @@ class AuthenticationApiRepository extends AuthenticationRepository {
   Future<AuthenticationResult> signup(SignUpEntity signUpEntity) async {
     try {
       final result = await client.post(
-        Uri.parse("${BASE_URL}registration"),
+        Uri.parse("${base_Url}registration"),
         headers: {
           'Content-Type': 'application/json',
         },
