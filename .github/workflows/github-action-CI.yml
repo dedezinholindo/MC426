@@ -98,6 +98,7 @@ jobs:
           channel: 'stable'
       - name: Install dependencies
         run: |
+          cd front/
           flutter pub add get_it
           flutter pub add dev:test
       - name: Testing the aplication of sign in and sign up functionalitiy
