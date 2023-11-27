@@ -43,7 +43,7 @@ jobs:
           docker stop posts_backend
       - run: echo "This job's status is ${{ job.status }}."
   
-  build-ios:
+  build-ios-dummy:
     runs-on: macos-latest
     needs: []
     steps:
@@ -60,7 +60,8 @@ jobs:
           flutter upgrade
           flutter pub get
           flutter clean
-          flutter build ios
+        #  flutter build ios
+          echo "THE BUILD IOS WONT WORK, BECAUSE WE DONT HAVE AN VALID CODE SIGNING CERTIFICATE. IS NEEDED AN APPLE DEVELOPER ACCOUNT, APPLE ID, ETC..."
       - run: echo "This job's status is ${{ job.status }}."
   
   build-android:
