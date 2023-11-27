@@ -102,6 +102,6 @@ jobs:
           flutter pub add dev:test
       - name: Testing the aplication of sign in and sign up functionalitiy
         run: |
-          cd front/test/src/
-          flutter test tests.dart
+          cd front/
+          flutter test test/src/tests.dart
       - run: echo "This job's status is ${{ job.status }}."
