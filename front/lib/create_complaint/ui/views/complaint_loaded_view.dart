@@ -3,7 +3,7 @@ import 'package:mc426_front/create_complaint/complaint.dart';
 
 class ComplaintLoadedView extends StatefulWidget {
   final bool isLoading;
-  final ComplaintResult result;
+  final ComplaintResult? result;
   final void Function(Complaint complaint) createComplaint;
 
   const ComplaintLoadedView({
