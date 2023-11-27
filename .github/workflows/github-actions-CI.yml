@@ -6,7 +6,7 @@ on:
     branches:
       - 'main'
       - 'develop'
-      - 'feature/pipeline_implementation' # Branch to test the pipeline implementation
+      - 'feature/pipeline_implementation' # Branch to test the pipeline implementation .
 
 jobs:
 
