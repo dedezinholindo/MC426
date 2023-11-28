@@ -154,6 +154,8 @@ jobs:
       - name: Testing the aplication of sign in and sign up functionalitiy
         run: |
           cd front/
+          flutter upgrade
+          flutter pub upgrade
           flutter analyze
           flutter format --dry-run --set-exit-if-changed lib/
           flutter format --dry-run --set-exit-if-changed android/
