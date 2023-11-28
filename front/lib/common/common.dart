@@ -1,2 +1,2 @@
-const BASE_URL = "http://localhost:5000/";
-const USER_ID = "user_id";
+const baseUrl = "http://localhost:5000/";
+const userIdKey = "user_id";

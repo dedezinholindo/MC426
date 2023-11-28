@@ -1,6 +1,4 @@
 import 'package:mc426_front/create_complaint/complaint.dart';
-//import 'package:mc426_front/Create_Complaint/domain/repositories/complaint_repository.dart';
-//import 'package:mc426_front/Create_Complaint/domain/usecases/create_complaint_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

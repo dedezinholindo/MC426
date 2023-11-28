@@ -5,8 +5,9 @@ import 'package:mc426_front/injection/injection.dart';
 import 'package:mc426_front/profile/profile.dart';
 
 void main() {
-  runApp(const MyApp());
   setupProviders();
+  runApp(const MyApp());
+  initializeStorage();
 }
 
 class MyApp extends StatelessWidget {
