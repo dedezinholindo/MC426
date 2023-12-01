@@ -7,7 +7,8 @@ class HomeLoadingState extends HomeState {
 }
 
 class HomeLoadedState extends HomeState {
-  HomeLoadedState();
+  final HomeEntity home;
+  HomeLoadedState(this.home);
 }
 
 class HomeErrorState extends HomeState {

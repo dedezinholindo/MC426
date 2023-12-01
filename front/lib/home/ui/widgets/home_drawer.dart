@@ -44,7 +44,7 @@ class HomeDrawer extends StatelessWidget {
                         color: Colors.black,
                         size: 32,
                       ),
-                      const SizedBox(width: 24),
+                      SizedBox(width: 24),
                       Text(
                         'Fechar',
                         style: TextStyle(color: Colors.black, fontSize: 20),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mc426_front/create_complaint/complaint.dart';
+import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/domain/domain.dart';
 
 class HomeUserWidget extends StatelessWidget {

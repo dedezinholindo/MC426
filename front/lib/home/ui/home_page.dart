@@ -22,52 +22,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await _bloc.init();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       bloc: _bloc,
       builder: (context, state) {
-        Widget? body = HomeLoadedView(
-          home: const HomeEntity(
-              user: HomeUserEntity(
-                safetyNumber: "1234",
-                username: "Isabela",
-                photo: null,
-                qtdPosts: 3,
-                coordinates: Coordinates(
-                  latitude: -22.8184343,
-                  longitude: -47.0695915,
-                ),
-              ),
-              posts: [
-                HomePostEntity(
-                  id: 1,
-                  description:
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived.",
-                  name: "Isabela",
-                  upVotes: 2,
-                  downVotes: 3,
-                  time: "2 horas",
-                  userUpVoted: false,
-                  userDownVoted: false,
-                  local: "Localização",
-                  isAnonymous: true,
-                ),
-                HomePostEntity(
-                  id: 1,
-                  description:
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived.",
-                  name: "Isabela",
-                  upVotes: 2,
-                  downVotes: 3,
-                  time: "2 horas",
-                  userUpVoted: false,
-                  userDownVoted: false,
-                  local: "Localização",
-                  isAnonymous: true,
-                )
-              ]),
-          vote: (int id, bool vote) {},
-        );
+        Widget? body = switch (state) {
+          HomeLoadingState() => const CircularProgressIndicator(),
+          HomeLoadedState() => HomeLoadedView(
+              home: state.home,
+              vote: _bloc.vote,
+            ),
+          HomeErrorState() => const HomeErrorView(),
+        };
 
         return Scaffold(
           drawerEnableOpenDragGesture: false,
