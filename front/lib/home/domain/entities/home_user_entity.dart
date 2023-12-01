@@ -35,8 +35,8 @@ class Coordinates {
 
   factory Coordinates.empty() => const Coordinates(latitude: 0, longitude: 0);
 
-  factory Coordinates.fromMap(Map<String, dynamic> json) => Coordinates(
-        latitude: json["latitude"],
-        longitude: json["longitude"],
+  factory Coordinates.fromMap(Map<String, dynamic> map) => Coordinates(
+        latitude: map["latitude"],
+        longitude: map["longitude"],
       );
 }

@@ -37,7 +37,7 @@ class HomePostEntity {
       upVotes: map["upVotes"] ?? 0,
       downVotes: map["downVotes"] ?? 0,
       time: map["time"],
-      isAnonymous: map["isAnonymous"],
+      isAnonymous: map["isAnonymous"] ?? false,
     );
   }
 }

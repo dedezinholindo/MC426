@@ -12,13 +12,15 @@ class HomeApiRepository extends HomeRepository {
   @override
   Future<HomeEntity?> getHome(String userId) async {
     try {
-      final result = await client.post(
+      final result = await client.get(
         Uri.parse("${baseUrl}home/$userId"),
         headers: {
           'Content-Type': 'application/json',
         },
       );
       final body = jsonDecode(result.body);
+
+      if (result.statusCode != 200) return null;
 
       return HomeEntity.fromMap(body);
     } catch (e) {

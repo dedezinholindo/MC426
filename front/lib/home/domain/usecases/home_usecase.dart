@@ -6,7 +6,7 @@ class HomeUsecase {
   final HomeRepository repository;
   final StorageInterface storage;
 
-  const HomeUsecase(this.storage, this.repository);
+  const HomeUsecase(this.repository, this.storage);
 
   Future<HomeEntity?> call() async {
     final userId = storage.getString(userIdKey);
