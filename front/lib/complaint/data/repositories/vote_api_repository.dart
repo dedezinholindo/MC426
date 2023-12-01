@@ -16,12 +16,8 @@ class VoteApiRepository implements VoteRepository {
         'Content-Type': 'application/json',
       });
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        log('Failed to vote: ${response.body}');
-        return false;
-      }
+      return response.statusCode==200;
+
     } catch (e) {
       log('Exception occurred while voting: $e');
       return false;
