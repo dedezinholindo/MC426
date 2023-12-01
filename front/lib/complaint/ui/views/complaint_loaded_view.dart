@@ -23,7 +23,6 @@ class _ComplaintLoadedViewState extends State<ComplaintLoadedView> {
   TextEditingController addressController = TextEditingController();
   bool isAnonymous = false;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -58,16 +57,11 @@ class _ComplaintLoadedViewState extends State<ComplaintLoadedView> {
                 ),
               );
             },
-            child: widget.isLoading
-                ? const CircularProgressIndicator()
-                : const Text('Criar denúncia'),
+            child: widget.isLoading ? const CircularProgressIndicator() : const Text('Criar denúncia'),
           ),
-          if (widget.result != null)
-            Text(widget.result!.isSuccess
-                ? widget.result!.message
-                : 'Falha ao criar denúncia'),
+          if (widget.result != null) Text(widget.result!.isSuccess ? widget.result!.message : 'Falha ao criar denúncia'),
         ],
       ),
-    ); 
+    );
   }
 }

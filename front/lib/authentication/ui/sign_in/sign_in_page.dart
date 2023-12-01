@@ -34,10 +34,12 @@ class _SignInPageState extends State<SignInPage> {
         Widget? body = switch (state) {
           SignInLoadedState() => SignInLoadedView(
               isLoading: state.isLoading,
-              signIn: (username, password) => _bloc.signIn(
-                username: username,
-                password: password,
-              ),
+              signIn: (username, password) {
+                _bloc.signIn(
+                  username: username,
+                  password: password,
+                );
+              },
             ),
         };
 
