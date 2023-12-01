@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/authentication/ui/sign_in/bloc/forgot_password_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class SignInLoadedView extends StatefulWidget {
   final bool isLoading;
@@ -21,6 +24,37 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void _showForgotPasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        TextEditingController emailController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Redefinir senha'),
+          content: TextField(
+            controller: emailController,
+            decoration: const InputDecoration(hintText: "Digite seu e-mail"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Enviar'),
+              onPressed: () {
+                context.read<ForgotPasswordBloc>().sendPasswordReset(emailController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -105,15 +139,18 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
               ],
             ),
             const SizedBox(height: 12),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
+                InkWell(
+                  onTap: _showForgotPasswordDialog,
+                  child: const Text(
                   "Esqueci a senha",
                   style: TextStyle(
                     color: Color(0xFF1DAEFF),
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

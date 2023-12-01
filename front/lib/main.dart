@@ -3,8 +3,8 @@ import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/injection/injection.dart';
 
 void main() {
-  runApp(const MyApp());
   setupProviders();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

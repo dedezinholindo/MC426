@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
-
 part 'sign_in_state.dart';
 
 class SignInBloc extends Cubit<SignInState> {
