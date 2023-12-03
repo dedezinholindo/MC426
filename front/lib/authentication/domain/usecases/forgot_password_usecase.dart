@@ -1,7 +1,7 @@
-import 'package:mc426_front/authentication/domain/repositories/forgot_password_repository.dart';
+import 'package:mc426_front/authentication/domain/repositories/authentication_repository.dart';
 
 class ForgotPasswordUsecase {
-  final ForgotPasswordRepository repository;
+  final AuthenticationRepository repository;
 
   ForgotPasswordUsecase(this.repository);
 

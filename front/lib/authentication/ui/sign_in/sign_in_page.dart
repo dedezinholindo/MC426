@@ -25,9 +25,39 @@ class _SignInPageState extends State<SignInPage> {
             SnackBar(
               duration: const Duration(milliseconds: 1000),
               content: Text(state.result!.message),
-              backgroundColor: state.result!.isSuccess ? Colors.green : Colors.red,
+              backgroundColor:
+                  state.result!.isSuccess ? Colors.green : Colors.red,
             ),
           );
+        }
+        if (state is SignInForgotPasswordState && state.result != null) {
+          if (state.result == true) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  backgroundColor: Colors.green[700],
+                  content: const Text(
+                    "Email enviado com sucesso!",
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+            );
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  backgroundColor: Colors.red[700],
+                  content: const Text(
+                    "Falha ao enviar email!",
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -40,6 +70,11 @@ class _SignInPageState extends State<SignInPage> {
                   password: password,
                 );
               },
+              forgotPassword: _bloc.clickForgotPassword,
+            ),
+          SignInForgotPasswordState() => ForgotPasswordView(
+              forgotPassword: _bloc.forgotPassword,
+              back: _bloc.backToSignIn,
             ),
         };
 

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/authentication/authentication.dart';
-import 'package:mc426_front/authentication/ui/sign_in/bloc/forgot_password_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class SignInLoadedView extends StatefulWidget {
   final bool isLoading;
   final void Function(String username, String password) signIn;
-
-  const SignInLoadedView({required this.isLoading, required this.signIn, super.key});
+  final VoidCallback forgotPassword;
+  const SignInLoadedView({required this.isLoading, required this.signIn, super.key, required this.forgotPassword});
 
   @override
   State<SignInLoadedView> createState() => _SignInLoadedViewState();
@@ -24,37 +22,6 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  void _showForgotPasswordDialog() {
-    showDialog(
-      context: context,
-      builder: (_) {
-        TextEditingController emailController = TextEditingController();
-        return AlertDialog(
-          title: const Text('Redefinir senha'),
-          content: TextField(
-            controller: emailController,
-            decoration: const InputDecoration(hintText: "Digite seu e-mail"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Enviar'),
-              onPressed: () {
-                context.read<ForgotPasswordBloc>().sendPasswordReset(emailController.text);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -142,8 +109,8 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                InkWell(
-                  onTap: _showForgotPasswordDialog,
+                GestureDetector(
+                  onTap: widget.forgotPassword,
                   child: const Text(
                   "Esqueci a senha",
                   style: TextStyle(

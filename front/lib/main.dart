@@ -55,12 +55,35 @@ class MyApp extends StatelessWidget {
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),
+          hintStyle: const TextStyle(
+            color: Color(0xFF5F5F5F),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        dialogTheme: const DialogTheme(
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 3),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
+          contentTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {
-                if (states.contains(MaterialState.disabled)) return const Color(0xFFCDCDCD);
+                if (states.contains(MaterialState.disabled))
+                  return const Color(0xFFCDCDCD);
                 return const Color(0xFF4CE5B1); // Use the component's default.
               },
             ),
