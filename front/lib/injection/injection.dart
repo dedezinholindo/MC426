@@ -45,6 +45,10 @@ setupProviders() async {
         getIt.get<ProfileRepository>(),
         storageShared,
       ));
+  getIt.registerLazySingleton<GetUserPostsUsecase>(() => GetUserPostsUsecase(
+        getIt.get<ProfileRepository>(),
+        storageShared,
+      ));
 
   //home
   getIt.registerLazySingleton<HomeRepository>(() => HomeApiRepository(client));

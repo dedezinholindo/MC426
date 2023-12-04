@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/profile/profile.dart';
-import 'package:mc426_front/profile/ui/bloc/profile_bloc.dart';
+import 'package:mc426_front/profile/ui/profile/bloc/profile_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../mocks/mocks.dart';
