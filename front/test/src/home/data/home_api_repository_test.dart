@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mc426_front/home/data/repositories/home_api_repository.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';

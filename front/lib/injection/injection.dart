@@ -2,8 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/complaint/complaint.dart';
-import 'package:mc426_front/home/data/repositories/home_api_repository.dart';
-import 'package:mc426_front/home/domain/domain.dart';
+import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/profile/profile.dart';
 import 'package:mc426_front/storage/storage_shared.dart';
 
