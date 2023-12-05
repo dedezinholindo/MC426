@@ -77,6 +77,23 @@ class FlaskAppTestCase(unittest.TestCase):
         response = self.register_user("testuser8", long_password, "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+        
+    def test_forget_password(self):
+        # Valid forget password request
+        self.register_user("testuser15", "password123", "Test User", "25", "test@example.com", "12345678901", "Test Address", "test.jpg", "12345678901")
+        response = self.app.post('/forget_password', json={"email": "test@example.com"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"If your email exists in our database the reset link was successfully sent", response.data)
+
+        # Nonexistent email
+        response = self.app.post('/forget_password', json={"email": "nonexistent@example.com"})
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b"Email not found", response.data)
+
+        # Invalid request (missing email)
+        response = self.app.post('/forget_password', json={})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Invalid request", response.data)
 
     def test_login(self):
         # Valid login

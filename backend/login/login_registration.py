@@ -120,5 +120,36 @@ def login():
 
     return jsonify({"message": "Invalid username or password"}), 401
 
+# Route for "Forget My Password" functionality
+@app.route('/forget_password', methods=['POST'])
+def forget_password():
+    user_data = request.json
+    if not user_data or 'email' not in user_data:
+        return jsonify({"message": "Invalid request"}), 400
+
+    email = user_data.get("email")
+
+    users = read_users_from_file()
+
+    # Check if the email exists
+    for user in users:
+        if user['email'] == email:
+            # Generate a unique token for password reset
+            reset_token = str(uuid.uuid4())
+
+            # Save the reset token to the user's data
+            user['reset_token'] = reset_token
+            write_users_to_file(users)
+
+            # Send an email with the reset link
+            """reset_link = f"http://your_reset_link/{reset_token}"
+            msg = Message("Password Reset", recipients=[email])
+            msg.body = f"Click the following link to reset your password: {reset_link}"
+            mail.send(msg)"""
+
+            return jsonify({"message": "If your email exists in our database the reset link was successfully sent"}), 200
+
+    return jsonify({"message": "Email not found"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
