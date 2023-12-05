@@ -3,8 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/home.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
-import 'package:mc426_front/storage/storage_shared.dart';
+import 'package:mc426_front/storage/storage.dart';
 
 final getIt = GetIt.instance;
 
@@ -54,6 +55,17 @@ setupProviders() async {
   getIt.registerLazySingleton<HomeRepository>(() => HomeApiRepository(client));
   getIt.registerLazySingleton<HomeUsecase>(() => HomeUsecase(
         getIt.get<HomeRepository>(),
+        storageShared,
+      ));
+
+  //notifications
+  getIt.registerLazySingleton<NotificationRepository>(() => NotificationApiRepository(client));
+  getIt.registerLazySingleton<GetNotificationConfigUsecase>(() => GetNotificationConfigUsecase(
+        getIt.get<NotificationRepository>(),
+        storageShared,
+      ));
+  getIt.registerLazySingleton<ChangeNotificationConfigUsecase>(() => ChangeNotificationConfigUsecase(
+        getIt.get<NotificationRepository>(),
         storageShared,
       ));
 }

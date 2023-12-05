@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       bloc: _bloc,
       builder: (context, state) {
         Widget? body = switch (state) {
-          HomeLoadingState() => const CircularProgressIndicator(),
+          HomeLoadingState() => const Center(child: CircularProgressIndicator()),
           HomeLoadedState() => HomeLoadedView(
               home: state.home,
               vote: _bloc.vote,

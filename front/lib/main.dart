@@ -1,18 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/complaint_page.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/injection/injection.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
+import 'package:mc426_front/storage/storage.dart';
 
-void main() {
-  setupProviders();
+void main() async {
+  await setupProviders();
   runApp(const MyApp());
-  initializeStorage();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Widget? body;
+
+  Future<Widget> buildHome() async {
+    await initializeStorage();
+    final storage = GetIt.instance.get<StorageShared>();
+    if (storage.getString(userIdKey) != null && storage.getString(userIdKey) != "logged_out") return const HomePage();
+    return const HomePage();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      body = await buildHome();
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +56,7 @@ class MyApp extends StatelessWidget {
         HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
+        NotificationsPage.routeName: (context) => const NotificationsPage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -78,7 +105,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SignInPage(),
+      home: body ?? const Center(child: CircularProgressIndicator()),
     );
   }
 }
