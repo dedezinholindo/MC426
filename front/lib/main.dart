@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/complaint/complaint_page.dart';
+import 'package:mc426_front/complaint//complaint.dart';
 import 'package:mc426_front/injection/injection.dart';
 import 'package:mc426_front/profile/profile.dart';
 

@@ -22,6 +22,8 @@ setupProviders() async {
   getIt.registerLazySingleton<CreateComplaintUsecase>(() => CreateComplaintUsecase(getIt.get<ComplaintRepository>()));
   getIt.registerLazySingleton<VoteRepository>(() => VoteApiRepository(client));
   getIt.registerLazySingleton<VoteUseCase>(() => VoteUseCase(getIt.get<VoteRepository>()));
+
+  //authentication
   getIt.registerLazySingleton<AuthenticationRepository>(() => AuthenticationApiRepository(client));
   getIt.registerLazySingleton<ForgotPasswordUsecase>(() => ForgotPasswordUsecase(getIt.get<AuthenticationRepository>()));
   getIt.registerLazySingleton<SignInUsecase>(() => SignInUsecase(

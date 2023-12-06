@@ -183,6 +183,30 @@ class TestFlaskApp(unittest.TestCase):
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data["message"], "Safety number must be an 11-digit number")
+        
+    def test_get_profile(self):
+        # Test case 1: Get profile successfully
+        response = self.app.get('/get_profile/test_user1')
+        data = json.loads(response.get_data(as_text=True))
+        expected_profile = {
+            "username": "test_user1",
+            "name": "Test User 1",
+            "age": "30",
+            "email": "test_user1@example.com",
+            "phone": "12345678901",
+            "address": "Test Address 1",
+            "photo": "test1.jpg",
+            "safetyNumber": "12345678901"
+        }
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, expected_profile)
+
+        # Test case 2: User not found
+        response = self.app.get('/get_profile/non_existing_user')
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "User not found")
+
 
 if __name__ == '__main__':
     unittest.main()
