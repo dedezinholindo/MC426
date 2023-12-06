@@ -79,5 +79,26 @@ def edit_profile():
 
     return jsonify({"message": "User not found"}), 404
 
+@app.route('/get_profile/<username>', methods=['GET'])
+def get_profile(username):
+    users = read_users_from_file()  # Change for a database
+
+    for user in users:
+        if user['username'] == username:
+            # Include all available fields in the response
+            user_info = {
+                "username": user['username'],
+                "name": user['name'],
+                "age": user['age'],
+                "email": user['email'],
+                "phone": user['phone'],
+                "address": user['address'],
+                "photo": user['photo'],
+                "safetyNumber": user['safetyNumber']
+            }
+            return jsonify(user_info), 200
+
+    return jsonify({"message": "User not found"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
