@@ -14,22 +14,22 @@ class TestGeocodingApp(unittest.TestCase):
 
     def test_geocode_valid_user(self):
         mock_users = [
-            {"username": "user1", "address": "1600 Amphitheatre Pkwy, Mountain View, CA"},
-            {"username": "user2", "address": "1 Hacker Way, Menlo Park, CA"},
-            {"username": "user3", "address": "1355 Market St, San Francisco, CA"}
+            {"id": "user1", "address": "1600 Amphitheatre Pkwy, Mountain View, CA"},
+            {"id": "user2", "address": "1 Hacker Way, Menlo Park, CA"},
+            {"id": "user3", "address": "1355 Market St, San Francisco, CA"}
         ]
 
         with tempfile.NamedTemporaryFile(mode='w+', delete=False) as temp_file:
             temp_file.write(json.dumps(mock_users))
 
         with patch('map.read_users_from_file', return_value=mock_users):
-            response = self.app.post('/geocode', json={"username": "user1"})
+            response = self.app.post('/geocode', json={"id": "user1"})
 
         expected_result = {"latitude": 37.4217636, "longitude": -122.084614}
         self.assertEqual(response.get_json(), expected_result)
 
     def test_geocode_user_not_found(self):
-        response = self.app.post('/geocode', json={"username": "nonexistent_user"})
+        response = self.app.post('/geocode', json={"id": "nonexistent_user"})
         expected_result = {"message": "User not found or address not available"}
         self.assertEqual(response.get_json(), expected_result)
         self.assertEqual(response.status_code, 404)
@@ -40,7 +40,7 @@ class TestGeocodingApp(unittest.TestCase):
         self.assertEqual(response.get_json(), expected_result)
         self.assertEqual(response.status_code, 400)
 
-    def test_geocode_invalid_request_missing_username(self):
+    def test_geocode_invalid_request_missing_id(self):
         response = self.app.post('/geocode', json={"address": "1600 Amphitheatre Pkwy, Mountain View, CA"})
         expected_result = {"message": "Invalid request"}
         self.assertEqual(response.get_json(), expected_result)

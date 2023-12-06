@@ -30,10 +30,10 @@ def read_users_from_file():
         users = []
     return users
 
-def get_user_address(username):
+def get_user_address(id):
     users = read_users_from_file()
     for user in users:
-        if user['username'] == username:
+        if user['id'] == id:
             return user.get("address")
     return None
 
@@ -41,11 +41,11 @@ def get_user_address(username):
 @app.route('/geocode', methods=['POST'])
 def geocode():
     data = request.json
-    if not data or 'username' not in data:
+    if not data or 'id' not in data:
         return jsonify({"message": "Invalid request"}), 400
 
-    username = data['username']
-    user_address = get_user_address(username)
+    id = data['id']
+    user_address = get_user_address(id)
 
     if not user_address:
         return jsonify({"message": "User not found or address not available"}), 404
