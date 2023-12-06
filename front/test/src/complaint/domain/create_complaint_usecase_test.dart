@@ -1,4 +1,5 @@
 import 'package:mc426_front/complaint/complaint.dart';
+import 'package:mc426_front/storage/storage.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -6,20 +7,30 @@ import '../mocks/mocks.dart';
 
 class ComplaintRepositoryMock extends Mock implements ComplaintRepository {}
 
+class StorageInterfaceMock extends Mock implements StorageInterface {}
+
+const userIdMock = "user_id";
+
 void main() {
+  late final StorageInterface storage;
   late final ComplaintRepository repository;
   late final CreateComplaintUsecase usecase;
 
   setUpAll(() {
     repository = ComplaintRepositoryMock();
-    usecase = CreateComplaintUsecase(repository);
+    storage = StorageInterfaceMock();
+    usecase = CreateComplaintUsecase(repository, storage);
     registerFallbackValue(mockComplaint);
   });
 
   group("call", () {
     test("should return ComplaintResult success when repository is successful", () async {
       when(
-        () => repository.createComplaint(any()),
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
+
+      when(
+        () => repository.createComplaint(userId: any(named: "userId"), complaint: any(named: "complaint")),
       ).thenAnswer((invocation) async => const ComplaintResult(
             isSuccess: true,
             message: "Denúncia criada com sucesso",
@@ -32,7 +43,11 @@ void main() {
 
     test("should return ComplaintResult failure when repository fails", () async {
       when(
-        () => repository.createComplaint(any()),
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
+
+      when(
+        () => repository.createComplaint(userId: any(named: "userId"), complaint: any(named: "complaint")),
       ).thenAnswer((invocation) async => const ComplaintResult(
             isSuccess: false,
             message: "Falha ao criar denúncia",
@@ -43,9 +58,23 @@ void main() {
       expect(result.message, "Falha ao criar denúncia");
     });
 
+    test("should return ComplaintResult failure when storage returns null", () async {
+      when(
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => null);
+
+      final result = await usecase.call(mockComplaint);
+      expect(result.isSuccess, false);
+      expect(result.message, "Falha ao criar denúncia");
+    });
+
     test("should throw Exception when repository throws Exception", () async {
       when(
-        () => repository.createComplaint(any()),
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
+
+      when(
+        () => repository.createComplaint(userId: any(named: "userId"), complaint: any(named: "complaint")),
       ).thenThrow(Exception());
 
       expect(
