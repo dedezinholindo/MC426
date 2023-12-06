@@ -11,7 +11,7 @@ class HomeBloc extends Cubit<HomeState> {
 
   final sharedPreferences = GetIt.instance.get<StorageShared>();
   final voteUsecase = GetIt.instance.get<VoteUseCase>();
-  final homeUsecase = GetIt.instance.get<HomeUsecase>();
+  final homeUsecase = GetIt.instance.get<GetHomeUsecase>();
 
   Future<void> init() async {
     emit(HomeLoadingState());

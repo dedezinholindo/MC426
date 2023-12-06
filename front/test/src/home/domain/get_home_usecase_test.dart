@@ -1,3 +1,4 @@
+import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/storage/storage_interface.dart';
 import 'package:mocktail/mocktail.dart';
@@ -14,12 +15,12 @@ const userIdMock = "user_id";
 void main() {
   late final StorageInterface storage;
   late final HomeRepository repository;
-  late final HomeUsecase usecase;
+  late final GetHomeUsecase usecase;
 
   setUpAll(() {
     repository = HomeRepositoryMock();
     storage = StorageInterfaceMock();
-    usecase = HomeUsecase(repository, storage);
+    usecase = GetHomeUsecase(repository, storage);
     registerFallbackValue(homeMock);
   });
 
@@ -33,8 +34,13 @@ void main() {
         () => storage.getString(any()),
       ).thenAnswer((invocation) => userIdMock);
 
+      when(
+        () => storage.setString(any(), any()),
+      ).thenAnswer((invocation) async => true);
+
       final result = await usecase.call();
       expect(result!.user.username, "username");
+      verify(() => storage.setString(safetyNumberKey, result.user.safetyNumber)).called(1);
     });
 
     test("should return null when repository returns null", () async {

@@ -48,7 +48,7 @@ setupProviders() async {
 
   //home
   getIt.registerLazySingleton<HomeRepository>(() => HomeApiRepository(client));
-  getIt.registerLazySingleton<HomeUsecase>(() => HomeUsecase(
+  getIt.registerLazySingleton<GetHomeUsecase>(() => GetHomeUsecase(
         getIt.get<HomeRepository>(),
         storageShared,
       ));

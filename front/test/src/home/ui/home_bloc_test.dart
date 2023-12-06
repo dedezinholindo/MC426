@@ -9,14 +9,14 @@ import 'package:mocktail/mocktail.dart';
 
 import '../mocks/mocks.dart';
 
-class HomeUsecaseMock extends Mock implements HomeUsecase {}
+class HomeUsecaseMock extends Mock implements GetHomeUsecase {}
 
 class StorageSharedMock extends Mock implements StorageShared {}
 
 class VoteUseCaseMock extends Mock implements VoteUseCase {}
 
 void main() {
-  late final HomeUsecase homeUsecase;
+  late final GetHomeUsecase homeUsecase;
   late final StorageShared storageShared;
   late final VoteUseCase voteUseCase;
 
@@ -26,7 +26,7 @@ void main() {
     storageShared = StorageSharedMock();
     voteUseCase = VoteUseCaseMock();
 
-    injection.registerFactory<HomeUsecase>(() => homeUsecase);
+    injection.registerFactory<GetHomeUsecase>(() => homeUsecase);
     injection.registerFactory<StorageShared>(() => storageShared);
     injection.registerFactory<VoteUseCase>(() => voteUseCase);
     registerFallbackValue(homeMock);
