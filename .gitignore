@@ -48,5 +48,6 @@ __pycache__
 
 # Database files
 *.db
+*users.txt
 
 /front/build/
