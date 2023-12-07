@@ -2,7 +2,7 @@ import unittest
 import app
 import sqlite3
 
-clear_complaints = True
+clear_complaints = False
 
 class TestComplaints(unittest.TestCase):
 
@@ -19,7 +19,8 @@ class TestComplaints(unittest.TestCase):
             clear_complaints = False
         
         # Configurar o cliente de teste Flask
-        self.client = app.app.test_client()
+        self.app = app.create_app()
+        self.client = self.app.test_client()
 
     def test_create_complaint_success(self):
         response = self.client.post(

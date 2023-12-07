@@ -1,12 +1,12 @@
 import unittest
-import json
-from login_registration import app
+import app
 
 class FlaskAppTestCase(unittest.TestCase):
 
     def setUp(self):
-        app.config['TESTING'] = True
-        self.app = app.test_client()
+        self.app = app.create_app()
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
 
     def register_user(self, username, password, name, age, email):
         user_data = {
@@ -16,7 +16,7 @@ class FlaskAppTestCase(unittest.TestCase):
             "age": age,
             "email": email
         }
-        response = self.app.post('/registration', json=user_data)
+        response = self.client.post('/registration', json=user_data)
         return response
 
     def login_user(self, username, password):
@@ -24,7 +24,7 @@ class FlaskAppTestCase(unittest.TestCase):
             "username": username,
             "password": password
         }
-        response = self.app.post('/login', json=user_data)
+        response = self.client.post('/login', json=user_data)
         return response
 
     def test_registration(self):

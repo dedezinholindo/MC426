@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify, make_response
 import json
 import os
+from flask import Blueprint
 
-app = Flask(__name__)
+login_bp = Blueprint('login', __name__)
 
 # Function to read and write user data to a local text file
 def read_users_from_file():
@@ -17,15 +18,8 @@ def write_users_to_file(users):
     with open("users.txt", "w") as file:
         json.dump(users, file)
 
-@app.route("/", methods=["GET"])
-def healthcheck():
-    """
-    If the route is working, returns a 'healthy!' string.
-    """
-    return "healthy!"
-
 # Route for user registration (registration)
-@app.route('/registration', methods=['POST'])
+@login_bp.route('/registration', methods=['POST'])
 def registration():
     user_data = request.json
     if not user_data:
@@ -69,7 +63,7 @@ def registration():
     return response
 
 # Route for user login (authentication)
-@app.route('/login', methods=['POST'])
+@login_bp.route('/login', methods=['POST'])
 def login():
     user_data = request.json
     if not user_data:
@@ -93,9 +87,10 @@ def login():
     return jsonify({"message": "Invalid username or password"}), 401
 
 if __name__ == '__main__':
-    app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
-        threaded=False,
-        debug=True,
-        )
+    # app.run(
+    #     host="0.0.0.0",
+    #     port=int(os.environ.get("PORT", 5000)),
+    #     threaded=False,
+    #     debug=True,
+    #     )
+    pass

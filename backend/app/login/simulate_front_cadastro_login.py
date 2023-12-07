@@ -1,8 +1,7 @@
 import requests
-import json
+# import json
 
-# Defina a URL do seu servidor Flask
-BASE_URL = 'http://localhost:5000'  # Atualize isso com a URL do seu servidor Flask
+BASE_URL = 'http://localhost:5000'
 
 def cadastro():
     print("Cadastro")
@@ -20,12 +19,16 @@ def cadastro():
         "email": email
     }
 
-    resposta = requests.post(f"{BASE_URL}/cadastro", json=dados_cadastro)
+    resposta = requests.post(f"{BASE_URL}/registration", json=dados_cadastro)
 
     if resposta.status_code == 201:
         print("Usuário cadastrado com sucesso.")
     else:
-        print(f"Erro: {resposta.status_code} - {resposta.json()['mensagem']}")
+        print(type(resposta))
+        print(resposta)
+        print(resposta.status_code)
+        print(resposta.text)
+        # print(f"Erro: {resposta.status_code} - {resposta.json()['mensagem']}")
 
 def login():
     print("Login")
