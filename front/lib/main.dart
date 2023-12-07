@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/complaint/complaint_page.dart';
+import 'package:mc426_front/complaints_map/complaints_map.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/injection/injection.dart';
 import 'package:mc426_front/profile/profile.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Press2Safe',
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
+        ComplaintMapPage.routeName: (context) => const ComplaintMapPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
@@ -77,7 +79,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SignInPage(),
+      home: const HomePage(),
     );
   }
 }

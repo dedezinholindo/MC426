@@ -37,28 +37,30 @@ class CustomFlutterMapState extends State<CustomFlutterMap> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      mapController: _mapController,
-      options: MapOptions(
-        keepAlive: true,
-        initialZoom: 13,
-        maxZoom: 18,
-        minZoom: 10,
-        initialCameraFit: CameraFit.coordinates(coordinates: [widget.userCoordinates]),
+    return IgnorePointer(
+      child: FlutterMap(
+        mapController: _mapController,
+        options: MapOptions(
+          keepAlive: true,
+          initialZoom: 13,
+          maxZoom: 18,
+          minZoom: 10,
+          initialCameraFit: CameraFit.coordinates(coordinates: [widget.userCoordinates]),
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+          ),
+          MarkerLayer(
+            rotate: false,
+            alignment: Alignment.topCenter,
+            markers: [
+              if (user != null) user!,
+            ],
+          ),
+        ],
       ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-        ),
-        MarkerLayer(
-          rotate: false,
-          alignment: Alignment.topCenter,
-          markers: [
-            if (user != null) user!,
-          ],
-        ),
-      ],
     );
   }
 }

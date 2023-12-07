@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mc426_front/complaints_map/complaints_map.dart';
 import 'package:mc426_front/home/home.dart';
 
 class HomeLoadedView extends StatelessWidget {
@@ -17,10 +18,13 @@ class HomeLoadedView extends StatelessWidget {
         children: [
           HomeUserWidget(user: home.user),
           const SizedBox(height: 24),
-          SizedBox(
-            height: 200,
-            child: CustomFlutterMap(
-              userCoordinates: LatLng(home.user.coordinates.latitude, home.user.coordinates.longitude),
+          InkWell(
+            onTap: () => Navigator.of(context).pushNamed(ComplaintMapPage.routeName),
+            child: SizedBox(
+              height: 200,
+              child: CustomFlutterMap(
+                userCoordinates: LatLng(home.user.coordinates.latitude, home.user.coordinates.longitude),
+              ),
             ),
           ),
           const SizedBox(height: 24),
