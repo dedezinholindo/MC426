@@ -1,21 +1,35 @@
 from flask import Flask, request, jsonify, make_response
-import json
-import uuid  # Import the UUID module
+import sqlite3
+import uuid
 
 app = Flask(__name__)
 
-# Function to read and write user data to a local text file
-def read_users_from_file():
-    try:
-        with open("users.txt", "r") as file:
-            users = json.load(file)
-    except FileNotFoundError:
-        users = []
-    return users
+# Function to initialize the database
+def init_db():
+    conn = sqlite3.connect('press2safe.db')
+    cursor = conn.cursor()
 
-def write_users_to_file(users):
-    with open("users.txt", "w") as file:
-        json.dump(users, file)
+    # Create the users table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            username TEXT NOT NULL UNIQUE,
+            email TEXT NOT NULL,
+            age INTEGER NOT NULL,
+            phone TEXT NOT NULL,
+            password TEXT NOT NULL,
+            address TEXT NOT NULL,
+            photo TEXT,
+            safetyNumber TEXT
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# Initialize the database
+init_db()
 
 # Route for user registration (registration)
 @app.route('/registration', methods=['POST'])
@@ -32,7 +46,7 @@ def registration():
 
     name = user_data.get("name")
     username = user_data.get("username")
-    email = user_data.get("email")
+    email = (user_data.get("email")).lower()
     age = user_data.get("age")
     phone = user_data.get("phone")
     password = user_data.get("password")
@@ -65,36 +79,30 @@ def registration():
     if not address:
         return jsonify({"message": "Address is required"}), 400
 
-    users = read_users_from_file() #change this for database
+    conn = sqlite3.connect('press2safe.db')
+    cursor = conn.cursor()
 
     # Check if the username already exists
-    for user in users:
-        if user['username'] == username:
-            return jsonify({"message": "Username already exists"}), 400
+    cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+    existing_user = cursor.fetchone()
+    if existing_user:
+        conn.close()
+        return jsonify({"message": "Username already exists"}), 400
 
     # Generate a unique ID for the new user
     user_id = str(uuid.uuid4())
 
-    new_user = {
-        "id": user_id,
-        "name": name,
-        "username": username,
-        "email": email,
-        "age": age,
-        "phone": phone,
-        "password": password,
-        "address": address,
-        "photo": photo,
-        "safetyNumber": safety_number
-    }
+    cursor.execute('''
+        INSERT INTO users (id, name, username, email, age, phone, password, address, photo, safetyNumber)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, name, username, email, age, phone, password, address, photo, safety_number))
 
-    users.append(new_user)
-    write_users_to_file(users)
+    conn.commit()
+    conn.close()
 
     response = make_response(jsonify({"message": "User registered successfully", "id": user_id}), 201)
     response.set_cookie('username', username)
     return response
-
 
 # Route for user login (authentication)
 @app.route('/login', methods=['POST'])
@@ -109,14 +117,19 @@ def login():
     if not (username and password):
         return jsonify({"message": "Missing required fields"}), 400
 
-    users = read_users_from_file()
+    conn = sqlite3.connect('press2safe.db')
+    cursor = conn.cursor()
 
     # Check if the username and password match a registered user
-    for user in users:
-        if user['username'] == username and user['password'] == password:
-            response = make_response(jsonify({"message": "Authentication successful", "id": user['id']}), 200)
-            response.set_cookie('username', username)
-            return response
+    cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+    user = cursor.fetchone()
+
+    conn.close()
+
+    if user:
+        response = make_response(jsonify({"message": "Authentication successful", "id": user[0]}), 200)
+        response.set_cookie('username', username)
+        return response
 
     return jsonify({"message": "Invalid username or password"}), 401
 
@@ -127,28 +140,29 @@ def forget_password():
     if not user_data or 'email' not in user_data:
         return jsonify({"message": "Invalid request"}), 400
 
-    email = user_data.get("email")
+    email = (user_data.get("email")).lower()
+    if not email or '@' not in email or '.' not in email:
+        return jsonify({"message": "Invalid email address"}), 400
 
-    users = read_users_from_file()
+    conn = sqlite3.connect('press2safe.db')
+    cursor = conn.cursor()
 
     # Check if the email exists
-    for user in users:
-        if user['email'] == email:
-            # Generate a unique token for password reset
-            reset_token = str(uuid.uuid4())
+    cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
+    user = cursor.fetchone()
 
-            # Save the reset token to the user's data
-            user['reset_token'] = reset_token
-            write_users_to_file(users)
+    if user:
+        # Generate a unique token for password reset
+        #reset_token = str(uuid.uuid4())
 
-            # Send an email with the reset link
-            """reset_link = f"http://your_reset_link/{reset_token}"
-            msg = Message("Password Reset", recipients=[email])
-            msg.body = f"Click the following link to reset your password: {reset_link}"
-            mail.send(msg)"""
+        # Save the reset token to the user's data
+        #cursor.execute('UPDATE users SET reset_token = ? WHERE email = ?', (reset_token, email))
+        #conn.commit()
+        #conn.close()
 
-            return jsonify({"message": "If your email exists in our database the reset link was successfully sent"}), 200
+        return jsonify({"message": "If your email exists in our database, the reset link was successfully sent"}), 200
 
+    conn.close()
     return jsonify({"message": "Email not found"}), 404
 
 if __name__ == '__main__':
