@@ -3,10 +3,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:mc426_front/home/home.dart';
 
 class HomeLoadedView extends StatelessWidget {
+  final VoidCallback panicButton;
   final HomeEntity home;
   final void Function(int id, bool vote) vote;
 
-  const HomeLoadedView({required this.vote, required this.home, super.key});
+  const HomeLoadedView({required this.vote, required this.home, super.key, required this.panicButton});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class HomeLoadedView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HomeUserWidget(user: home.user),
+          HomeUserWidget(user: home.user, panicButton: panicButton),
           const SizedBox(height: 24),
           SizedBox(
             height: 200,

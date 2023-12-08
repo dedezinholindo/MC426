@@ -52,4 +52,6 @@ setupProviders() async {
         getIt.get<HomeRepository>(),
         storageShared,
       ));
+  getIt.registerSingleton<SendLocationRepository>(SendLocationApiRepository(client));
+  getIt.registerFactory<SendPanicLocationUsecase>(() => SendPanicLocationUsecase(getIt.get<SendLocationRepository>()));
 }
