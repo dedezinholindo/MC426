@@ -2,35 +2,30 @@ import unittest
 import tempfile
 import json
 from unittest.mock import patch
-from map import app, read_users_from_file
+from map import app, read_coordinates_from_file, save_coordinates_to_file, get_coordinates_address
 
 class TestGeocodingApp(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
 
-    def tearDown(self):
-        pass
-
-    def test_geocode_valid_user(self):
-        mock_users = [
-            {"id": "user1", "address": "1600 Amphitheatre Pkwy, Mountain View, CA"},
-            {"id": "user2", "address": "1 Hacker Way, Menlo Park, CA"},
-            {"id": "user3", "address": "1355 Market St, San Francisco, CA"}
+    def test_save_coordinates(self):
+        mock_coordinates = [
+            {"id": "existing_user", "latitude": 37.7749, "longitude": -122.4194}
         ]
 
         with tempfile.NamedTemporaryFile(mode='w+', delete=False) as temp_file:
-            temp_file.write(json.dumps(mock_users))
+            temp_file.write(json.dumps(mock_coordinates))
 
-        with patch('map.read_users_from_file', return_value=mock_users):
-            response = self.app.post('/geocode', json={"id": "user1"})
+        with patch('map.read_coordinates_from_file', return_value=mock_coordinates):
+            response = self.app.post('/save_coordinates', json={"id": "existing_user", "latitude": 40.7128, "longitude": -74.0060})
 
-        expected_result = {"latitude": 37.4217636, "longitude": -122.084614}
+        expected_result = {"message": "Coordinates saved successfully"}
         self.assertEqual(response.get_json(), expected_result)
 
-    def test_geocode_user_not_found(self):
+    def test_geocode_coordinates_not_found(self):
         response = self.app.post('/geocode', json={"id": "nonexistent_user"})
-        expected_result = {"message": "User not found or address not available"}
+        expected_result = {"message": "Coordinates not found or address not available"}
         self.assertEqual(response.get_json(), expected_result)
         self.assertEqual(response.status_code, 404)
 
@@ -51,6 +46,39 @@ class TestGeocodingApp(unittest.TestCase):
         expected_result = {"message": "Invalid request"}
         self.assertEqual(response.get_json(), expected_result)
         self.assertEqual(response.status_code, 400)
+
+    def test_save_coordinates(self):
+        response = self.app.post('/save_coordinates', json={"id": "new_user", "latitude": 40.7128, "longitude": -74.0060})
+        expected_result = {"message": "Coordinates saved successfully"}
+        self.assertEqual(response.get_json(), expected_result)
+
+    def test_get_coordinates(self):
+        mock_coordinates = [
+            {"id": "user1", "latitude": 37.4217636, "longitude": -122.084614},
+            {"id": "user2", "latitude": 37.4838, "longitude": -122.1503},
+            {"id": "user3", "latitude": 37.7749, "longitude": -122.4194}
+        ]
+
+        with tempfile.NamedTemporaryFile(mode='w+', delete=False) as temp_file:
+            temp_file.write(json.dumps(mock_coordinates))
+
+        with patch('map.read_coordinates_from_file', return_value=mock_coordinates):
+            response = self.app.get('/get_coordinates')
+
+        self.assertEqual(response.get_json(), mock_coordinates)
+
+    def test_get_coordinates_address(self):
+        mock_coordinates = [
+            {"id": "user1", "address": "1600 Amphitheatre Pkwy, Mountain View, CA"},
+            {"id": "user2", "address": "1 Hacker Way, Menlo Park, CA"},
+            {"id": "user3", "address": "1355 Market St, San Francisco, CA"}
+        ]
+
+        with patch('map.read_coordinates_from_file', return_value=mock_coordinates):
+            address = get_coordinates_address("user2")
+
+        expected_address = "1 Hacker Way, Menlo Park, CA"
+        self.assertEqual(address, expected_address)
 
 if __name__ == '__main__':
     unittest.main()
