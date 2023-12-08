@@ -1,20 +1,36 @@
 from flask import Flask, request, jsonify
-import json
+import sqlite3
 
 app = Flask(__name__)
 
-# Function to read and write user data to a local text file
-def read_users_from_file():
-    try:
-        with open("users.txt", "r") as file:
-            users = json.load(file)
-    except FileNotFoundError:
-        users = []
-    return users
+# Function to update user information in the database
+def update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number):
+    conn = sqlite3.connect("press2safe.db")
+    cursor = conn.cursor()
 
-def write_users_to_file(users):
-    with open("users.txt", "w") as file:
-        json.dump(users, file)
+    cursor.execute('''
+        UPDATE users
+        SET name=?, phone=?, address=?, photo=?, safetyNumber=?
+        WHERE id=?
+    ''', (new_name, new_phone, new_address, new_photo, new_safety_number, user_id))
+
+    conn.commit()
+    conn.close()
+
+# Function to retrieve user information from the database by user ID
+def get_user_by_id(user_id):
+    conn = sqlite3.connect("press2safe.db")
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM users WHERE id=?
+    ''', (user_id,))
+
+    user = cursor.fetchone()
+
+    conn.close()
+
+    return user
 
 # Route for updating user information (edit profile)
 @app.route('/edit_profile', methods=['POST'])
@@ -46,24 +62,14 @@ def edit_profile():
     if not new_address:
         return jsonify({"message": "Address is required"}), 400
 
-    users = read_users_from_file()
+    user = get_user_by_id(user_id)
 
-    for user in users:
-        if user['id'] == user_id:
-            # Do not allow changing username or email
-            user['name'] = new_name
-            user['phone'] = new_phone
-            user['address'] = new_address
-            user['photo'] = new_photo
-            user['safetyNumber'] = new_safety_number
-
-            if not (new_phone.isdigit() and len(new_phone) == 11 and len(new_safety_number) == 11):
-                return jsonify({"message": "Invalid age, phone, or safetyNumber format"}), 400
-
-            write_users_to_file(users)
-            return jsonify({"message": "Profile updated successfully"}), 200
-
-    return jsonify({"message": "User not found"}), 404
+    if user:
+        # Do not allow changing username or email
+        update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number)
+        return jsonify({"message": "Profile updated successfully"}), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 # Route for getting user profile by id
 @app.route('/get_profile', methods=['POST'])
@@ -77,22 +83,20 @@ def get_profile():
     if not user_id:
         return jsonify({"message": "Missing required field: id"}), 400
 
-    users = read_users_from_file()
+    user = get_user_by_id(user_id)
 
-    for user in users:
-        if user['id'] == user_id:
-            user_info = {
-                "id": user['id'],
-                "name": user['name'],
-                "age": user['age'],
-                "phone": user['phone'],
-                "address": user['address'],
-                "photo": user['photo'],
-                "safetyNumber": user['safetyNumber']
-            }
-            return jsonify(user_info), 200
-
-    return jsonify({"message": "User not found"}), 404
+    if user:
+        user_info = {
+            "id": user[0],
+            "name": user[1],
+            "phone": user[2],
+            "address": user[3],
+            "photo": user[4],
+            "safetyNumber": user[5]
+        }
+        return jsonify(user_info), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
