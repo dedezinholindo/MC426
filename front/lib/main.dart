@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
@@ -9,8 +11,27 @@ import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
 import 'package:mc426_front/storage/storage.dart';
 
+import 'firebase_options.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await setupProviders();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final messaging = FirebaseMessaging.instance;
+
+  await messaging.requestPermission();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 
@@ -27,8 +48,8 @@ class _MyAppState extends State<MyApp> {
   Future<Widget> buildHome() async {
     await initializeStorage();
     final storage = GetIt.instance.get<StorageShared>();
-    if (storage.getString(userIdKey) != null && storage.getString(userIdKey) != "logged_out") return const HomePage();
-    return const HomePage();
+    if (storage.getString(userIdKey) != null && storage.getString(userIdKey) != "logged_out") const HomePage();
+    return const SignInPage();
   }
 
   @override

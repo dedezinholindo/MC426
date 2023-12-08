@@ -5,11 +5,19 @@ const notificationMockJson = {
   "title": "title",
   "description": "description",
   "isActivated": true,
+  "topicName": "topic_name",
 };
 
 final notificationMock = NotificationEntity(
   id: 1,
   description: "description",
   title: "title",
+  isActivated: true,
+  topicName: "topic_name",
+);
+
+final changeNotificationMock = ChangeNotificationEntity(
+  id: 1,
+  userId: "userId",
   isActivated: true,
 );

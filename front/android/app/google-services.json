@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "955589413606",
+    "project_id": "press2safe",
+    "storage_bucket": "press2safe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955589413606:android:73bde17dc7a59408fa4927",
+        "android_client_info": {
+          "package_name": "com.example.mc426_front"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv5z_-BUuldlw4Pc21mLrnLL0_7UVK2RY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

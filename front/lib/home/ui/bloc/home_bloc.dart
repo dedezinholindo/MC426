@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/home.dart';
+import 'package:mc426_front/notifications/domain/domain.dart';
 import 'package:mc426_front/storage/storage.dart';
 
 part 'home_states.dart';
@@ -12,6 +13,7 @@ class HomeBloc extends Cubit<HomeState> {
   final sharedPreferences = GetIt.instance.get<StorageShared>();
   final voteUsecase = GetIt.instance.get<VoteUseCase>();
   final homeUsecase = GetIt.instance.get<GetHomeUsecase>();
+  final getNotificationUsecase = GetIt.instance.get<GetNotificationConfigUsecase>();
 
   Future<void> init() async {
     emit(HomeLoadingState());

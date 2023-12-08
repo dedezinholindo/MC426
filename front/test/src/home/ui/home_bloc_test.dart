@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/domain/domain.dart';
 import 'package:mc426_front/home/ui/bloc/home_bloc.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/storage/storage_shared.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,22 +14,27 @@ class HomeUsecaseMock extends Mock implements GetHomeUsecase {}
 
 class StorageSharedMock extends Mock implements StorageShared {}
 
+class GetNotificationConfigUsecaseMock extends Mock implements GetNotificationConfigUsecase {}
+
 class VoteUseCaseMock extends Mock implements VoteUseCase {}
 
 void main() {
   late final GetHomeUsecase homeUsecase;
   late final StorageShared storageShared;
   late final VoteUseCase voteUseCase;
+  late final GetNotificationConfigUsecase getNotificationConfigUsecase;
 
   setUpAll(() {
     final injection = GetIt.instance;
     homeUsecase = HomeUsecaseMock();
     storageShared = StorageSharedMock();
     voteUseCase = VoteUseCaseMock();
+    getNotificationConfigUsecase = GetNotificationConfigUsecaseMock();
 
     injection.registerFactory<GetHomeUsecase>(() => homeUsecase);
     injection.registerFactory<StorageShared>(() => storageShared);
     injection.registerFactory<VoteUseCase>(() => voteUseCase);
+    injection.registerFactory<GetNotificationConfigUsecase>(() => getNotificationConfigUsecase);
     registerFallbackValue(homeMock);
   });
 

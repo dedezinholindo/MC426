@@ -34,7 +34,7 @@ class NotificationBloc extends Cubit<NotificationState> {
       _notificationMap[notification] = true;
       emit(NotificationLoadedState(_notificationMap));
 
-      final result = await changeNotificationUsecase.call(notification.copyWith(isActivated: !notification.isActivated));
+      final result = await changeNotificationUsecase.call(notification);
 
       if (!result) {
         _notificationMap[notification] = false;
