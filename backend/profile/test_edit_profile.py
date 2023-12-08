@@ -59,7 +59,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "1",
             "name": "New Name",
-            "age": "25",
             "phone": "12345678901",
             "address": "New Address",
             "photo": "new.jpg",
@@ -73,7 +72,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "non_existing_user",
             "name": "New Name",
-            "age": "25",
             "phone": "12345678901",
             "address": "New Address",
             "photo": "new.jpg",
@@ -86,7 +84,6 @@ class TestFlaskApp(unittest.TestCase):
         # Test case 3: Invalid request (missing fields)
         response = self.app.post('/edit_profile', json={
             "name": "New Name",
-            "age": "25"
         })
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(response.status_code, 400)
@@ -96,7 +93,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "2",
             "name": "Updated Name",
-            "age": "28",
             "phone": "23456789012",
             "address": "Updated Address",
             "photo": "updated.jpg",
@@ -106,25 +102,10 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["message"], "Profile updated successfully")
 
-        # Test case 5: Edit profile with non-numeric age
-        response = self.app.post('/edit_profile', json={
-            "id": "3",
-            "name": "Updated Name",
-            "age": "Invalid",
-            "phone": "34567890123",
-            "address": "Updated Address",
-            "photo": "updated.jpg",
-            "safetyNumber": "34567890123"
-        })
-        data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(data["message"], "Age must be a number between 1 and 150")
-
         # Test case 6: Edit profile with non-numeric phone
         response = self.app.post('/edit_profile', json={
             "id": "1",
             "name": "Updated Name",
-            "age": "25",
             "phone": "Invalid",
             "address": "Updated Address",
             "photo": "updated.jpg",
@@ -138,7 +119,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "1",
             "name": "Updated Name",
-            "age": "25",
             "phone": "123",
             "address": "Updated Address",
             "photo": "updated.jpg",
@@ -152,7 +132,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "1",
             "name": "Updated Name",
-            "age": "25",
             "phone": "12345678901",
             "address": "Updated Address",
             "photo": "updated.jpg",
@@ -166,7 +145,6 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.post('/edit_profile', json={
             "id": "1",
             "name": "Updated Name",
-            "age": "25",
             "phone": "12345678901",
             "address": "Updated Address",
             "photo": "updated.jpg",
@@ -177,7 +155,13 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(data["message"], "Safety number must be an 11-digit number")
 
     def test_get_profile(self):
-        # Test case 1: Get profile successfully
+        # Test case 1: User not found
+        response = self.app.post('/get_profile', json={"id": "non_existing_user"})
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "User not found")
+        
+        # Test case 2: Get profile successfully
         response = self.app.post('/get_profile', json={"id": "1"})
         data = json.loads(response.get_data(as_text=True))
         expected_profile = {
@@ -192,11 +176,6 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data, expected_profile)
 
-        # Test case 2: User not found
-        response = self.app.post('/get_profile', json={"id": "non_existing_user"})
-        data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "User not found")
 
 
 if __name__ == '__main__':
