@@ -44,4 +44,23 @@ class ProfileApiRepository extends ProfileRepository {
       return null;
     }
   }
+
+  @override
+  Future<UserPostEntity?> getUserPosts(String userId) async {
+    try {
+      final result = await client.get(
+        Uri.parse("${baseUrl}posts/$userId"),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (result.statusCode != 200) return null;
+
+      final body = jsonDecode(result.body);
+
+      return UserPostEntity.fromMap(body);
+    } catch (e) {
+      return null;
+    }
+  }
 }

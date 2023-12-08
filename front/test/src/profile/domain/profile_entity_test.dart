@@ -1,4 +1,4 @@
-import 'package:mc426_front/profile/domain/domain.dart';
+import 'package:mc426_front/profile/profile.dart';
 import 'package:test/test.dart';
 
 import '../mocks/mocks.dart';

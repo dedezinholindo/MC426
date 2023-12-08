@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mc426_front/profile/profile.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -13,11 +13,11 @@ const userIdMock = "user_id";
 
 void main() {
   late final http.Client client;
-  late final ProfileRepository repository;
+  late final NotificationRepository repository;
 
   setUpAll(() {
     client = ClientMock();
-    repository = ProfileApiRepository(client);
+    repository = NotificationApiRepository(client);
     registerFallbackValue(Uri());
   });
 
@@ -36,9 +36,9 @@ void main() {
         ),
       );
 
-      final result = await repository.edit(
-        profile: profileMock,
+      final result = await repository.changeNotificationConfig(
         userId: userIdMock,
+        notification: notificationMock,
       );
       expect(result, true);
     });
@@ -57,9 +57,9 @@ void main() {
         ),
       );
 
-      final result = await repository.edit(
-        profile: profileMock,
+      final result = await repository.changeNotificationConfig(
         userId: userIdMock,
+        notification: notificationMock,
       );
       expect(result, false);
     });
@@ -73,16 +73,16 @@ void main() {
         ),
       ).thenThrow(Exception());
 
-      final result = await repository.edit(
-        profile: profileMock,
+      final result = await repository.changeNotificationConfig(
         userId: userIdMock,
+        notification: notificationMock,
       );
       expect(result, false);
     });
   });
 
   group("get", () {
-    test("should return Profile when request is success", () async {
+    test("should return list of notifications entity when request is success", () async {
       when(
         () => client.get(
           any(),
@@ -90,83 +90,37 @@ void main() {
         ),
       ).thenAnswer(
         (invocation) async => http.Response(
-          jsonEncode(profileMock.toMap),
+          jsonEncode([notificationMockJson]),
           200,
         ),
       );
 
-      final result = await repository.getProfile(userIdMock);
+      final result = await repository.getNotificationConfigs(userIdMock);
+      expect(result!.length, 1);
 
-      expect(result!.name, "name_test");
-      expect(result.username, "username_test");
-      expect(result.email, "email_test@gmail.com");
-      expect(result.age, "20");
-      expect(result.phone, "phone_test");
-      expect(result.password, "password_test");
-      expect(result.address, "address_test");
-      expect(result.photo, "photo_test");
-      expect(result.safetyNumber, "190");
-    });
+      final post = result.first;
 
-    test("should return null when request fails", () async {
-      when(
-        () => client.get(
-          any(),
-          headers: any(named: "headers"),
-        ),
-      ).thenAnswer(
-        (invocation) async => http.Response(
-          "",
-          401,
-        ),
-      );
-
-      final result = await repository.getProfile(userIdMock);
-      expect(result, null);
-    });
-
-    test("should return null when request throws Exception", () async {
-      when(
-        () => client.get(
-          any(),
-          headers: any(named: "headers"),
-        ),
-      ).thenThrow(Exception());
-
-      final result = await repository.getProfile(userIdMock);
-      expect(result, null);
-    });
-  });
-
-  group("get posts", () {
-    test("should return posts when request is success", () async {
-      when(
-        () => client.get(
-          any(),
-          headers: any(named: "headers"),
-        ),
-      ).thenAnswer(
-        (invocation) async => http.Response(
-          jsonEncode(userPostJson),
-          200,
-        ),
-      );
-
-      final result = await repository.getUserPosts(userIdMock);
-
-      expect(result!.header.name, "name");
-      expect(result.header.photo, "photo");
-
-      expect(result.posts.length, 2);
-
-      final post = result.posts.first;
-
+      expect(post.isActivated, true);
       expect(post.id, 1);
+      expect(post.title, "title");
       expect(post.description, "description");
-      expect(post.time, "2 horas");
-      expect(post.local, "Rua Roxo Moreira, 45");
-      expect(post.upVotes, 2);
-      expect(post.downVotes, 2);
+    });
+
+    test("should return empty list when request body is empty", () async {
+      when(
+        () => client.get(
+          any(),
+          headers: any(named: "headers"),
+        ),
+      ).thenAnswer(
+        (invocation) async => http.Response(
+          jsonEncode([]),
+          200,
+        ),
+      );
+
+      final result = await repository.getNotificationConfigs(userIdMock);
+      expect(result!.isEmpty, true);
     });
 
     test("should return null when request fails", () async {
@@ -182,7 +136,7 @@ void main() {
         ),
       );
 
-      final result = await repository.getUserPosts(userIdMock);
+      final result = await repository.getNotificationConfigs(userIdMock);
       expect(result, null);
     });
 
@@ -194,7 +148,7 @@ void main() {
         ),
       ).thenThrow(Exception());
 
-      final result = await repository.getUserPosts(userIdMock);
+      final result = await repository.getNotificationConfigs(userIdMock);
       expect(result, null);
     });
   });
