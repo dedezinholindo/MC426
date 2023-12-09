@@ -10,7 +10,7 @@ class SignInUsecase {
 
   Future<AuthenticationResult> call(SignInEntity signInEntity) async {
     final result = await repository.signIn(signInEntity);
-    await storage.setString(userId, result.id != null ? result.id! : "logged_out");
+    await storage.setString(userIdKey, result.id != null ? result.id! : "logged_out");
     return result;
   }
 }

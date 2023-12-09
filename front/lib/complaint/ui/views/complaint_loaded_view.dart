@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mc426_front/complaint/complaint.dart'; 
+import 'package:mc426_front/complaint/complaint.dart';
 
 class ComplaintLoadedView extends StatefulWidget {
   final bool isLoading;
@@ -22,7 +22,6 @@ class _ComplaintLoadedViewState extends State<ComplaintLoadedView> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   bool isAnonymous = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +57,11 @@ class _ComplaintLoadedViewState extends State<ComplaintLoadedView> {
                 ),
               );
             },
-            child: widget.isLoading
-                ? const CircularProgressIndicator()
-                : const Text('Criar denúncia'),
+            child: widget.isLoading ? const CircularProgressIndicator() : const Text('Criar denúncia'),
           ),
-          if (widget.result != null)
-            Text(widget.result!.isSuccess
-                ? widget.result!.message
-                : 'Falha ao criar denúncia'),
+          if (widget.result != null) Text(widget.result!.isSuccess ? widget.result!.message : 'Falha ao criar denúncia'),
         ],
       ),
-    ); 
+    );
   }
 }

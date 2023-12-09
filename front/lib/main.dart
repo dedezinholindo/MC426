@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/complaint//complaint.dart';
 import 'package:mc426_front/injection/injection.dart';
+import 'package:mc426_front/profile/profile.dart';
 
 void main() {
-  runApp(const MyApp());
   setupProviders();
+  runApp(const MyApp());
+  initializeStorage();
 }
 
 class MyApp extends StatelessWidget {
@@ -20,6 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Press2Safe',
       routes: {
+        ComplaintPage.routeName: (context) => const ComplaintPage(),
+        ProfilePage.routeName: (context) => const ProfilePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
       },
