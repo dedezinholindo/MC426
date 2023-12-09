@@ -2,12 +2,16 @@ import unittest
 import json
 from login_registration import app
 
+import time
+
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):
         app.config['TESTING'] = True
         self.app = app.test_client()
 
+        # Test registration with missing required fields
+        
     def tearDown(self):
         pass
 
@@ -51,10 +55,25 @@ class AppTestCase(unittest.TestCase):
         self.assertIn("Missing required fields", result["message"])
 
     def test_login_success(self):
+        # Test successful "Forget My Password" with case-insensitive email
+        data = {
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
+
+        response = self.app.post('/registration', json=data)
+
         # Test successful user login
         data = {
-            "username": "john_doe",
-            "password": "securepassword"
+            "username": "c_stuart",
+            "password": "securepassword2"
         }
 
         response = self.app.post('/login', json=data)
@@ -77,9 +96,24 @@ class AppTestCase(unittest.TestCase):
         self.assertIn("Invalid username or password", result["message"])
 
     def test_forget_password_success(self):
+        # Add a example user
+        data = {
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
+
+        response = self.app.post('/registration', json=data)
+
         # Test successful "Forget My Password" functionality
         data = {
-            "email": "john.doe@example.com"
+            "email": "chris.stuart@example.com"
         }
 
         response = self.app.post('/forget_password', json=data)
@@ -137,7 +171,21 @@ class AppTestCase(unittest.TestCase):
     def test_forget_password_success_case_insensitive_email(self):
         # Test successful "Forget My Password" with case-insensitive email
         data = {
-            "email": "John.Doe@example.com"
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
+
+        response = self.app.post('/registration', json=data)
+
+        data = {
+            "email": "Chris.Stuart@example.com"
         }
 
         response = self.app.post('/forget_password', json=data)
