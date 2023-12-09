@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+  login_registration_backend:
+    image: login_registration_backend:latest
+    container_name: login_registration_backend
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    shm_size: "128mb"
+    

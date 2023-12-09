@@ -1,4 +1,5 @@
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/storage/storage.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -6,13 +7,17 @@ import '../mocks/mocks.dart';
 
 class AuthenticationRepositoryMock extends Mock implements AuthenticationRepository {}
 
+class StorageInterfaceMock extends Mock implements StorageInterface {}
+
 void main() {
   late final AuthenticationRepository repository;
+  late final StorageInterface storage;
   late final SignInUsecase usecase;
 
   setUpAll(() {
     repository = AuthenticationRepositoryMock();
-    usecase = SignInUsecase(repository);
+    storage = StorageInterfaceMock();
+    usecase = SignInUsecase(repository, storage);
     registerFallbackValue(signInMock);
   });
 
@@ -23,7 +28,12 @@ void main() {
       ).thenAnswer((invocation) async => AuthenticationResult(
             isSuccess: true,
             message: resultSignInSuccess["message"] ?? "",
+            id: "user_uuid",
           ));
+
+      when(
+        () => storage.setString(any(), any()),
+      ).thenAnswer((invocation) async => true);
 
       final result = await usecase.call(signInMock);
       expect(result.isSuccess, true);
@@ -37,6 +47,9 @@ void main() {
             isSuccess: false,
             message: resultError["message"] ?? "",
           ));
+      when(
+        () => storage.setString(any(), any()),
+      ).thenAnswer((invocation) async => true);
 
       final result = await usecase.call(signInMock);
       expect(result.isSuccess, false);

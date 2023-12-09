@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, make_response
+
 import sqlite3
 import uuid
 
@@ -30,6 +31,13 @@ def init_db():
 
 # Initialize the database
 init_db()
+
+@app.route("/", methods=["GET"])
+def healthcheck():
+    """
+    If the route is working, returns a 'healthy!' string.
+    """
+    return "healthy!"
 
 # Route for user registration (registration)
 @app.route('/registration', methods=['POST'])
@@ -166,4 +174,9 @@ def forget_password():
     return jsonify({"message": "Email not found"}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        threaded=False,
+        debug=True,
+        )
