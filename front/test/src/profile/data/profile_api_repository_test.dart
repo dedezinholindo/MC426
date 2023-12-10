@@ -100,7 +100,7 @@ void main() {
       expect(result!.name, "name_test");
       expect(result.username, "username_test");
       expect(result.email, "email_test@gmail.com");
-      expect(result.age, "20");
+      expect(result.age, 20);
       expect(result.phone, "phone_test");
       expect(result.address, "address_test");
       expect(result.photo, "photo_test");

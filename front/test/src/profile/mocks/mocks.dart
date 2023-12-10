@@ -15,7 +15,7 @@ const profileMapMock = {
   "name": "name_test",
   "username": "username_test",
   "email": "email_test@gmail.com",
-  "age": "20",
+  "age": 20,
   "phone": "phone_test",
   "password": "password_test",
   "address": "address_test",
