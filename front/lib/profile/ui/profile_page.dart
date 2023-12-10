@@ -16,9 +16,11 @@ class _ProfilePageState extends State<ProfilePage> {
   final _bloc = ProfileBloc();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    await _bloc.getProfile();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await _bloc.getProfile();
+    });
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mc426_front/authentication/authentication.dart';
-import 'package:mc426_front/complaint//complaint.dart';
+import 'package:mc426_front/complaint/complaint_page.dart';
+import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/injection/injection.dart';
 import 'package:mc426_front/profile/profile.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
+        HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
       },
@@ -65,6 +67,13 @@ class MyApp extends StatelessWidget {
               },
             ),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          iconSize: 24,
+          backgroundColor: Color(0xFFC53D46),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30)),
           ),
         ),
       ),
