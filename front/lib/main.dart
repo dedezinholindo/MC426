@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       title: 'Press2Safe',
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
+        UserPostsPage.routeName: (context) => const UserPostsPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mc426_front/profile/profile.dart';
-import 'package:mc426_front/profile/ui/bloc/profile_bloc.dart';
+import 'package:mc426_front/profile/ui/profile/bloc/profile_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
   static const String routeName = '/profile';
