@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify, make_response
-
+from flask import Blueprint, request, jsonify, make_response
 import sqlite3
 import uuid
 
-app = Flask(__name__)
+login_bp = Blueprint('login', __name__)
 
 # Function to initialize the database
 def init_db():
@@ -32,15 +31,8 @@ def init_db():
 # Initialize the database
 init_db()
 
-@app.route("/", methods=["GET"])
-def healthcheck():
-    """
-    If the route is working, returns a 'healthy!' string.
-    """
-    return "healthy!"
-
 # Route for user registration (registration)
-@app.route('/registration', methods=['POST'])
+@login_bp.route('/registration', methods=['POST'])
 def registration():
     user_data = request.json
     if not user_data:
@@ -113,7 +105,7 @@ def registration():
     return response
 
 # Route for user login (authentication)
-@app.route('/login', methods=['POST'])
+@login_bp.route('/login', methods=['POST'])
 def login():
     user_data = request.json
     if not user_data:
@@ -142,7 +134,7 @@ def login():
     return jsonify({"message": "Invalid username or password"}), 401
 
 # Route for "Forget My Password" functionality
-@app.route('/forget_password', methods=['POST'])
+@login_bp.route('/forget_password', methods=['POST'])
 def forget_password():
     user_data = request.json
     if not user_data or 'email' not in user_data:
@@ -174,9 +166,4 @@ def forget_password():
     return jsonify({"message": "Email not found"}), 404
 
 if __name__ == '__main__':
-    app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
-        threaded=False,
-        debug=True,
-        )
+    print(login_bp)
