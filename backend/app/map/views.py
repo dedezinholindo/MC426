@@ -1,11 +1,13 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from geopy.geocoders import Nominatim
 
-app = Flask(__name__)
+map_bp = Blueprint('map', __name__)
 geolocator = Nominatim(user_agent="Press2Safe")
 
 # Function to convert address to coordinates (geocoding)
+
+
 def geocode_address(address):
     location = geolocator.geocode(address)
     if location:
@@ -14,6 +16,8 @@ def geocode_address(address):
         return {"message": "Address not found"}
 
 # Function to convert coordinates to address (reverse geocoding)
+
+
 def reverse_geocode_coordinates(latitude, longitude):
     location = geolocator.reverse((latitude, longitude), language='en')
     if location:
@@ -22,6 +26,8 @@ def reverse_geocode_coordinates(latitude, longitude):
         return {"message": "Coordinates not found"}
 
 # Function to read user data from a local JSON file
+
+
 def read_coordinates_from_file():
     try:
         with open("coordinates.txt", "r") as file:
@@ -31,6 +37,8 @@ def read_coordinates_from_file():
     return coordinates
 
 # Function to save user data to a local JSON file
+
+
 def save_coordinates_to_file(id, latitude, longitude):
     # Load existing coordinates or create an empty list
     coordinates = read_coordinates_from_file()
@@ -45,6 +53,7 @@ def save_coordinates_to_file(id, latitude, longitude):
 
     return {"message": "Coordinates saved successfully"}
 
+
 def get_coordinates_address(id):
     coordinates = read_coordinates_from_file()
     for coord in coordinates:
@@ -53,7 +62,9 @@ def get_coordinates_address(id):
     return None
 
 # Route for geocoding (address to coordinates)
-@app.route('/geocode', methods=['POST'])
+
+
+@map_bp.route('/geocode', methods=['POST'])
 def geocode():
     data = request.json
     if not data or 'id' not in data:
@@ -69,7 +80,9 @@ def geocode():
     return jsonify(result)
 
 # Route for reverse geocoding (coordinates to address)
-@app.route('/reverse_geocode', methods=['POST'])
+
+
+@map_bp.route('/reverse_geocode', methods=['POST'])
 def reverse_geocode():
     data = request.json
     if not data or 'latitude' not in data or 'longitude' not in data:
@@ -82,7 +95,9 @@ def reverse_geocode():
     return jsonify(result)
 
 # Route for saving user data
-@app.route('/save_coordinates', methods=['POST'])
+
+
+@map_bp.route('/save_coordinates', methods=['POST'])
 def save_coordinates():
     data = request.json
     if not data or 'id' not in data or 'latitude' not in data or 'longitude' not in data:
@@ -96,10 +111,13 @@ def save_coordinates():
     return jsonify(result)
 
 # Route for getting the list of users
-@app.route('/get_coordinates', methods=['GET'])
+
+
+@map_bp.route('/get_coordinates', methods=['GET'])
 def get_coordinates():
     coordinates = read_coordinates_from_file()
     return jsonify(coordinates)
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(map_bp)
