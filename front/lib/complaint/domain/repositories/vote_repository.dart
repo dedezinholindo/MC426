@@ -1,3 +1,7 @@
 abstract class VoteRepository {
-  Future<bool> vote(int complaintId, bool upvote);
+  Future<bool> vote({
+    required String userId,
+    required int complaintId,
+    required bool upvote,
+  });
 }

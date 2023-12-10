@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/domain/repositories/vote_repository.dart';
@@ -9,15 +10,14 @@ class VoteApiRepository implements VoteRepository {
   VoteApiRepository(this.client);
 
   @override
-  Future<bool> vote(int complaintId, bool upvote) async {
+  Future<bool> vote({required String userId, required int complaintId, required bool upvote}) async {
     try {
-      final uri = Uri.parse('${baseUrl}complaints/$complaintId/${upvote ? 'like' : 'unlike'}');
+      final uri = Uri.parse('${baseUrl}complaints/$userId/$complaintId/${upvote ? 'like' : 'unlike'}');
       final response = await client.post(uri, headers: {
         'Content-Type': 'application/json',
       });
 
-      return response.statusCode==200;
-
+      return response.statusCode == 200;
     } catch (e) {
       log('Exception occurred while voting: $e');
       return false;
