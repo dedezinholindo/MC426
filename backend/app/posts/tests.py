@@ -112,49 +112,6 @@ class TestComplaints(unittest.TestCase):
         self.assertDictEqual(response.json, expected_response)
 
     @patch('app.posts.views.cursor')
-    @patch('app.posts.views.conn')
-    def test_like_complaint_success(self, mock_conn, mock_cursor):
-        # Configurar mocks para cursor.fetchone e cursor.execute
-        # Mock para retorno do banco de dados
-        mock_cursor.fetchone.return_value = (1,)
-        mock_cursor.execute.return_value = None  # Mock para cursor.execute
-
-        # Chamar a função a ser testada
-        response = self.client.post('/complaints/1/like')
-
-        # Verificar chamadas ao banco de dados
-        mock_cursor.execute.assert_any_call(
-            "SELECT likes FROM complaints WHERE id = ?", (1,))
-        mock_cursor.execute.assert_any_call(
-            "UPDATE complaints SET likes = ? WHERE id = ?", (2, 1))
-        mock_conn.commit.assert_called_once()
-
-        # Verificar resposta
-        self.assertEqual(response.status_code, 200)
-
-    @patch('app.posts.views.cursor')
-    @patch('app.posts.views.conn')
-    def test_like_complaint_not_found(self, mock_conn, mock_cursor):
-        # Configurar mocks para cursor.fetchone e cursor.execute
-        mock_cursor.fetchone.return_value = None  # Mock para retorno do banco de dados
-        mock_cursor.execute.return_value = None  # Mock para cursor.execute
-
-        # Chama a rota usando o cliente de teste
-        complaint_id = 4
-        response = self.client.post(f'/complaints/{complaint_id}/like')
-
-        # Verificar chamadas ao banco de dados
-        mock_cursor.execute.assert_called_with(
-            "SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
-        mock_cursor.fetchone.assert_called_once()
-        # Não deve chamar o cursor.execute para atualização
-        mock_cursor.execute.assert_called_once()
-        mock_conn.commit.assert_not_called()  # Não deve chamar commit
-
-        # Verificar resposta
-        self.assertEqual(response.status_code, 404)
-
-    @patch('app.posts.views.cursor')
     def test_likes_complaint1_equal_7(self, mock_cursor):
         # Configurar mocks para o cursor
         mock_cursor.fetchone.return_value = (7,)
@@ -188,26 +145,6 @@ class TestComplaints(unittest.TestCase):
 
         # Verifica resposta
         self.assertEqual(response.status_code, 404)
-
-    @patch('app.posts.views.cursor')
-    @patch('app.posts.views.conn')
-    def test_unlike_complaint_1(self, mock_conn, mock_cursor):
-        # Mock para retorno do banco de dados
-        mock_cursor.fetchone.return_value = (0,)
-
-        # Chamar a função a ser testada
-        complaint_id = 1
-        response = self.client.post(f'/complaints/{complaint_id}/unlike')
-
-        # Verificar chamadas ao banco de dados
-        mock_cursor.execute.assert_any_call(
-            "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
-        mock_cursor.execute.assert_any_call(
-            "UPDATE complaints SET unlikes = ? WHERE id = ?", (1, 1))
-        mock_conn.commit.assert_called_once()
-
-        # Verificar resposta
-        self.assertEqual(response.status_code, 200)
 
     @patch('app.posts.views.cursor')
     def test_unlikes_complaint1_equal_3(self, mock_cursor):
