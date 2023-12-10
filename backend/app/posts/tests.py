@@ -1,25 +1,27 @@
 import unittest
 import app
-import sqlite3
+# import sqlite3
 
-clear_complaints = True
+# clear_complaints = True
 
 class TestComplaints(unittest.TestCase):
 
     def setUp(self) -> None:
-        global clear_complaints
+        # global clear_complaints
         
-        if clear_complaints:
-            conn = sqlite3.connect('complaints.db')
-            cursor = conn.cursor()
+        # if clear_complaints:
+        #     conn = sqlite3.connect('complaints.db')
+        #     cursor = conn.cursor()
 
-            cursor.execute("DELETE FROM complaints")
-            conn.commit()
-            conn.close()
-            clear_complaints = False
+        #     cursor.execute("DELETE FROM complaints")
+        #     conn.commit()
+        #     conn.close()
+        #     clear_complaints = False
         
         # Configurar o cliente de teste Flask
-        self.client = app.app.test_client()
+        self.app = app.create_app()
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
 
     def test_create_complaint_success(self):
         response = self.client.post(

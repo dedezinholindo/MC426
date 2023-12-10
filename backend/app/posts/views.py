@@ -1,13 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 import sqlite3
 
-app = Flask(__name__)
-
-# Save the application's posts.
-# TODO: Save and retrieve from a file.
+posts_bp = Blueprint('posts', __name__)
 
 # Complaint database
-conn = sqlite3.connect('complaints.db', check_same_thread=False)
+conn = sqlite3.connect('press2safe.db', check_same_thread=False)
 
 cursor = conn.cursor()
 cursor.execute('''
@@ -23,18 +20,9 @@ cursor.execute('''
 ''')
 conn.commit()
 
-complaint_id = 0
-
 # API routes
 
-@app.route("/", methods=["GET"])
-def healthcheck():
-    """
-    If the route is working, returns a 'healthy!' string.
-    """
-    return "healthy!"
-
-@app.route('/complaints', methods=['POST'])
+@posts_bp.route('/complaints', methods=['POST'])
 # Posting and requesting of complaints.
 def create_complaint():
     """
@@ -89,7 +77,7 @@ def create_complaint():
 
 # TODO: Create route to retrive a complaint by id
 
-@app.route('/complaints', methods=['GET'])
+@posts_bp.route('/complaints', methods=['GET'])
 def get_complaints():
     '''
     Retrieve all complaints.
@@ -113,7 +101,7 @@ def get_complaints():
     return jsonify({'complaints': complaints})
 
 # Implementation of complaint likes.
-@app.route('/complaints/<int:complaint_id>/like', methods=['POST'])
+@posts_bp.route('/complaints/<int:complaint_id>/like', methods=['POST'])
 def like_complaint(complaint_id):
     cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
     current_likes = cursor.fetchone()
@@ -128,7 +116,7 @@ def like_complaint(complaint_id):
 
     return jsonify({'message': 'Complaint liked successfully'}), 200
 
-@app.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
+@posts_bp.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
 def get_complaint_likes(complaint_id):
     cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
     current_likes = cursor.fetchone()
@@ -141,7 +129,7 @@ def get_complaint_likes(complaint_id):
     return jsonify({'likes': current_likes}), 200
 
 # Implementation of complaint unlikes.
-@app.route('/complaints/<int:complaint_id>/unlike', methods=['POST'])
+@posts_bp.route('/complaints/<int:complaint_id>/unlike', methods=['POST'])
 def unlike_complaint(complaint_id):
     cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
     current_unlikes = cursor.fetchone()
@@ -156,7 +144,7 @@ def unlike_complaint(complaint_id):
 
     return jsonify({'message': 'Complaint unliked successfully'}), 200
 
-@app.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
+@posts_bp.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
 def get_complaint_unlikes(complaint_id):
     cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
     current_unlikes = cursor.fetchone()
@@ -170,4 +158,4 @@ def get_complaint_unlikes(complaint_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(posts_bp)
