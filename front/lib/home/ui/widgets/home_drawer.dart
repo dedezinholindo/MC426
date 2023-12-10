@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -83,6 +84,24 @@ class HomeDrawer extends StatelessWidget {
                       SizedBox(width: 24),
                       Text(
                         'Meus Posts',
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pushNamed(NotificationsPage.routeName),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.notifications_active,
+                        color: Colors.black,
+                        size: 32,
+                      ),
+                      SizedBox(width: 24),
+                      Text(
+                        'Notificações',
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       ),
                     ],
