@@ -9,10 +9,10 @@ class ComplaintApiRepository extends ComplaintRepository {
   ComplaintApiRepository(this.client);
 
   @override
-  Future<ComplaintResult> createComplaint(Complaint complaint) async {
+  Future<ComplaintResult> createComplaint({required String userId, required Complaint complaint}) async {
     try {
       final result = await client.post(
-        Uri.parse("${baseUrl}complaints"),
+        Uri.parse("${baseUrl}complaints/$userId"),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
