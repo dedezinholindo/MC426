@@ -10,6 +10,7 @@ cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS complaints (
         id INTEGER PRIMARY KEY,
+        user_id TEXT NOT NULL,
         title TEXT NOT NULL,
         description TEXT NOT NULL,
         address TEXT NOT NULL,
@@ -22,11 +23,14 @@ conn.commit()
 
 # API routes
 
-@posts_bp.route('/complaints', methods=['POST'])
+
+@posts_bp.route('/complaints/<string:user_id>', methods=['POST'])
 # Posting and requesting of complaints.
-def create_complaint():
+def create_complaint(user_id: str):
     """
     Creates a new complaint post.
+
+    :param user_id: Complaint's user identification. 
 
     :param title: Complaint's title.
     :param description: Complaint's description.
@@ -35,15 +39,13 @@ def create_complaint():
     :return: Success or error message.
     """
 
-    # TODO: get user info
-
     data = request.get_json()
     title = data.get('title')
     description = data.get('description')
     address = data.get('address')
     isAnonymous = data.get('isAnonymous')
 
-     # Checks missing 
+    # Checks missing
     missing = []
 
     if not title:
@@ -68,14 +70,15 @@ def create_complaint():
 
     # Saves the new complaint in DB
     cursor.execute('''
-    INSERT INTO complaints (title, description, address, isAnonymous, likes, unlikes)
-    VALUES (?, ?, ?, ?, ?, ?)
-    ''', (title, description, address, isAnonymous, 0, 0))
+    INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, title, description, address, isAnonymous, 0, 0))
     conn.commit()
 
     return jsonify({'message': 'Complaint created successfully'}), 201
 
 # TODO: Create route to retrive a complaint by id
+
 
 @posts_bp.route('/complaints', methods=['GET'])
 def get_complaints():
@@ -90,69 +93,81 @@ def get_complaints():
     complaints = [
         {
             'id': c[0],
-            'title': c[1],
-            'description': c[2],
-            'address': c[3],
-            'isAnonymous': bool(c[4]),
-            'likes': c[5],
-            'unlikes': c[6]
+            'user_id': c[1],
+            'title': c[2],
+            'description': c[3],
+            'address': c[4],
+            'isAnonymous': bool(c[5]),
+            'likes': c[6],
+            'unlikes': c[7]
         } for c in complaints
     ]
     return jsonify({'complaints': complaints})
 
 # Implementation of complaint likes.
+
+
 @posts_bp.route('/complaints/<int:complaint_id>/like', methods=['POST'])
 def like_complaint(complaint_id):
-    cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+    cursor.execute("SELECT likes FROM complaints WHERE id = ?",
+                   (complaint_id,))
     current_likes = cursor.fetchone()
-    
     if current_likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    current_likes = current_likes[0]  
+    current_likes = current_likes[0]
     new_likes = current_likes + 1
-    cursor.execute("UPDATE complaints SET likes = ? WHERE id = ?", (new_likes, complaint_id))
+    cursor.execute("UPDATE complaints SET likes = ? WHERE id = ?",
+                   (new_likes, complaint_id))
     conn.commit()
 
     return jsonify({'message': 'Complaint liked successfully'}), 200
 
+
 @posts_bp.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
 def get_complaint_likes(complaint_id):
-    cursor.execute("SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+    cursor.execute("SELECT likes FROM complaints WHERE id = ?",
+                   (complaint_id,))
     current_likes = cursor.fetchone()
-    
+
     if current_likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    current_likes = current_likes[0]  
+    current_likes = current_likes[0]
 
     return jsonify({'likes': current_likes}), 200
 
 # Implementation of complaint unlikes.
+
+
 @posts_bp.route('/complaints/<int:complaint_id>/unlike', methods=['POST'])
 def unlike_complaint(complaint_id):
-    cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+    cursor.execute(
+        "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
     current_unlikes = cursor.fetchone()
-    
+
     if current_unlikes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    current_unlikes = current_unlikes[0]  
+    current_unlikes = current_unlikes[0]
     new_unlikes = current_unlikes + 1
-    cursor.execute("UPDATE complaints SET unlikes = ? WHERE id = ?", (new_unlikes, complaint_id))
+    cursor.execute("UPDATE complaints SET unlikes = ? WHERE id = ?",
+                   (new_unlikes, complaint_id))
     conn.commit()
 
     return jsonify({'message': 'Complaint unliked successfully'}), 200
 
+
 @posts_bp.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
 def get_complaint_unlikes(complaint_id):
-    cursor.execute("SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+    cursor.execute(
+        "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
     current_unlikes = cursor.fetchone()
-    
+
     if current_unlikes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
-    current_unlikes = current_unlikes[0]  
+    current_unlikes = current_unlikes[0]
 
     return jsonify({'unlikes': current_unlikes}), 200
 

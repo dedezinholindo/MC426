@@ -1,14 +1,16 @@
 import unittest
+from unittest.mock import MagicMock, patch
 import app
 # import sqlite3
 
 # clear_complaints = True
 
+
 class TestComplaints(unittest.TestCase):
 
     def setUp(self) -> None:
         # global clear_complaints
-        
+
         # if clear_complaints:
         #     conn = sqlite3.connect('complaints.db')
         #     cursor = conn.cursor()
@@ -17,15 +19,17 @@ class TestComplaints(unittest.TestCase):
         #     conn.commit()
         #     conn.close()
         #     clear_complaints = False
-        
+
         # Configurar o cliente de teste Flask
         self.app = app.create_app()
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
 
     def test_create_complaint_success(self):
+
+        userid = '1'
         response = self.client.post(
-            '/complaints',
+            f'/complaints/{userid}',
             json={
                 "title": "Minha denúncia",
                 "description": "Descrição da minha denúncia.",
@@ -36,8 +40,9 @@ class TestComplaints(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_create_complaint_missing_title(self):
+        userid = '1'
         response = self.client.post(
-            '/complaints',
+            f'/complaints/{userid}',
             json={
                 "description": "Descrição da minha denúncia.",
                 "address": "Endereço da Denúncia",
@@ -47,8 +52,9 @@ class TestComplaints(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_create_complaint_missing_isanonymous(self):
+        userid = '1'
         response = self.client.post(
-            '/complaints',
+            f'/complaints/{userid}',
             json={
                 "title": "Título",
                 "description": "Descrição da minha denúncia.",
@@ -58,77 +64,167 @@ class TestComplaints(unittest.TestCase):
         # Verifica se a resposta é 400 Bad Request
         self.assertEqual(response.status_code, 400)
 
-    def test_number_of_complaints_equal_3(self):
-        # Add 2 correct complaints and 1 wrong
-        self.client.post(
-            '/complaints',
-            json={
-                "title": "Denúncia",
-                "description": "Descrição.",
-                "address": "Endereço",
-                "isAnonymous": True}
-        )
-        self.client.post(
-            '/complaints',
-            json={
-                "title": "Denúncia",
-                "description": "Descrição.",
-                "address": "Endereço",
-                "isAnonymous": True}
-        )
-        self.client.post(
-            '/complaints',
-            json={
-                "title1": "Denúncia", # typed incorrectly
-                "description": "Descrição.",
-                "address": "Endereço",
-                "isAnonymous": True}
-        )
-        #
-        response = self.client.get('/complaints')
-        self.assertEqual(len(response.json['complaints']), 3)
+    @patch('app.posts.views.cursor')
+    def test_get_complaints(self, mock_cursor):
+        # Cria uma instância de MagicMock para cursor.fetchall()
+        fetchall_mock = MagicMock()
 
-    def test_like_complaint_not_found(self):
+        # Configura o retorno desejado para fetchall()
+        fetchall_mock.return_value = [
+            (1, 1, 'Title 1', 'Description 1', 'Address 1', False, 10, 5),
+            (2, 2, 'Title 2', 'Description 2', 'Address 2', True, 5, 2)
+        ]
+
+        # Atribuir fetchall_mock a cursor.fetchall
+        mock_cursor.fetchall = fetchall_mock
+
+        # Chama a rota usando o cliente de teste
+        response = self.client.get('/complaints')
+
+        # Verificar o status da resposta
+        self.assertEqual(response.status_code, 200)
+
+        # Verificar o conteúdo da resposta
+        expected_response = {
+            'complaints': [
+                {
+                    'id': 1,
+                    'user_id': 1,
+                    'title': 'Title 1',
+                    'description': 'Description 1',
+                    'address': 'Address 1',
+                    'isAnonymous': False,
+                    'likes': 10,
+                    'unlikes': 5
+                },
+                {
+                    'id': 2,
+                    'user_id': 2,
+                    'title': 'Title 2',
+                    'description': 'Description 2',
+                    'address': 'Address 2',
+                    'isAnonymous': True,
+                    'likes': 5,
+                    'unlikes': 2
+                }
+            ]
+        }
+        self.assertDictEqual(response.json, expected_response)
+
+    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.conn')
+    def test_like_complaint_success(self, mock_conn, mock_cursor):
+        # Configurar mocks para cursor.fetchone e cursor.execute
+        # Mock para retorno do banco de dados
+        mock_cursor.fetchone.return_value = (1,)
+        mock_cursor.execute.return_value = None  # Mock para cursor.execute
+
+        # Chamar a função a ser testada
+        response = self.client.post('/complaints/1/like')
+
+        # Verificar chamadas ao banco de dados
+        mock_cursor.execute.assert_any_call(
+            "SELECT likes FROM complaints WHERE id = ?", (1,))
+        mock_cursor.execute.assert_any_call(
+            "UPDATE complaints SET likes = ? WHERE id = ?", (2, 1))
+        mock_conn.commit.assert_called_once()
+
+        # Verificar resposta
+        self.assertEqual(response.status_code, 200)
+
+    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.conn')
+    def test_like_complaint_not_found(self, mock_conn, mock_cursor):
+        # Configurar mocks para cursor.fetchone e cursor.execute
+        mock_cursor.fetchone.return_value = None  # Mock para retorno do banco de dados
+        mock_cursor.execute.return_value = None  # Mock para cursor.execute
+
+        # Chama a rota usando o cliente de teste
         complaint_id = 4
         response = self.client.post(f'/complaints/{complaint_id}/like')
 
+        # Verificar chamadas ao banco de dados
+        mock_cursor.execute.assert_called_with(
+            "SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+        mock_cursor.fetchone.assert_called_once()
+        # Não deve chamar o cursor.execute para atualização
+        mock_cursor.execute.assert_called_once()
+        mock_conn.commit.assert_not_called()  # Não deve chamar commit
+
+        # Verificar resposta
         self.assertEqual(response.status_code, 404)
 
-    def test_like_complaint_1(self):
+    @patch('app.posts.views.cursor')
+    def test_likes_complaint1_equal_7(self, mock_cursor):
+        # Configurar mocks para o cursor
+        mock_cursor.fetchone.return_value = (7,)
+
+        # Chama a rota usando o cliente de teste
         complaint_id = 1
-        response = self.client.post(f'/complaints/{complaint_id}/like')
+        response = self.client.get(f'/complaints/{complaint_id}/likes')
 
+        # Verifica chamadas ao banco de dados
+        mock_cursor.execute.assert_called_with(
+            "SELECT likes FROM complaints WHERE id = ?", (1,))
+        mock_cursor.fetchone.assert_called_once()
+
+        # Verifica resposta
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['likes'], 7)
 
-    def test_get_likes_complaint_not_found(self):
+    @patch('app.posts.views.cursor')
+    def test_get_likes_complaint_not_found(self, mock_cursor):
+        # Configurar mocks para o cursor
+        mock_cursor.fetchone.return_value = None
+
+        # Chama a rota usando o cliente de teste
         complaint_id = 5
         response = self.client.get(f'/complaints/{complaint_id}/likes')
 
+        # Verifica chamadas ao banco de dados
+        mock_cursor.execute.assert_called_with(
+            "SELECT likes FROM complaints WHERE id = ?", (complaint_id,))
+        mock_cursor.fetchone.assert_called_once()
+
+        # Verifica resposta
         self.assertEqual(response.status_code, 404)
 
-    def test_likes_complaint1_equal_2(self):
-        # Add another unlike on complaint 0
-        complaint_id = 1
-        response = self.client.post(f'/complaints/{complaint_id}/like')
+    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.conn')
+    def test_unlike_complaint_1(self, mock_conn, mock_cursor):
+        # Mock para retorno do banco de dados
+        mock_cursor.fetchone.return_value = (0,)
 
-        # Retrieves number of likes of complaint 0
-        response = self.client.get(f'/complaints/{complaint_id}/likes')
-        self.assertEqual(response.json['likes'], 2)
-
-    def test_unlike_complaint_1(self):
+        # Chamar a função a ser testada
         complaint_id = 1
         response = self.client.post(f'/complaints/{complaint_id}/unlike')
 
+        # Verificar chamadas ao banco de dados
+        mock_cursor.execute.assert_any_call(
+            "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+        mock_cursor.execute.assert_any_call(
+            "UPDATE complaints SET unlikes = ? WHERE id = ?", (1, 1))
+        mock_conn.commit.assert_called_once()
+
+        # Verificar resposta
         self.assertEqual(response.status_code, 200)
 
-    def test_unlikes_complaint1_equal_3(self):
-        # Add other 2 unlikes on complaint 0
-        complaint_id = 1
-        response = self.client.post(f'/complaints/{complaint_id}/unlike')
-        response = self.client.post(f'/complaints/{complaint_id}/unlike')
+    @patch('app.posts.views.cursor')
+    def test_unlikes_complaint1_equal_3(self, mock_cursor):
+        # Mock para retorno do banco de dados
+        mock_cursor.fetchone.return_value = (3,)
 
-        # Retrieves number of likes of complaint 0
+        # Chamar a função a ser testada
+        complaint_id = 1
         response = self.client.get(f'/complaints/{complaint_id}/unlikes')
+
+        # Verificar chamadas ao banco de dados
+        mock_cursor.execute.assert_any_call(
+            "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
+
+        # Verificar resposta
+        self.assertEqual(response.status_code, 200)
+        # Retrieves number of likes of complaint 0
         self.assertEqual(response.json['unlikes'], 3)
 
 
