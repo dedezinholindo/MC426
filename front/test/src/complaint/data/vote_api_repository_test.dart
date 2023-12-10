@@ -1,57 +1,59 @@
-import 'package:test/test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:http/http.dart' as http;
-import 'package:mc426_front/complaint/data/repositories/vote_api_repository.dart';
 import 'package:mc426_front/common/common.dart';
+import 'package:mc426_front/complaint/complaint.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:test/test.dart';
 
 class ClientMock extends Mock implements http.Client {}
 
+const userIdMock = "user_id";
+
 void main() {
-  group('VoteApiRepository', () {
+  late final http.Client client;
+  late final VoteRepository repository;
+
+  setUpAll(() {
+    client = ClientMock();
+    repository = VoteApiRepository(client);
+  });
+
+  group('vote', () {
     test('upvote should complete successfully', () async {
-      final client = ClientMock();
-      final repository = VoteApiRepository(client);
-      final testUri = Uri.parse('${baseUrl}complaints/1/like');
+      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/like');
 
-      when(() => client.post(testUri, headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response('{"status": "success"}', 200));
+      when(() => client.post(testUri, headers: any(named: 'headers'))).thenAnswer((_) async => http.Response('{"status": "success"}', 200));
 
-      final result = await repository.vote(1, true);
+      final result = await repository.vote(userId: userIdMock, complaintId: 1, upvote: true);
       expect(result, isTrue);
     });
 
     test('upvote should fail with HTTP error', () async {
-      final client = ClientMock();
-      final repository = VoteApiRepository(client);
-      final testUri = Uri.parse('${baseUrl}complaints/1/like');
+      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/like');
 
       when(() => client.post(testUri, headers: any(named: 'headers')))
           .thenAnswer((_) async => http.Response('{"error": "some error"}', 400));
 
-      final result = await repository.vote(1, true);
+      final result = await repository.vote(userId: userIdMock, complaintId: 1, upvote: true);
       expect(result, isFalse);
-});
+    });
+
     test('downvote should complete successfully', () async {
-      final client = ClientMock();
-      final repository = VoteApiRepository(client);
-      final testUri = Uri.parse('${baseUrl}complaints/1/unlike');
+      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/unlike');
 
-      when(() => client.post(testUri, headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response('{"status": "success"}', 200));
+      when(() => client.post(testUri, headers: any(named: 'headers'))).thenAnswer(
+        (_) async => http.Response('{"status": "success"}', 200),
+      );
 
-      final result = await repository.vote(1, false);
+      final result = await repository.vote(userId: userIdMock, complaintId: 1, upvote: false);
       expect(result, isTrue);
     });
 
     test('downvote should fail with exception', () async {
-      final client = ClientMock();
-      final repository = VoteApiRepository(client);
-      final testUri = Uri.parse('${baseUrl}complaints/1/unlike');
+      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/unlike');
 
-      when(() => client.post(testUri, headers: any(named: 'headers')))
-          .thenThrow(Exception("network failure"));
+      when(() => client.post(testUri, headers: any(named: 'headers'))).thenThrow(Exception("network failure"));
 
-      final result = await repository.vote(1, false);
+      final result = await repository.vote(userId: userIdMock, complaintId: 1, upvote: false);
       expect(result, isFalse);
     });
   });

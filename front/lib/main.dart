@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Press2Safe',
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
+        UserPostsPage.routeName: (context) => const UserPostsPage(),
         ComplaintMapPage.routeName: (context) => const ComplaintMapPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(),
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: const SignInPage(),
     );
   }
 }
