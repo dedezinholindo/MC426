@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 import sqlite3
 
-app = Flask(__name__)
+profile_bp = Blueprint('profile', __name__)
 
 # Function to update user information in the database
 def update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number):
@@ -33,7 +33,7 @@ def get_user_by_id(user_id):
     return user
 
 # Route for updating user information (edit profile)
-@app.route('/edit_profile', methods=['POST'])
+@profile_bp.route('/edit_profile', methods=['POST'])
 def edit_profile():
     user_data = request.json
     if not user_data:
@@ -72,7 +72,7 @@ def edit_profile():
         return jsonify({"message": "User not found"}), 404
 
 # Route for getting user profile by id
-@app.route('/get_profile', methods=['POST'])
+@profile_bp.route('/get_profile', methods=['POST'])
 def get_profile():
     user_data = request.json
     if not user_data:
@@ -99,4 +99,4 @@ def get_profile():
         return jsonify({"message": "User not found"}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(profile_bp)
