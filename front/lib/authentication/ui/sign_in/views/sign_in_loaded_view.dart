@@ -13,6 +13,7 @@ class SignInLoadedView extends StatefulWidget {
 }
 
 class _SignInLoadedViewState extends State<SignInLoadedView> {
+  bool _obscureText = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -90,16 +91,24 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: _obscureText,
                   controller: passwordController,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     labelText: 'Informe sua senha',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() => _obscureText = !_obscureText);
+                      },
+                    ),
                   ),
                 ),
               ],

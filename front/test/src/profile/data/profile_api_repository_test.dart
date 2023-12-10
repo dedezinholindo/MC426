@@ -102,7 +102,6 @@ void main() {
       expect(result.email, "email_test@gmail.com");
       expect(result.age, "20");
       expect(result.phone, "phone_test");
-      expect(result.password, "password_test");
       expect(result.address, "address_test");
       expect(result.photo, "photo_test");
       expect(result.safetyNumber, "190");

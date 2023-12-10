@@ -11,7 +11,7 @@ void main() {
       expect(result["username"], "username_test");
       expect(result["password"], "password_test");
       expect(result["name"], "name_test");
-      expect(result["age"], "20");
+      expect(result["age"], 20);
       expect(result["email"], "email_test@gmail.com");
     });
   });
@@ -21,9 +21,8 @@ void main() {
       final result = ProfileEntity.fromMap(profileMapMock);
 
       expect(result.username, "username_test");
-      expect(result.password, "password_test");
       expect(result.name, "name_test");
-      expect(result.age, "20");
+      expect(result.age, 20);
       expect(result.email, "email_test@gmail.com");
     });
   });

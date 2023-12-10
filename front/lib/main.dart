@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     await initializeStorage();
     final storage = GetIt.instance.get<StorageShared>();
     if (storage.getString(userIdKey) != null && storage.getString(userIdKey) != "logged_out") return const HomePage();
-    return const HomePage();
+    return const SignInPage();
   }
 
   @override
