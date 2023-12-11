@@ -1,8 +1,9 @@
 FROM python:3.11
 
+COPY run.py run.py
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-COPY run.py /app/run.py
+COPY requirements.txt requirements.txt
+
 
 RUN apt update -y && apt install -y curl
 RUN pip install -r requirements.txt

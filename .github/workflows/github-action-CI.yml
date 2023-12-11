@@ -27,7 +27,7 @@ jobs:
           cd backend/docker/
           ./run.sh
           echo "Doing the healthy check test."
-          docker stop login_registration_backend
+          docker stop run
       - run: echo "This job's status is ${{ job.status }}."
   
   build-ios-dummy:
