@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/home.dart';
+import 'package:mc426_front/notifications/domain/domain.dart';
 import 'package:mc426_front/storage/storage.dart';
 
 part 'home_states.dart';
@@ -17,8 +18,8 @@ class HomeBloc extends Cubit<HomeState> {
   final sharedPreferences = GetIt.instance.get<StorageShared>();
   final voteUsecase = GetIt.instance.get<VoteUseCase>();
   final homeUsecase = GetIt.instance.get<GetHomeUsecase>();
-  final sendPanicLocationUsecase =
-      GetIt.instance.get<SendPanicLocationUsecase>();
+  final getNotificationUsecase = GetIt.instance.get<GetNotificationConfigUsecase>();
+  final sendPanicLocationUsecase = GetIt.instance.get<SendPanicLocationUsecase>();
 
   String get safetyNumber => sharedPreferences.getString(safetyNumberKey) ?? '';
 
@@ -38,10 +39,8 @@ class HomeBloc extends Cubit<HomeState> {
   }
 
   void sendPanicAlert(Position position) async {
-
     try {
-      final result = await sendPanicLocationUsecase
-          .call(LatLng(position.latitude, position.longitude));
+      final result = await sendPanicLocationUsecase.call(LatLng(position.latitude, position.longitude));
       if (!result) {
         return emit(HomePanicState(error: PanicStateErrors.sendPushError));
       }

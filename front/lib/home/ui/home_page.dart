@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,11 +26,19 @@ class _HomePageState extends State<HomePage> {
         .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => true);
   }
 
+  Future<void> configurePush() async {
+    final notifications = await _bloc.getNotificationUsecase.call();
+    notifications?.forEach((e) async {
+      await FirebaseMessaging.instance.subscribeToTopic(e.topicName);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _bloc.init();
+      await configurePush();
     });
   }
 
@@ -146,7 +155,7 @@ class _HomePageState extends State<HomePage> {
       },
       builder: (context, state) {
         Widget? body = switch (state) {
-          HomeLoadingState() => const CircularProgressIndicator(),
+          HomeLoadingState() => const Center(child: CircularProgressIndicator()),
           HomeLoadedState() => HomeLoadedView(
               home: state.home,
               vote: _bloc.vote,

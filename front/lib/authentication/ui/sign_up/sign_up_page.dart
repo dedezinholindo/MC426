@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/authentication/ui/sign_up/bloc/sign_up_bloc.dart';
+import 'package:mc426_front/home/home.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String routeName = '/sign_up';
@@ -26,6 +27,9 @@ class _SignUpPageState extends State<SignUpPage> {
               backgroundColor: state.result!.isSuccess ? Colors.green : Colors.red,
             ),
           );
+          if (state.result?.isSuccess == true) {
+            Navigator.of(context).pushNamed(HomePage.routeName);
+          }
         }
       },
       builder: (context, state) {

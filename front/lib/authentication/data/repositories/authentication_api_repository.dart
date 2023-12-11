@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/common/common.dart';
@@ -49,6 +48,20 @@ class AuthenticationApiRepository extends AuthenticationRepository {
       );
     } catch (e) {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
+    }
+  }
+
+  @override
+  Future<bool> sendPasswordReset(String email) async {
+    try {
+      final uri = Uri.parse('${baseUrl}password_reset');
+      final response = await client.post(uri, headers: {
+        'Content-Type': 'application/json',
+      }, body: {'email': email});
+
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
     }
   }
 }

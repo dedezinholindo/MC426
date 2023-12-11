@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mc426_front/home/home.dart';
 import 'package:http/http.dart' as http;
+import 'package:mc426_front/home/home.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../mocks/mocks.dart';
@@ -22,6 +22,7 @@ void main() {
     test('sends panic location successfully', () async {
       when(() => client.post(
             any(),
+            headers: any(named: 'headers'),
             body: any(named: 'body'),
           )).thenAnswer((_) async => http.Response('{"success": true}', 200));
 
@@ -32,11 +33,10 @@ void main() {
 
     test('returns false when server responds with an error', () async {
       when(() => client.post(
-                any(),
-                body: any(named: 'body'),
-              ))
-          .thenAnswer(
-              (_) async => http.Response('{"error": "some_error"}', 400));
+            any(),
+            headers: any(named: 'headers'),
+            body: any(named: 'body'),
+          )).thenAnswer((_) async => http.Response('{"error": "some_error"}', 400));
 
       final result = await repository.sendPanicLocation(latLngMock);
 
@@ -46,6 +46,7 @@ void main() {
     test('returns false on exception', () async {
       when(() => client.post(
             any(),
+            headers: any(named: 'headers'),
             body: any(named: 'body'),
           )).thenThrow(Exception('Failed to send data'));
 

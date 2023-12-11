@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
-import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/home/home.dart';
 
 class SendLocationApiRepository extends SendLocationRepository {
@@ -13,17 +13,23 @@ class SendLocationApiRepository extends SendLocationRepository {
   @override
   Future<bool> sendPanicLocation(LatLng position) async {
     try {
-      var url = Uri.parse('$baseUrl/api/send_panic_location');
       final result = await client.post(
-        url,
+        Uri.parse("https://fcm.googleapis.com/v1/projects/press2safe/messages:send"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer ya29.a0AfB_byD3-TndmqLAbBP3s_7lkKBCQiMlqrypWj1c5DKEY-9IWoqTmFcQddrE4VLgFiY95y6qY4h7CmIrQB7gXijcFtoXoZX7teN_vwVgXhwm89a29s2c3MDlloEx64MSBHINgui4MW44ZyQmtEL0uSLbS3LwsVBjk0XxaCgYKAbkSARESFQHGX2MiZTkSlI-P3TNau5vCX8SC2w0171',
+        },
         body: jsonEncode({
-          'latitude': position.latitude,
-          'longitude': position.longitude,
+          "message": {
+            "topic": "sos_message_topic",
+            "notification": {
+              "title": "SOS",
+              "body": "Alguém está precisando de ajuda, encontre a pessoa em: (${position.latitude}, ${position.longitude})",
+            }
+          }
         }),
       );
-
-      log("Response status: ${result.statusCode}");
-      log("Response body: ${result.body}");
 
       return result.statusCode == 200;
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/domain/domain.dart';
 import 'package:mc426_front/home/ui/bloc/home_bloc.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/storage/storage_shared.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,10 +14,11 @@ class HomeUsecaseMock extends Mock implements GetHomeUsecase {}
 
 class StorageSharedMock extends Mock implements StorageShared {}
 
+class GetNotificationConfigUsecaseMock extends Mock implements GetNotificationConfigUsecase {}
+
 class VoteUseCaseMock extends Mock implements VoteUseCase {}
 
-class SendPanicLocationUsecaseMock extends Mock
-    implements SendPanicLocationUsecase {}
+class SendPanicLocationUsecaseMock extends Mock implements SendPanicLocationUsecase {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +26,7 @@ void main() {
   late final StorageShared storageShared;
   late final VoteUseCase voteUseCase;
   late final SendPanicLocationUsecase sendPanicLocationUsecase;
+  late final GetNotificationConfigUsecase getNotificationConfigUsecase;
 
   setUpAll(() {
     final injection = GetIt.instance;
@@ -31,12 +34,13 @@ void main() {
     storageShared = StorageSharedMock();
     voteUseCase = VoteUseCaseMock();
     sendPanicLocationUsecase = SendPanicLocationUsecaseMock();
+    getNotificationConfigUsecase = GetNotificationConfigUsecaseMock();
 
     injection.registerFactory<GetHomeUsecase>(() => homeUsecase);
     injection.registerFactory<StorageShared>(() => storageShared);
     injection.registerFactory<VoteUseCase>(() => voteUseCase);
-    injection.registerFactory<SendPanicLocationUsecase>(
-        () => sendPanicLocationUsecase);
+    injection.registerFactory<SendPanicLocationUsecase>(() => sendPanicLocationUsecase);
+    injection.registerFactory<GetNotificationConfigUsecase>(() => getNotificationConfigUsecase);
     registerFallbackValue(homeMock);
     registerFallbackValue(latLngMock);
   });
@@ -53,8 +57,7 @@ void main() {
       },
       expect: () => [
         isA<HomeLoadingState>(),
-        isA<HomeLoadedState>()
-            .having((s) => s.home.user.username, "username", "username"),
+        isA<HomeLoadedState>().having((s) => s.home.user.username, "username", "username"),
       ],
     );
 
@@ -87,8 +90,7 @@ void main() {
   });
 
   group("vote", () {
-    test("should call vote usecase and return true when vote is true",
-        () async {
+    test("should call vote usecase and return true when vote is true", () async {
       when(
         () => voteUseCase.call(any(), any()),
       ).thenAnswer((invocation) async => true);
@@ -98,8 +100,7 @@ void main() {
       verify(() => voteUseCase.call(any(), any())).called(1);
     });
 
-    test("should call vote usecase and return false when vote is true",
-        () async {
+    test("should call vote usecase and return false when vote is true", () async {
       when(
         () => voteUseCase.call(any(), any()),
       ).thenAnswer((invocation) async => false);
@@ -109,8 +110,7 @@ void main() {
       verify(() => voteUseCase.call(any(), any())).called(1);
     });
 
-    test("should call vote usecase and return true when vote is false",
-        () async {
+    test("should call vote usecase and return true when vote is false", () async {
       when(
         () => voteUseCase.call(any(), any()),
       ).thenAnswer((invocation) async => true);
@@ -120,8 +120,7 @@ void main() {
       verify(() => voteUseCase.call(any(), any())).called(1);
     });
 
-    test("should call vote usecase and return false when vote is false",
-        () async {
+    test("should call vote usecase and return false when vote is false", () async {
       when(
         () => voteUseCase.call(any(), any()),
       ).thenAnswer((invocation) async => false);
@@ -136,27 +135,21 @@ void main() {
     blocTest<HomeBloc, HomeState>(
       'should emit Panic State with success when sending location succeeds',
       build: () {
-        when(() => sendPanicLocationUsecase.call(any()))
-            .thenAnswer((_) async => true);
+        when(() => sendPanicLocationUsecase.call(any())).thenAnswer((_) async => true);
         return HomeBloc();
       },
       act: (bloc) => bloc.sendPanicAlert(positionMock),
-      expect: () =>
-          [isA<HomePanicState>().having((s) => s.isSuccess, "isSuccess", true)],
+      expect: () => [isA<HomePanicState>().having((s) => s.isSuccess, "isSuccess", true)],
     );
 
     blocTest<HomeBloc, HomeState>(
       'should emit Panic State with error when sending location fails',
       build: () {
-        when(() => sendPanicLocationUsecase.call(any()))
-            .thenAnswer((_) async => false);
+        when(() => sendPanicLocationUsecase.call(any())).thenAnswer((_) async => false);
         return HomeBloc();
       },
       act: (bloc) => bloc.sendPanicAlert(positionMock),
-      expect: () => [
-        isA<HomePanicState>()
-            .having((s) => s.error, "error", PanicStateErrors.sendPushError)
-      ],
+      expect: () => [isA<HomePanicState>().having((s) => s.error, "error", PanicStateErrors.sendPushError)],
     );
 
     blocTest<HomeBloc, HomeState>(
@@ -166,10 +159,7 @@ void main() {
         return HomeBloc();
       },
       act: (bloc) => bloc.sendPanicAlert(positionMock),
-      expect: () => [
-        isA<HomePanicState>()
-            .having((s) => s.error, "error", PanicStateErrors.sendPushError)
-      ],
+      expect: () => [isA<HomePanicState>().having((s) => s.error, "error", PanicStateErrors.sendPushError)],
     );
   });
 }

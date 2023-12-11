@@ -1,18 +1,66 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
+import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/complaint_page.dart';
+import 'package:mc426_front/complaints_map/complaints_map.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/injection/injection.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
+import 'package:mc426_front/storage/storage.dart';
 
-void main() {
-  setupProviders();
-  runApp(const MyApp());
-  initializeStorage();
+import 'firebase_options.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
 }
 
-class MyApp extends StatelessWidget {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await setupProviders();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final messaging = FirebaseMessaging.instance;
+
+  await messaging.requestPermission();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Widget? body;
+
+  Future<Widget> buildHome() async {
+    await initializeStorage();
+    final storage = GetIt.instance.get<StorageShared>();
+    if (storage.getString(userIdKey) != null && storage.getString(userIdKey) != "logged_out") return const HomePage();
+    return const SignInPage();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      body = await buildHome();
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +73,13 @@ class MyApp extends StatelessWidget {
       title: 'Press2Safe',
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
+        UserPostsPage.routeName: (context) => const UserPostsPage(),
+        ComplaintMapPage.routeName: (context) => const ComplaintMapPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
         SignInPage.routeName: (context) => const SignInPage(),
+        NotificationsPage.routeName: (context) => const NotificationsPage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -57,6 +108,28 @@ class MyApp extends StatelessWidget {
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),
+          hintStyle: const TextStyle(
+            color: Color(0xFF5F5F5F),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        dialogTheme: const DialogTheme(
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 3),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
+          contentTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -77,7 +150,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: body ?? const Center(child: CircularProgressIndicator()),
     );
   }
 }

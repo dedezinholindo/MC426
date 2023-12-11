@@ -13,7 +13,7 @@ class ProfileApiRepository extends ProfileRepository {
   Future<bool> edit({required ProfileEntity profile, required String userId}) async {
     try {
       final result = await client.post(
-        Uri.parse("${baseUrl}edit_profile/$userId"),
+        Uri.parse("${baseUrl}profile/$userId"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -40,6 +40,25 @@ class ProfileApiRepository extends ProfileRepository {
       final body = jsonDecode(result.body);
 
       return ProfileEntity.fromMap(body);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<UserPostEntity?> getUserPosts(String userId) async {
+    try {
+      final result = await client.get(
+        Uri.parse("${baseUrl}posts/$userId"),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (result.statusCode != 200) return null;
+
+      final body = jsonDecode(result.body);
+
+      return UserPostEntity.fromMap(body);
     } catch (e) {
       return null;
     }
