@@ -13,7 +13,7 @@ class NotificationApiRepository extends NotificationRepository {
   Future<bool> changeNotificationConfig({required ChangeNotificationEntity notification}) async {
     try {
       final result = await client.post(
-        Uri.parse("${baseUrl}notifications"),
+        Uri.parse("${baseUrl}notifications/"),
         headers: {
           'Content-Type': 'application/json',
         },
