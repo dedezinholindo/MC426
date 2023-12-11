@@ -78,7 +78,7 @@ def registration():
     if not phone.isdigit() or len(phone) != 11:
         return jsonify({"message": "Phone number must be an 11-digit number"}), 400
     
-    if not safety_number.isdigit() or len(safety_number) != 11:
+    if safety_number is not None and (not safety_number.isdigit() or len(safety_number) != 11):
         return jsonify({"message": "Safety number must be an 11-digit number"}), 400
 
     if not (8 <= len(password) <= 20):

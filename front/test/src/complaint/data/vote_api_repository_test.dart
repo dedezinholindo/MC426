@@ -19,7 +19,7 @@ void main() {
 
   group('vote', () {
     test('upvote should complete successfully', () async {
-      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/like');
+      final testUri = Uri.parse('${baseUrl}complaints/1/like/user_id');
 
       when(() => client.post(testUri, headers: any(named: 'headers'))).thenAnswer((_) async => http.Response('{"status": "success"}', 200));
 
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('upvote should fail with HTTP error', () async {
-      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/like');
+      final testUri = Uri.parse('${baseUrl}complaints/1/like/user_id');
 
       when(() => client.post(testUri, headers: any(named: 'headers')))
           .thenAnswer((_) async => http.Response('{"error": "some error"}', 400));
@@ -38,7 +38,7 @@ void main() {
     });
 
     test('downvote should complete successfully', () async {
-      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/unlike');
+      final testUri = Uri.parse('${baseUrl}complaints/1/unlike/user_id');
 
       when(() => client.post(testUri, headers: any(named: 'headers'))).thenAnswer(
         (_) async => http.Response('{"status": "success"}', 200),
@@ -49,7 +49,7 @@ void main() {
     });
 
     test('downvote should fail with exception', () async {
-      final testUri = Uri.parse('${baseUrl}complaints/user_id/1/unlike');
+      final testUri = Uri.parse('${baseUrl}complaints/1/unlike/user_id');
 
       when(() => client.post(testUri, headers: any(named: 'headers'))).thenThrow(Exception("network failure"));
 
