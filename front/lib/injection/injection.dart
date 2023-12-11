@@ -4,8 +4,9 @@ import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/complaints_map/complaints_map.dart';
 import 'package:mc426_front/home/home.dart';
+import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
-import 'package:mc426_front/storage/storage_shared.dart';
+import 'package:mc426_front/storage/storage.dart';
 
 final getIt = GetIt.instance;
 
@@ -27,6 +28,7 @@ setupProviders() async {
 
   //authentication
   getIt.registerLazySingleton<AuthenticationRepository>(() => AuthenticationApiRepository(client));
+  getIt.registerLazySingleton<ForgotPasswordUsecase>(() => ForgotPasswordUsecase(getIt.get<AuthenticationRepository>()));
   getIt.registerLazySingleton<SignInUsecase>(() => SignInUsecase(
         getIt.get<AuthenticationRepository>(),
         storageShared,
@@ -62,6 +64,15 @@ setupProviders() async {
   getIt.registerLazySingleton<ComplaintsMapRepository>(() => ComplaintsMapApiRepository(client));
   getIt.registerLazySingleton<GetCoordinatesUsecase>(() => GetCoordinatesUsecase(
         getIt.get<ComplaintsMapRepository>(),
+
+  //notifications
+  getIt.registerLazySingleton<NotificationRepository>(() => NotificationApiRepository(client));
+  getIt.registerLazySingleton<GetNotificationConfigUsecase>(() => GetNotificationConfigUsecase(
+        getIt.get<NotificationRepository>(),
+        storageShared,
+      ));
+  getIt.registerLazySingleton<ChangeNotificationConfigUsecase>(() => ChangeNotificationConfigUsecase(
+        getIt.get<NotificationRepository>(),
         storageShared,
       ));
 }
