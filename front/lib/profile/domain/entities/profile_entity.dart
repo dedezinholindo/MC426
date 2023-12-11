@@ -2,21 +2,19 @@ class ProfileEntity {
   final String name;
   final String username;
   final String email;
-  final String age;
   final String phone;
-  final String password;
   final String address;
   final String? photo;
   final String? safetyNumber;
+  final int age;
 
   const ProfileEntity({
     required this.name,
     required this.username,
     required this.email,
-    required this.age,
     required this.phone,
-    required this.password,
     required this.address,
+    required this.age,
     this.photo,
     this.safetyNumber,
   });
@@ -28,7 +26,6 @@ class ProfileEntity {
       email: map["email"],
       age: map["age"],
       phone: map["phone"],
-      password: map["password"],
       address: map["address"],
       photo: map["photo"],
       safetyNumber: map["safetyNumber"],
@@ -39,9 +36,8 @@ class ProfileEntity {
         name: "",
         username: "",
         email: "",
-        age: "",
+        age: 0,
         phone: "",
-        password: "",
         address: "",
       );
 
@@ -51,7 +47,6 @@ class ProfileEntity {
         "email": email,
         "age": age,
         "phone": phone,
-        "password": password,
         "address": address,
         "photo": photo,
         "safetyNumber": safetyNumber,
@@ -61,12 +56,11 @@ class ProfileEntity {
     String? name,
     String? username,
     String? email,
-    String? age,
     String? phone,
-    String? password,
     String? address,
     String? photo,
     String? safetyNumber,
+    int? age,
   }) {
     return ProfileEntity(
       name: name ?? this.name,
@@ -74,7 +68,6 @@ class ProfileEntity {
       email: email ?? this.email,
       age: age ?? this.age,
       phone: phone ?? this.phone,
-      password: password ?? this.password,
       address: address ?? this.address,
       photo: photo ?? this.photo,
       safetyNumber: safetyNumber ?? this.safetyNumber,

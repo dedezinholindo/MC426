@@ -1,8 +1,7 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/complaint.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:mc426_front/common/common.dart';
 
 class ComplaintApiRepository extends ComplaintRepository {
   final http.Client client;
@@ -51,7 +50,10 @@ class ComplaintApiRepository extends ComplaintRepository {
         message: "Denúncia criada com sucesso!",
       );
     } catch (e) {
-      return ComplaintResult(isSuccess: false, message: "Não foi possível concluir a solicitação: $e");
+      return ComplaintResult(
+        isSuccess: false,
+        message: "Não foi possível concluir a solicitação: $e"
+      );
     }
   }
 }

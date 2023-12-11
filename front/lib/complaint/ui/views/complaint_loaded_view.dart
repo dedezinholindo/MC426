@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mc426_front/complaint/complaint.dart';
+import 'package:mc426_front/complaint/complaint.dart'; 
 
 class ComplaintLoadedView extends StatefulWidget {
   final bool isLoading;

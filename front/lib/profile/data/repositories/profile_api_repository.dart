@@ -13,7 +13,7 @@ class ProfileApiRepository extends ProfileRepository {
   Future<bool> edit({required ProfileEntity profile, required String userId}) async {
     try {
       final result = await client.post(
-        Uri.parse("${baseUrl}edit_profile/$userId"),
+        Uri.parse("${baseUrl}profile/$userId"),
         headers: {
           'Content-Type': 'application/json',
         },

@@ -12,7 +12,7 @@ class VoteApiRepository implements VoteRepository {
   @override
   Future<bool> vote({required String userId, required int complaintId, required bool upvote}) async {
     try {
-      final uri = Uri.parse('${baseUrl}complaints/$userId/$complaintId/${upvote ? 'like' : 'unlike'}');
+      final uri = Uri.parse('${baseUrl}complaints/$complaintId/${upvote ? 'like' : 'unlike'}/$userId');
       final response = await client.post(uri, headers: {
         'Content-Type': 'application/json',
       });
