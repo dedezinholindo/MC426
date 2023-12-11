@@ -1,3 +1,5 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:mc426_front/home/domain/domain.dart';
 
 const homeMockJson = {
@@ -73,4 +75,16 @@ const homeMock = HomeEntity(
       downVotes: 3,
     )
   ],
+);
+
+const latLngMock = LatLng(-22.8184393, -47.0822301);
+final positionMock = Position(
+  latitude: -22.8184393,
+  longitude: -47.0822301,
+  timestamp: DateTime.now(),
+  accuracy: 0,
+  altitude: 0,
+  heading: 0,
+  speed: 0,
+  speedAccuracy: 0,
 );

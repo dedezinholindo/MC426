@@ -18,10 +18,14 @@ class GetNotificationConfigUsecaseMock extends Mock implements GetNotificationCo
 
 class VoteUseCaseMock extends Mock implements VoteUseCase {}
 
+class SendPanicLocationUsecaseMock extends Mock implements SendPanicLocationUsecase {}
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late final GetHomeUsecase homeUsecase;
   late final StorageShared storageShared;
   late final VoteUseCase voteUseCase;
+  late final SendPanicLocationUsecase sendPanicLocationUsecase;
   late final GetNotificationConfigUsecase getNotificationConfigUsecase;
 
   setUpAll(() {
@@ -29,13 +33,16 @@ void main() {
     homeUsecase = HomeUsecaseMock();
     storageShared = StorageSharedMock();
     voteUseCase = VoteUseCaseMock();
+    sendPanicLocationUsecase = SendPanicLocationUsecaseMock();
     getNotificationConfigUsecase = GetNotificationConfigUsecaseMock();
 
     injection.registerFactory<GetHomeUsecase>(() => homeUsecase);
     injection.registerFactory<StorageShared>(() => storageShared);
     injection.registerFactory<VoteUseCase>(() => voteUseCase);
+    injection.registerFactory<SendPanicLocationUsecase>(() => sendPanicLocationUsecase);
     injection.registerFactory<GetNotificationConfigUsecase>(() => getNotificationConfigUsecase);
     registerFallbackValue(homeMock);
+    registerFallbackValue(latLngMock);
   });
 
   group("init", () {
@@ -122,5 +129,37 @@ void main() {
       bloc.vote(1, false);
       verify(() => voteUseCase.call(any(), any())).called(1);
     });
+  });
+
+  group("sendPanicAlert", () {
+    blocTest<HomeBloc, HomeState>(
+      'should emit Panic State with success when sending location succeeds',
+      build: () {
+        when(() => sendPanicLocationUsecase.call(any())).thenAnswer((_) async => true);
+        return HomeBloc();
+      },
+      act: (bloc) => bloc.sendPanicAlert(positionMock),
+      expect: () => [isA<HomePanicState>().having((s) => s.isSuccess, "isSuccess", true)],
+    );
+
+    blocTest<HomeBloc, HomeState>(
+      'should emit Panic State with error when sending location fails',
+      build: () {
+        when(() => sendPanicLocationUsecase.call(any())).thenAnswer((_) async => false);
+        return HomeBloc();
+      },
+      act: (bloc) => bloc.sendPanicAlert(positionMock),
+      expect: () => [isA<HomePanicState>().having((s) => s.error, "error", PanicStateErrors.sendPushError)],
+    );
+
+    blocTest<HomeBloc, HomeState>(
+      'should emit Panic State with error when an exception occurs',
+      build: () {
+        when(() => sendPanicLocationUsecase.call(any())).thenThrow(Exception());
+        return HomeBloc();
+      },
+      act: (bloc) => bloc.sendPanicAlert(positionMock),
+      expect: () => [isA<HomePanicState>().having((s) => s.error, "error", PanicStateErrors.sendPushError)],
+    );
   });
 }
