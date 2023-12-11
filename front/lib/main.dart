@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/complaint/complaint_page.dart';
+import 'package:mc426_front/complaints_map/complaints_map.dart';
 import 'package:mc426_front/home/home.dart';
 import 'package:mc426_front/injection/injection.dart';
 import 'package:mc426_front/notifications/notifications.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         ComplaintPage.routeName: (context) => const ComplaintPage(),
         UserPostsPage.routeName: (context) => const UserPostsPage(),
+        ComplaintMapPage.routeName: (context) => const ComplaintMapPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         HomePage.routeName: (context) => const HomePage(),
         SignUpPage.routeName: (context) => const SignUpPage(),
