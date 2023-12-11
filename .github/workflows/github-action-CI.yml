@@ -20,11 +20,11 @@ jobs:
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: Building the aplication 
         run: |
-          cd backend/app/docker/
+          cd backend/docker/
           ./build.sh
       - name: Running the aplication inside of a container, with the image created in build.
         run: |
-          cd backend/app/docker/
+          cd backend/docker/
           ./run.sh
           echo "Doing the healthy check test."
           docker stop login_registration_backend
