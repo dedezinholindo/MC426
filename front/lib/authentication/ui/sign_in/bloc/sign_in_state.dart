@@ -8,3 +8,9 @@ class SignInLoadedState extends SignInState {
 
   SignInLoadedState({this.isLoading = false, this.result});
 }
+
+class SignInForgotPasswordState extends SignInState {
+  final bool? result;
+
+  SignInForgotPasswordState(this.result);
+}

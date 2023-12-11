@@ -27,6 +27,7 @@ setupProviders() async {
 
   //authentication
   getIt.registerLazySingleton<AuthenticationRepository>(() => AuthenticationApiRepository(client));
+  getIt.registerLazySingleton<ForgotPasswordUsecase>(() => ForgotPasswordUsecase(getIt.get<AuthenticationRepository>()));
   getIt.registerLazySingleton<SignInUsecase>(() => SignInUsecase(
         getIt.get<AuthenticationRepository>(),
         storageShared,
