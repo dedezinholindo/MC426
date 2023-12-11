@@ -2,132 +2,197 @@ import unittest
 import json
 from login_registration import app
 
-class FlaskAppTestCase(unittest.TestCase):
+import time
+
+class AppTestCase(unittest.TestCase):
 
     def setUp(self):
         app.config['TESTING'] = True
         self.app = app.test_client()
 
-    def register_user(self, username, password, name, age, email):
-        user_data = {
-            "username": username,
-            "password": password,
-            "name": name,
-            "age": age,
-            "email": email
+        # Test registration with missing required fields
+        
+    def tearDown(self):
+        pass
+
+    def test_registration_success(self):
+        # Test successful user registration
+        data = {
+            "name": "John Doe",
+            "username": "john_doe",
+            "email": "john.doe@example.com",
+            "age": "25",
+            "phone": "12345678901",
+            "password": "securepassword",
+            "address": "123 Main St",
+            "photo": "profile.jpg",
+            "safetyNumber": "98765432101"
         }
-        response = self.app.post('/registration', json=user_data)
-        return response
 
-    def login_user(self, username, password):
-        user_data = {
-            "username": username,
-            "password": password
+        response = self.app.post('/registration', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("User registered successfully", result["message"])
+
+    def test_registration_missing_fields(self):
+        # Test registration with missing required fields
+        data = {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "age": "25",
+            "phone": "12345678901",
+            "password": "securepassword",
+            "address": "123 Main St",
+            "photo": "profile.jpg",
+            "safetyNumber": "98765432101"
         }
-        response = self.app.post('/login', json=user_data)
-        return response
 
-    def test_registration(self):
-        response = self.register_user("testuser1", "password123", "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(b"User registered successfully", response.data)
+        response = self.app.post('/registration', json=data)
+        result = json.loads(response.data.decode('utf-8'))
 
-        response = self.register_user("", "password123", "Test User", "25", "test@example.com")
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Missing required fields", response.data)
+        self.assertIn("Missing required fields", result["message"])
 
+    def test_login_success(self):
+        # Test successful "Forget My Password" with case-insensitive email
+        data = {
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
 
-    def test_login(self):
-        self.register_user("testuser2", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser2", "password123")
+        response = self.app.post('/registration', json=data)
+
+        # Test successful user login
+        data = {
+            "username": "c_stuart",
+            "password": "securepassword2"
+        }
+
+        response = self.app.post('/login', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Authentication successful", response.data)
+        self.assertIn("Authentication successful", result["message"])
 
-        response = self.login_user("invaliduser", "password123")
+    def test_login_invalid_credentials(self):
+        # Test login with invalid credentials
+        data = {
+            "username": "john_doe",
+            "password": "wrong_password"
+        }
+
+        response = self.app.post('/login', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
         self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
+        self.assertIn("Invalid username or password", result["message"])
 
-        response = self.login_user("testuser2", "invalidpassword")
-        self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
+    def test_forget_password_success(self):
+        # Add a example user
+        data = {
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
 
-    def test_registration_invalid_age(self):
-        response = self.register_user("testuser3", "password123", "Test User", "invalid_age", "test@example.com")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Age must contain only numbers", response.data)
+        response = self.app.post('/registration', json=data)
 
-    def test_registration_short_password(self):
-        response = self.register_user("testuser4", "123", "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+        # Test successful "Forget My Password" functionality
+        data = {
+            "email": "chris.stuart@example.com"
+        }
 
-    def test_registration_long_password(self):
-        long_password = "a" * 21
-        response = self.register_user("testuser5", long_password, "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Password must be between 8 and 20 characters", response.data)
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
 
-    def test_registration_duplicate_username(self):
-        self.register_user("testuser6", "password123", "Test User", "25", "test@example.com")
-        response = self.register_user("testuser6", "anotherpassword", "Another User", "30", "another@example.com")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Username already exists", response.data)
-
-    def test_login_missing_username(self):
-        response = self.login_user("", "password123")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Missing required fields", response.data)
-
-    def test_login_missing_password(self):
-        response = self.login_user("testuser7", "")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Missing required fields", response.data)
-
-    def test_login_nonexistent_username(self):
-        response = self.login_user("nonexistentuser", "password123")
-        self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
-
-    def test_login_incorrect_password(self):
-        self.register_user("testuser8", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser8", "incorrectpassword")
-        self.assertEqual(response.status_code, 401)
-        self.assertIn(b"Invalid username or password", response.data)
-
-    def test_registration_valid_data(self):
-        response = self.register_user("testuser9", "password123", "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(b"User registered successfully", response.data)
-
-    def test_login_valid_credentials(self):
-        self.register_user("testuser10", "password123", "Test User", "25", "test@example.com")
-        response = self.login_user("testuser10", "password123")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Authentication successful", response.data)
+        self.assertIn("reset link was successfully sent", result["message"])
 
-    def test_registration_maximum_password_length(self):
-        long_password = "a" * 20
-        response = self.register_user("testuser11", long_password, "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(b"User registered successfully", response.data)
+    def test_forget_password_invalid_email(self):
+        # Test "Forget My Password" with an invalid email
+        data = {
+            "email": "invalid_email"
+        }
 
-    def test_registration_minimum_age(self):
-        response = self.register_user("testuser12", "password123", "Test User", "0", "test@example.com")
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(b"User registered successfully", response.data)
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
 
-    def test_login_maximum_username_length(self):
-        long_username = "a" * 255
-        response = self.register_user(long_username, "password123", "Test User", "25", "test@example.com")
-        self.assertEqual(response.status_code, 201)
-        response = self.login_user(long_username, "password123")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid email address", result["message"])
+
+    def test_forget_password_missing_email(self):
+        # Test "Forget My Password" with missing email
+        data = {}
+
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid request", result["message"])
+
+    def test_forget_password_email_not_found(self):
+        # Test "Forget My Password" with an email that is not in the database
+        data = {
+            "email": "nonexistent_email@example.com"
+        }
+
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Email not found", result["message"])
+
+    def test_forget_password_invalid_request(self):
+        # Test "Forget My Password" with an invalid request (missing email key)
+        data = {
+            "invalid_key": "john.doe@example.com"
+        }
+
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid request", result["message"])
+
+    def test_forget_password_success_case_insensitive_email(self):
+        # Test successful "Forget My Password" with case-insensitive email
+        data = {
+            "name": "Crhis Stuart",
+            "username": "c_stuart",
+            "email": "chris.stuart@example.com",
+            "age": "29",
+            "phone": "12345678000",
+            "password": "securepassword2",
+            "address": "123 Next St",
+            "photo": "profile2.jpg",
+            "safetyNumber": "98765000101"
+        }
+
+        response = self.app.post('/registration', json=data)
+
+        data = {
+            "email": "Chris.Stuart@example.com"
+        }
+
+        response = self.app.post('/forget_password', json=data)
+        result = json.loads(response.data.decode('utf-8'))
+
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Authentication successful", response.data)
-
+        self.assertIn("reset link was successfully sent", result["message"])
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-

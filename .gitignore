@@ -43,10 +43,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-__pycache__
-
-
-# Database files
+# Data
 *.db
+*users.txt
+
+__pycache__
 
 /front/build/
