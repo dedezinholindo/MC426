@@ -6,7 +6,7 @@ notifications_bp = Blueprint('notifications', __name__)
 # Setup database for notifications
 
 
-def setup_notifications():
+def setup_notifications_db():
     conn = sqlite3.connect('press2safe.db', check_same_thread=False)
 
     cursor = conn.cursor()
@@ -78,7 +78,7 @@ def setup_notifications():
     return conn, cursor
 
 
-conn, cursor = setup_notifications()
+conn, cursor = setup_notifications_db()
 
 # Rotas
 
