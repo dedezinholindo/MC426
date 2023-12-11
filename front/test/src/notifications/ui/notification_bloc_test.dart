@@ -15,7 +15,7 @@ void main() {
   late final GetNotificationConfigUsecase getNotificationConfigUsecase;
   late final ChangeNotificationConfigUsecase changeNotificationConfigUsecase;
 
-  setUpAll(() {
+  setUpAll(() async {
     final injection = GetIt.instance;
     getNotificationConfigUsecase = GetNotificationConfigUsecaseMock();
     changeNotificationConfigUsecase = ChangeNotificationConfigUsecaseMock();

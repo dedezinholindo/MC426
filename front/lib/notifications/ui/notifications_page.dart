@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mc426_front/notifications/notifications.dart';
@@ -31,7 +32,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
           NotificationLoadingState() => const Center(child: CircularProgressIndicator()),
           NotificationLoadedState() => NotificationLoadedView(
               notificationMap: state.notificationMap,
-              changeNotification: _bloc.editNotification,
+              changeNotification: (changeNotification) async {
+                if (changeNotification.isActivated) {
+                  await FirebaseMessaging.instance.unsubscribeFromTopic(changeNotification.topicName);
+                }
+                _bloc.editNotification(changeNotification);
+              },
             ),
           NotificationErrorState() => const NotificationErrorView(),
         };

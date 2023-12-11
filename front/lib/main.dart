@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mc426_front/authentication/authentication.dart';
@@ -10,8 +12,27 @@ import 'package:mc426_front/notifications/notifications.dart';
 import 'package:mc426_front/profile/profile.dart';
 import 'package:mc426_front/storage/storage.dart';
 
+import 'firebase_options.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await setupProviders();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final messaging = FirebaseMessaging.instance;
+
+  await messaging.requestPermission();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 
@@ -114,8 +135,7 @@ class _MyAppState extends State<MyApp> {
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {
-                if (states.contains(MaterialState.disabled))
-                  return const Color(0xFFCDCDCD);
+                if (states.contains(MaterialState.disabled)) return const Color(0xFFCDCDCD);
                 return const Color(0xFF4CE5B1); // Use the component's default.
               },
             ),

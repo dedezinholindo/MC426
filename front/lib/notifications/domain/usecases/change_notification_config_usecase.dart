@@ -11,7 +11,12 @@ class ChangeNotificationConfigUsecase {
   Future<bool> call(NotificationEntity notificationEntity) async {
     final userId = storage.getString(userIdKey);
     if (userId == null) return false;
-    final result = await repository.changeNotificationConfig(userId: userId, notification: notificationEntity);
+    final changeNotification = ChangeNotificationEntity(
+      id: notificationEntity.id,
+      userId: userId,
+      isActivated: !notificationEntity.isActivated,
+    );
+    final result = await repository.changeNotificationConfig(notification: changeNotification);
     return result;
   }
 }

@@ -21,12 +21,13 @@ void main() {
     storage = StorageInterfaceMock();
     usecase = ChangeNotificationConfigUsecase(repository, storage);
     registerFallbackValue(notificationMock);
+    registerFallbackValue(changeNotificationMock);
   });
 
   group("call", () {
     test("should return true success when repository returns true", () async {
       when(
-        () => repository.changeNotificationConfig(notification: any(named: "notification"), userId: any(named: "userId")),
+        () => repository.changeNotificationConfig(notification: any(named: "notification")),
       ).thenAnswer((invocation) async => true);
 
       when(
@@ -39,7 +40,7 @@ void main() {
 
     test("should return false when repository returns false", () async {
       when(
-        () => repository.changeNotificationConfig(notification: any(named: "notification"), userId: any(named: "userId")),
+        () => repository.changeNotificationConfig(notification: any(named: "notification")),
       ).thenAnswer((invocation) async => false);
 
       when(
