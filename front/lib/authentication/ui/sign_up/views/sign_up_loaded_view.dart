@@ -26,6 +26,8 @@ class SignUpLoadedView extends StatefulWidget {
 
 class _SignUpLoadedViewState extends State<SignUpLoadedView> {
   String? photo;
+  bool _obscureTextPassword = true;
+  bool _obscureTextVerify = true;
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -237,15 +239,23 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             const SizedBox(height: 12),
             TextFormField(
               controller: passwordController,
-              obscureText: true,
+              obscureText: _obscureTextPassword,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite sua senha',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureTextPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() => _obscureTextPassword = !_obscureTextPassword);
+                  },
+                ),
               ),
               onChanged: (value) => widget.onChange(password: value),
             ),
@@ -256,7 +266,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
               builder: (context, value, child) {
                 return TextFormField(
                   controller: verifyPasswordController,
-                  obscureText: true,
+                  obscureText: _obscureTextVerify,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -266,9 +276,17 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     labelText: 'Digite a senha novamente',
                     errorText: !value ? "As senhas não correspondem" : null,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureTextVerify ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() => _obscureTextVerify = !_obscureTextVerify);
+                      },
+                    ),
                   ),
                   onChanged: (value) {
-                    if (value != phoneController.text && value != "") {
+                    if (value != passwordController.text && value != "") {
                       passwordMatch.value = false;
                     } else {
                       passwordMatch.value = true;

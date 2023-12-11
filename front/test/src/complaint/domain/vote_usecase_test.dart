@@ -1,50 +1,77 @@
-import 'package:test/test.dart';
+import 'package:mc426_front/complaint/complaint.dart';
+import 'package:mc426_front/storage/storage_interface.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:mc426_front/complaint/domain/usecases/vote_usecase.dart';
-import 'package:mc426_front/complaint/domain/repositories/vote_repository.dart';
+import 'package:test/test.dart';
 
-class MockVoteRepository extends Mock implements VoteRepository {}
+class VoteRepositoryMock extends Mock implements VoteRepository {}
+
+class StorageInterfaceMock extends Mock implements StorageInterface {}
+
+const userIdMock = "user_id";
 
 void main() {
-  group('VoteUsecase', () {
-    test('call should invoke upvote', () async {
-      final repository = MockVoteRepository();
-      final usecase = VoteUseCase(repository);
+  late final StorageInterface storage;
+  late final VoteRepository repository;
+  late final VoteUseCase usecase;
 
-      when(() => repository.vote(any(), true))
+  setUpAll(() {
+    repository = VoteRepositoryMock();
+    storage = StorageInterfaceMock();
+    usecase = VoteUseCase(repository, storage);
+  });
+
+  group('call', () {
+    test('should invoke upvote', () async {
+      when(() => repository.vote(userId: any(named: "userId"), complaintId: any(named: "complaintId"), upvote: true))
           .thenAnswer((_) async => true);
+
+      when(
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
 
       final result = await usecase.call(1, true);
       expect(result, isTrue);
     });
 
-    test('call should fail on upvote error', () async {
-      final repository = MockVoteRepository();
-      final usecase = VoteUseCase(repository);
-      
-      when(() => repository.vote(any(), true))
+    test('should fail on upvote error', () async {
+      when(() => repository.vote(userId: any(named: "userId"), complaintId: any(named: "complaintId"), upvote: true))
           .thenAnswer((_) async => false);
+
+      when(
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
 
       final result = await usecase.call(1, true);
       expect(result, isFalse);
     });
 
-    test('call should invoke downvote', () async {
-      final repository = MockVoteRepository();
-      final usecase = VoteUseCase(repository);
-
-      when(() => repository.vote(any(), false))
+    test('should invoke downvote', () async {
+      when(() => repository.vote(userId: any(named: "userId"), complaintId: any(named: "complaintId"), upvote: false))
           .thenAnswer((_) async => true);
+
+      when(
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => userIdMock);
 
       final result = await usecase.call(1, false);
       expect(result, isTrue);
     });
-    test('call should fail on downvote error', () async {
-      final repository = MockVoteRepository();
-      final usecase = VoteUseCase(repository);
 
-      when(() => repository.vote(any(), false))
+    test('should fail on downvote error', () async {
+      when(() => repository.vote(userId: any(named: "userId"), complaintId: any(named: "complaintId"), upvote: false))
           .thenAnswer((_) async => false);
+
+      final result = await usecase.call(1, false);
+      expect(result, isFalse);
+    });
+
+    test('should fail when storage returns null', () async {
+      when(() => repository.vote(userId: any(named: "userId"), complaintId: any(named: "complaintId"), upvote: false))
+          .thenAnswer((_) async => false);
+
+      when(
+        () => storage.getString(any()),
+      ).thenAnswer((invocation) => null);
 
       final result = await usecase.call(1, false);
       expect(result, isFalse);

@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/authentication/authentication.dart';
 
+
 class SignInLoadedView extends StatefulWidget {
   final bool isLoading;
   final void Function(String username, String password) signIn;
-
-  const SignInLoadedView({required this.isLoading, required this.signIn, super.key});
+  final VoidCallback forgotPassword;
+  const SignInLoadedView({required this.isLoading, required this.signIn, super.key, required this.forgotPassword});
 
   @override
   State<SignInLoadedView> createState() => _SignInLoadedViewState();
 }
 
 class _SignInLoadedViewState extends State<SignInLoadedView> {
+  bool _obscureText = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -90,30 +92,41 @@ class _SignInLoadedViewState extends State<SignInLoadedView> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: _obscureText,
                   controller: passwordController,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     labelText: 'Informe sua senha',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() => _obscureText = !_obscureText);
+                      },
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
+                GestureDetector(
+                  onTap: widget.forgotPassword,
+                  child: const Text(
                   "Esqueci a senha",
                   style: TextStyle(
                     color: Color(0xFF1DAEFF),
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

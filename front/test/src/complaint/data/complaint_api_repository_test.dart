@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/complaint/data/repositories/complaint_api_repository.dart';
 import 'package:mc426_front/complaint/domain/entities/complaint.dart';
@@ -6,6 +7,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class ClientMock extends Mock implements http.Client {}
+
+const userIdMock = "user_id";
 
 void main() {
   late final http.Client client;
@@ -34,7 +37,7 @@ void main() {
         ),
       );
 
-      final result = await repository.createComplaint(mockComplaint);
+      final result = await repository.createComplaint(userId: userIdMock, complaint: mockComplaint);
       expect(result.isSuccess, true);
       expect(result.message, "Denúncia criada com sucesso!");
     });
@@ -55,7 +58,7 @@ void main() {
         ),
       );
 
-      final result = await repository.createComplaint(mockComplaint);
+      final result = await repository.createComplaint(userId: userIdMock, complaint: mockComplaint);
       expect(result.isSuccess, false);
       expect(result.message, "Falha ao criar denúncia: Erro desconhecido");
     });
@@ -71,7 +74,7 @@ void main() {
         ),
       ).thenThrow(Exception());
 
-      final result = await repository.createComplaint(mockComplaint);
+      final result = await repository.createComplaint(userId: userIdMock, complaint: mockComplaint);
       expect(result.isSuccess, false);
       expect(result.message, "Não foi possível concluir a solicitação: ${Exception()}");
     });
