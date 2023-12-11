@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mc426_front/profile/domain/domain.dart';
 
@@ -56,8 +59,21 @@ class _ProfileLoadedViewState extends State<ProfileLoadedView> {
             Center(
               child: InkWell(
                 onTap: widget.isEditing ? pickImage : null,
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 40,
+                  backgroundColor: Colors.grey[800],
+                  backgroundImage: widget.profile.photo != null
+                      ? Image.file(
+                          File(widget.profile.photo!),
+                          fit: BoxFit.cover,
+                        ).image
+                      : null,
+                  child: widget.profile.photo == null
+                      ? SvgPicture.asset(
+                          "assets/images/sign_icon.svg",
+                          width: 24,
+                        )
+                      : null,
                 ),
               ),
             ),
@@ -147,7 +163,7 @@ class _ProfileLoadedViewState extends State<ProfileLoadedView> {
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
-              initialValue: widget.profile.age,
+              initialValue: widget.profile.age.toString(),
               enabled: false,
             ),
             const SizedBox(height: 24),

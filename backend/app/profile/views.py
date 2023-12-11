@@ -33,13 +33,12 @@ def get_user_by_id(user_id):
     return user
 
 # Route for updating user information (edit profile)
-@profile_bp.route('/edit_profile', methods=['POST'])
-def edit_profile():
+@app.route('/profile/<string:user_id>', methods=['POST'])
+def edit_profile(user_id):
     user_data = request.json
     if not user_data:
         return jsonify({"message": "Invalid request"}), 400
 
-    user_id = user_data.get("id")
     new_name = user_data.get("name")
     new_phone = user_data.get("phone")
     new_address = user_data.get("address")
@@ -56,7 +55,7 @@ def edit_profile():
     if not new_phone.isdigit() or len(new_phone) != 11:
         return jsonify({"message": "Phone number must be an 11-digit number"}), 400
 
-    if not new_safety_number.isdigit() or len(new_safety_number) != 11:
+    if new_safety_number is not None and (not new_safety_number.isdigit() or len(new_safety_number) != 11):
         return jsonify({"message": "Safety number must be an 11-digit number"}), 400
 
     if not new_address:
@@ -72,14 +71,8 @@ def edit_profile():
         return jsonify({"message": "User not found"}), 404
 
 # Route for getting user profile by id
-@profile_bp.route('/get_profile', methods=['POST'])
-def get_profile():
-    user_data = request.json
-    if not user_data:
-        return jsonify({"message": "Invalid request"}), 400
-
-    user_id = user_data.get("id")
-
+@app.route('/profile/<string:user_id>', methods=['GET'])
+def get_profile(user_id):
     if not user_id:
         return jsonify({"message": "Missing required field: id"}), 400
 
@@ -87,12 +80,14 @@ def get_profile():
 
     if user:
         user_info = {
-            "id": user[0],
             "name": user[1],
-            "phone": user[2],
-            "address": user[3],
-            "photo": user[4],
-            "safetyNumber": user[5]
+            "username": user[2],
+            "email": user[3],
+            "age": user[4],
+            "phone": user[5],
+            "address": user[7],
+            "photo": user[8],
+            "safetyNumber": user[9],
         }
         return jsonify(user_info), 200
     else:
