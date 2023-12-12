@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:mc426_front/common/common.dart';
 import 'package:mc426_front/home/home.dart';
