@@ -78,4 +78,6 @@ setupProviders() async {
         getIt.get<NotificationRepository>(),
         storageShared,
       ));
+  getIt.registerSingleton<SendLocationRepository>(SendLocationApiRepository(client));
+  getIt.registerFactory<SendPanicLocationUsecase>(() => SendPanicLocationUsecase(getIt.get<SendLocationRepository>()));
 }
