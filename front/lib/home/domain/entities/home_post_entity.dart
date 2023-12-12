@@ -4,7 +4,6 @@ class HomePostEntity {
   final String? name;
   final String description;
   final String local;
-  final String time;
   final int upVotes;
   final int downVotes;
   final bool userUpVoted;
@@ -14,7 +13,6 @@ class HomePostEntity {
   const HomePostEntity({
     required this.id,
     required this.description,
-    required this.time,
     required this.local,
     required this.upVotes,
     required this.downVotes,
@@ -36,7 +34,6 @@ class HomePostEntity {
       name: map["name"],
       upVotes: map["upVotes"] ?? 0,
       downVotes: map["downVotes"] ?? 0,
-      time: map["time"],
       isAnonymous: map["isAnonymous"] ?? false,
     );
   }

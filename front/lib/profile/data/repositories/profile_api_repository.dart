@@ -49,7 +49,7 @@ class ProfileApiRepository extends ProfileRepository {
   Future<UserPostEntity?> getUserPosts(String userId) async {
     try {
       final result = await client.get(
-        Uri.parse("${baseUrl}posts/$userId"),
+        Uri.parse("${baseUrl}complaints/$userId"),
         headers: {
           'Content-Type': 'application/json',
         },

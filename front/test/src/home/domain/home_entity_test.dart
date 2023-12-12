@@ -24,7 +24,6 @@ void main() {
 
       expect(post.id, 1);
       expect(post.description, "description");
-      expect(post.time, "2 horas");
       expect(post.local, "Rua Roxo Moreira, 45");
       expect(post.upVotes, 2);
       expect(post.downVotes, 2);
@@ -33,7 +32,6 @@ void main() {
 
       expect(secondPost.id, 2);
       expect(secondPost.description, "description");
-      expect(secondPost.time, "10 dias");
       expect(secondPost.local, "Rua Luverci Pereira, 40");
       expect(secondPost.upVotes, 4);
       expect(secondPost.downVotes, 3);

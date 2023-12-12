@@ -34,6 +34,21 @@ cursor.execute('''
 ''')
 conn.commit()
 
+#pega os posts do usuário 
+def get_complaints_by_id(user_id):
+    cursor.execute("SELECT * FROM complaints WHERE user_id=?", (user_id,))
+
+    user = cursor.fetchall()
+
+    return user
+
+def get_user_by_id(user_id):
+    cursor.execute("SELECT name, photo FROM users WHERE id=?", (user_id,))
+
+    user = cursor.fetchone()
+
+    return user
+
 # API routes
 
 
@@ -93,29 +108,33 @@ def create_complaint(user_id: str):
 # TODO: Create route to retrive a complaint by id
 
 
-@posts_bp.route('/complaints', methods=['GET'])
-def get_complaints():
+@posts_bp.route('/complaints/<string:user_id>', methods=['GET'])
+def get_complaints(user_id):
     '''
-    Retrieve all complaints.
+    Retrieve all complaints of a user
 
     :return: All complaints in JSON format.
     '''
+    
+    complaints = get_complaints_by_id(user_id)
+    user = get_user_by_id(user_id)
 
-    cursor.execute('SELECT * FROM complaints')
-    complaints = cursor.fetchall()
+    user = {
+        'name': user[0],
+        'photo': user[1]
+    }
+
     complaints = [
         {
             'id': c[0],
-            'user_id': c[1],
             'title': c[2],
             'description': c[3],
             'address': c[4],
-            'isAnonymous': bool(c[5]),
             'likes': c[6],
             'unlikes': c[7]
         } for c in complaints
     ]
-    return jsonify({'complaints': complaints})
+    return jsonify({'complaints': complaints, 'header': user})
 
 # Implementation of complaint likes.
 

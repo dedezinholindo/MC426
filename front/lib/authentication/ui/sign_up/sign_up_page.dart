@@ -34,7 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       builder: (context, state) {
         Widget? body = switch (state) {
-          SignUpLoadedState() => SignUpLoadedView(key: UniqueKey(), onChange: _bloc.changeForms),
+          SignUpLoadedState() => SignUpLoadedView(key: UniqueKey(), onChange: _bloc.changeForms, signUpEntity: state.params.signUpEntity),
         };
 
         return Scaffold(

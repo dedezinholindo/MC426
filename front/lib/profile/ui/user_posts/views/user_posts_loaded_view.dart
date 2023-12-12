@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/profile/profile.dart';
@@ -23,34 +25,27 @@ class UserPostsLoadedView extends StatelessWidget {
                     CircleAvatar(
                       radius: 24,
                       backgroundColor: const Color(0xFF5F5F5F),
+                      backgroundImage: userPost.header.photo != null
+                          ? Image.file(
+                              File(userPost.header.photo!),
+                              fit: BoxFit.cover,
+                            ).image
+                          : null,
                       child: userPost.header.photo == null
                           ? SvgPicture.asset(
                               "assets/images/sign_icon.svg",
-                              width: 16,
+                              width: 24,
                             )
                           : null,
                     ),
                     const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userPost.header.name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          post.time,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      userPost.header.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
                     ),
                   ],
                 ),

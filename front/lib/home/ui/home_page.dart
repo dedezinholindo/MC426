@@ -22,8 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   void _logout() {
     _bloc.logout();
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => true);
+    Navigator.of(context).pushNamedAndRemoveUntil(SignInPage.routeName, (route) => true);
   }
 
   Future<void> configurePush() async {
@@ -37,8 +36,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await _bloc.init();
       await configurePush();
+      await _bloc.init();
     });
   }
 
@@ -60,8 +59,7 @@ class _HomePageState extends State<HomePage> {
     bool confirm = await _showPanicConfirmationDialog(context);
     final status = await Permission.location.request();
     if (confirm && status.isGranted) {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       _bloc.sendPanicAlert(position);
     }
   }
@@ -83,14 +81,12 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.red[700],
           title: const Text(
             'Confirmação de Pânico',
-            style: TextStyle(
-                fontSize: 22, color: Colors.white, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           content: const Text(
             'Confirma que deseja acionar o botão de pânico?\nSua localização será enviada para todos os usuários próximos.',
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w500),
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
@@ -134,9 +130,7 @@ class _HomePageState extends State<HomePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                  state.error == PanicStateErrors.callError
-                      ? 'Não foi possível fazer a chamada'
-                      : 'Não foi possível enviar a push',
+                  state.error == PanicStateErrors.callError ? 'Não foi possível fazer a chamada' : 'Não foi possível enviar a push',
                   style: const TextStyle(fontSize: 16)),
               backgroundColor: Colors.red,
             ),
@@ -145,8 +139,7 @@ class _HomePageState extends State<HomePage> {
         if (state is HomePanicState && state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Push enviada com sucesso!',
-                  style: TextStyle(fontSize: 16)),
+              content: Text('Push enviada com sucesso!', style: TextStyle(fontSize: 16)),
               backgroundColor: Colors.green,
             ),
           );
