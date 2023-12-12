@@ -17,7 +17,7 @@ conn, cursor = setup_home_db()
 
 
 @home_bp.route('/home/<string:user_id>/safety_number', methods=['GET'])
-def get_notifications(user_id:  str):
+def get_home(user_id:  str):
     '''
     Returns the user's safety number.
 
@@ -37,7 +37,34 @@ def get_notifications(user_id:  str):
 
     if user_return is None:
         return jsonify({'error': 'User not found, check the user ID.'}), 404
-    
+
     safety_number = user_return[0]
 
     return jsonify({'safety_number': safety_number}), 200
+
+
+@home_bp.route('/home/<string:user_id>/username', methods=['GET'])
+def get_username(user_id:  str):
+    '''
+    Returns the username.
+
+    :param user_id: User's identification;
+    '''
+
+    consulta = """
+        SELECT 
+            username
+        FROM users
+        WHERE id = ?
+    """
+
+    cursor.execute(consulta, (user_id,))
+
+    user_return = cursor.fetchone()
+
+    if user_return is None:
+        return jsonify({'error': 'User not found, check the user ID.'}), 404
+
+    user_name = user_return[0]
+
+    return jsonify({'user_name': user_name}), 200
