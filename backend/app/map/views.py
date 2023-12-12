@@ -9,10 +9,10 @@ geolocator = Nominatim(user_agent="Press2Safe")
 
 
 def geocode_address(address):
-    location = geolocator.geocode(address)
-    if location:
+    try:
+        location = geolocator.geocode(address)
         return {"latitude": location.latitude, "longitude": location.longitude}
-    else:
+    except:
         return {"message": "Address not found"}
 
 # Function to convert coordinates to address (reverse geocoding)
