@@ -35,26 +35,13 @@ class _HomePostWidgetState extends State<HomePostWidget> {
                   : null,
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.post.name != null && !widget.post.isAnonymous ? widget.post.name! : "Anônimo",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  widget.post.time,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+            Text(
+              widget.post.name != null && !widget.post.isAnonymous ? widget.post.name! : "Anônimo",
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
             ),
           ],
         ),

@@ -11,8 +11,8 @@ class UserPostEntity {
 
   factory UserPostEntity.fromMap(Map<String, dynamic> map) {
     final header = UserPostHeaderEntity.fromMap(Map<String, dynamic>.from(map["header"]));
-    final posts = map['posts'] != null
-        ? List<UserPostInfoEntity>.from(map['posts'].map((e) => UserPostInfoEntity.fromMap(Map<String, dynamic>.from(e)))).toList()
+    final posts = map['complaints'] != null
+        ? List<UserPostInfoEntity>.from(map['complaints'].map((e) => UserPostInfoEntity.fromMap(Map<String, dynamic>.from(e)))).toList()
         : <UserPostInfoEntity>[];
 
     return UserPostEntity(

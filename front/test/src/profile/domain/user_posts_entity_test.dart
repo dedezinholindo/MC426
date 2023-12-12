@@ -21,7 +21,6 @@ void main() {
 
       expect(first.id, 1);
       expect(first.description, "description");
-      expect(first.time, "2 horas");
       expect(first.local, "Rua Roxo Moreira, 45");
       expect(first.upVotes, 2);
       expect(first.downVotes, 2);
@@ -30,7 +29,6 @@ void main() {
 
       expect(second.id, 3);
       expect(second.description, "description");
-      expect(second.time, "2 horas");
       expect(second.local, "Rua Roxo Moreira, 45");
       expect(second.upVotes, 2);
       expect(second.downVotes, 2);

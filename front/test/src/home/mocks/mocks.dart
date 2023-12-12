@@ -11,7 +11,6 @@ const homeMockJson = {
     {
       "id": 1,
       "description": "description",
-      "time": "2 horas",
       "local": "Rua Roxo Moreira, 45",
       "upVotes": 2,
       "downVotes": 2,
@@ -19,7 +18,6 @@ const homeMockJson = {
     {
       "id": 2,
       "description": "description",
-      "time": "10 dias",
       "local": "Rua Luverci Pereira, 40",
       "upVotes": 4,
       "downVotes": 3,
@@ -38,7 +36,6 @@ const userJson = {
 const postJson = {
   "id": 1,
   "description": "description",
-  "time": "2 horas",
   "local": "Rua Roxo Moreira, 45",
   "upVotes": 2,
   "downVotes": 2,
@@ -59,7 +56,6 @@ const homeMock = HomeEntity(
     HomePostEntity(
       id: 1,
       description: "description",
-      time: "2 horas",
       local: "Rua Roxo Moreira, 45",
       upVotes: 2,
       downVotes: 2,
@@ -67,7 +63,6 @@ const homeMock = HomeEntity(
     HomePostEntity(
       id: 2,
       description: "description",
-      time: "10 dias",
       local: "Rua Luverci Pereira, 40",
       upVotes: 4,
       downVotes: 3,

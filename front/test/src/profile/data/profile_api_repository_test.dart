@@ -162,7 +162,6 @@ void main() {
 
       expect(post.id, 1);
       expect(post.description, "description");
-      expect(post.time, "2 horas");
       expect(post.local, "Rua Roxo Moreira, 45");
       expect(post.upVotes, 2);
       expect(post.downVotes, 2);
