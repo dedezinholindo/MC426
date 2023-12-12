@@ -14,3 +14,9 @@ class HomeLoadedState extends HomeState {
 class HomeErrorState extends HomeState {
   HomeErrorState();
 }
+
+class HomePanicState extends HomeState {
+  final PanicStateErrors? error;
+  final bool isSuccess;
+  HomePanicState({this.error, this.isSuccess = false});
+}

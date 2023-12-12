@@ -4,8 +4,9 @@ import 'package:mc426_front/complaint/complaint.dart';
 import 'package:mc426_front/home/domain/domain.dart';
 
 class HomeUserWidget extends StatelessWidget {
+  final VoidCallback panicButton;
   final HomeUserEntity user;
-  const HomeUserWidget({required this.user, super.key});
+  const HomeUserWidget({required this.user, super.key, required this.panicButton});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class HomeUserWidget extends StatelessWidget {
               const SizedBox(width: 12),
               Flexible(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: panicButton,
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
