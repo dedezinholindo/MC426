@@ -13,7 +13,7 @@ class NotificationApiRepository extends NotificationRepository {
   Future<bool> changeNotificationConfig({required ChangeNotificationEntity notification}) async {
     try {
       final result = await client.post(
-        Uri.parse("${baseUrl}notifications"),
+        Uri.parse("${baseUrl}notifications/"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -40,7 +40,8 @@ class NotificationApiRepository extends NotificationRepository {
       final body = jsonDecode(result.body);
 
       final notifications = body != null
-          ? List<NotificationEntity>.from(body.map((e) => NotificationEntity.fromMap(Map<String, dynamic>.from(e)))).toList()
+          ? List<NotificationEntity>.from(body["notifications"].map((e) => NotificationEntity.fromMap(Map<String, dynamic>.from(e))))
+              .toList()
           : <NotificationEntity>[];
 
       return notifications;

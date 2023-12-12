@@ -8,10 +8,12 @@ def create_app():
     from app.posts.views import posts_bp
     from app.map.views import map_bp
     from app.profile.views import profile_bp
+    from app.notifications.views import notifications_bp
 
     app.register_blueprint(login_bp)
     app.register_blueprint(posts_bp)
     app.register_blueprint(map_bp)
     app.register_blueprint(profile_bp)
+    app.register_blueprint(notifications_bp)
 
     return app

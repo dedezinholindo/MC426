@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,9 +35,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
           NotificationLoadedState() => NotificationLoadedView(
               notificationMap: state.notificationMap,
               changeNotification: (changeNotification) async {
-                if (changeNotification.isActivated) {
-                  await FirebaseMessaging.instance.unsubscribeFromTopic(changeNotification.topicName);
+                try {
+                  if (changeNotification.isActivated) {
+                    await FirebaseMessaging.instance.unsubscribeFromTopic(changeNotification.topicName);
+                  }
+                } catch (e) {
+                  log("Could not unsubscribeFromTopic on Firebase");
                 }
+
                 _bloc.editNotification(changeNotification);
               },
             ),

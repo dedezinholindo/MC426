@@ -11,7 +11,7 @@ class ChangeNotificationEntity {
 
   Map<String, dynamic> get toMap => {
         "id": id,
-        "userId": userId,
-        "isActivated": isActivated,
+        "user_id": userId,
+        "is_active": isActivated,
       };
 }

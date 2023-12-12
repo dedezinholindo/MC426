@@ -1,11 +1,11 @@
 import 'package:mc426_front/notifications/domain/domain.dart';
 
 const notificationMockJson = {
-  "id": 1,
+  "notification_id": 1,
   "title": "title",
   "description": "description",
-  "isActivated": true,
-  "topicName": "topic_name",
+  "is_active": true,
+  "topic_name": "topic_name",
 };
 
 final notificationMock = NotificationEntity(

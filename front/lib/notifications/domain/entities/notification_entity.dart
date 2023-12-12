@@ -15,11 +15,11 @@ class NotificationEntity {
 
   factory NotificationEntity.fromMap(Map<String, dynamic> map) {
     return NotificationEntity(
-      id: map["id"],
+      id: map["notification_id"],
       description: map["description"],
       title: map["title"],
-      isActivated: map["isActivated"],
-      topicName: map["topicName"],
+      isActivated: map["is_active"],
+      topicName: map["topic_name"],
     );
   }
 
