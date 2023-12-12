@@ -94,3 +94,24 @@ def get_photo(user_id:  str):
     photo = user_return[0]
 
     return jsonify({'photo': photo}), 200
+
+@home_bp.route('/home/<string:user_id>/number_of_posts', methods=['GET'])
+def get_number_of_posts(user_id:  str):
+    '''
+    Returns the user's number of posts.
+
+    :param user_id: User's identification;
+    '''
+
+    consulta = """
+        SELECT 
+            COUNT(*)
+        FROM complaints
+        WHERE user_id = ?
+    """
+
+    cursor.execute(consulta, (user_id,))
+
+    number_of_posts = cursor.fetchone()[0]
+
+    return jsonify({'number_of_posts': number_of_posts}), 200
