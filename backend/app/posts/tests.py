@@ -66,20 +66,24 @@ class TestComplaints(unittest.TestCase):
 
     @patch('app.posts.views.cursor')
     def test_get_complaints(self, mock_cursor):
-        # Cria uma instância de MagicMock para cursor.fetchall()
-        fetchall_mock = MagicMock()
+        userid = '1'
 
         # Configura o retorno desejado para fetchall()
-        fetchall_mock.return_value = [
+        mock_cursor.fetchall.return_value = [
             (1, 1, 'Title 1', 'Description 1', 'Address 1', False, 10, 5),
             (2, 2, 'Title 2', 'Description 2', 'Address 2', True, 5, 2)
         ]
 
-        # Atribuir fetchall_mock a cursor.fetchall
-        mock_cursor.fetchall = fetchall_mock
+        mock_cursor.fetchone.return_value = ("name", "photo")
 
         # Chama a rota usando o cliente de teste
-        response = self.client.get('/complaints')
+        response = self.client.get(f'/complaints/{userid}')
+
+        mock_cursor.fetchall.assert_called_once()
+
+        mock_cursor.execute.assert_called_with(
+            "SELECT name, photo FROM users WHERE id=?", ('1',))
+        mock_cursor.fetchone.assert_called_once()
 
         # Verificar o status da resposta
         self.assertEqual(response.status_code, 200)
@@ -89,25 +93,25 @@ class TestComplaints(unittest.TestCase):
             'complaints': [
                 {
                     'id': 1,
-                    'user_id': 1,
                     'title': 'Title 1',
                     'description': 'Description 1',
                     'address': 'Address 1',
-                    'isAnonymous': False,
                     'likes': 10,
                     'unlikes': 5
                 },
                 {
                     'id': 2,
-                    'user_id': 2,
                     'title': 'Title 2',
                     'description': 'Description 2',
                     'address': 'Address 2',
-                    'isAnonymous': True,
                     'likes': 5,
                     'unlikes': 2
                 }
-            ]
+            ],
+            'header': {
+                'name': 'name',
+                'photo': 'photo'
+            },
         }
         self.assertDictEqual(response.json, expected_response)
 

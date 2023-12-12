@@ -36,18 +36,14 @@ conn.commit()
 
 #pega os posts do usuário 
 def get_complaints_by_id(user_id):
-    cursor.execute('''
-            SELECT * FROM complaints WHERE user_id=?
-        ''', (user_id,))
+    cursor.execute("SELECT * FROM complaints WHERE user_id=?", (user_id,))
 
     user = cursor.fetchall()
 
     return user
 
 def get_user_by_id(user_id):
-    cursor.execute('''
-        SELECT name, photo FROM users WHERE id=?
-    ''', (user_id,))
+    cursor.execute("SELECT name, photo FROM users WHERE id=?", (user_id,))
 
     user = cursor.fetchone()
 
