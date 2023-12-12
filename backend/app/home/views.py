@@ -65,6 +65,32 @@ def get_username(user_id:  str):
     if user_return is None:
         return jsonify({'error': 'User not found, check the user ID.'}), 404
 
-    user_name = user_return[0]
+    username = user_return[0]
 
-    return jsonify({'user_name': user_name}), 200
+    return jsonify({'username': username}), 200
+
+@home_bp.route('/home/<string:user_id>/photo', methods=['GET'])
+def get_photo(user_id:  str):
+    '''
+    Returns the user's photo.
+
+    :param user_id: User's identification;
+    '''
+
+    consulta = """
+        SELECT 
+            photo
+        FROM users
+        WHERE id = ?
+    """
+
+    cursor.execute(consulta, (user_id,))
+
+    user_return = cursor.fetchone()
+
+    if user_return is None:
+        return jsonify({'error': 'User not found, check the user ID.'}), 404
+
+    photo = user_return[0]
+
+    return jsonify({'photo': photo}), 200
