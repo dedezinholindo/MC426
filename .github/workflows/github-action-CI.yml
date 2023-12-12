@@ -93,19 +93,19 @@ jobs:
       - name: Testing the aplication of sign in and sign up functionalitiy
         run: |
           cd backend
-          python3 app/login/tests.py
+          python3 -m app.login.tests
       - name: Testing the aplication of posts functionalitiy
         run: |
-          cd backend/app/posts
-          python3 tests.py
+          cd backend
+          python3 -m app.posts.tests
       - name: Testing the aplication of map functionalitiy
         run: |
-          cd backend/app/map
-          python3 tests.py
+          cd backend
+          python3 -m app.map.tests
       - name: Testing the aplication of profile functionalitiy
         run: |
-          cd backend/app/profile
-          python3 tests.py
+          cd backend
+          python3 -m app.profile.tests
       - run: echo "This job's status is ${{ job.status }}."
   
   test-front:
