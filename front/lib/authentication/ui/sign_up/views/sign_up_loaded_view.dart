@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mc426_front/authentication/domain/entities/sign_up_entity.dart';
 
 class SignUpLoadedView extends StatefulWidget {
+  final SignUpEntity signUpEntity;
   final void Function({
     String? name,
     String? username,
@@ -18,7 +20,7 @@ class SignUpLoadedView extends StatefulWidget {
     bool? passwordMatchParam,
   }) onChange;
 
-  const SignUpLoadedView({super.key, required this.onChange});
+  const SignUpLoadedView({super.key, required this.onChange, required this.signUpEntity});
 
   @override
   State<SignUpLoadedView> createState() => _SignUpLoadedViewState();
@@ -28,15 +30,9 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
   String? photo;
   bool _obscureTextPassword = true;
   bool _obscureTextVerify = true;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
-  TextEditingController verifyPasswordController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController safetyNumberController = TextEditingController();
+
   ValueNotifier<bool> passwordMatch = ValueNotifier<bool>(true);
 
   Future pickImage() async {
@@ -54,15 +50,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
 
   @override
   void dispose() {
-    nameController.dispose();
-    usernameController.dispose();
-    emailController.dispose();
-    ageController.dispose();
-    phoneController.dispose();
     passwordController.dispose();
-    verifyPasswordController.dispose();
-    addressController.dispose();
-    safetyNumberController.dispose();
     super.dispose();
   }
 
@@ -108,12 +96,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: nameController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
+              initialValue: widget.signUpEntity.name.isNotEmpty ? widget.signUpEntity.name : null,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu nome',
@@ -134,12 +122,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: usernameController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
+              initialValue: widget.signUpEntity.username.isNotEmpty ? widget.signUpEntity.username : null,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu username',
@@ -160,12 +148,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: emailController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
+              initialValue: widget.signUpEntity.email.isNotEmpty ? widget.signUpEntity.email : null,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu email',
@@ -186,7 +174,6 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: ageController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -196,6 +183,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite sua idade',
               ),
+              initialValue: widget.signUpEntity.age.isNotEmpty ? widget.signUpEntity.age : null,
               onChanged: (value) => widget.onChange(age: value),
             ),
             const SizedBox(height: 24),
@@ -212,7 +200,6 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: phoneController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -222,6 +209,7 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu número de celular',
               ),
+              initialValue: widget.signUpEntity.phone.isNotEmpty ? widget.signUpEntity.phone : null,
               onChanged: (value) => widget.onChange(phone: value),
             ),
             const SizedBox(height: 24),
@@ -265,7 +253,6 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
               valueListenable: passwordMatch,
               builder: (context, value, child) {
                 return TextFormField(
-                  controller: verifyPasswordController,
                   obscureText: _obscureTextVerify,
                   style: const TextStyle(
                     color: Colors.white,
@@ -310,12 +297,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: addressController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
+              initialValue: widget.signUpEntity.address.isNotEmpty ? widget.signUpEntity.address : null,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite seu endereço',
@@ -336,12 +323,12 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: safetyNumberController,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
+              initialValue: widget.signUpEntity.safetyNumber?.isNotEmpty == true ? widget.signUpEntity.safetyNumber : null,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Digite um número de emergência',

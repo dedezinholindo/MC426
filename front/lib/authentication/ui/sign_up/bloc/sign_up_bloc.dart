@@ -6,7 +6,7 @@ import 'package:mc426_front/authentication/authentication.dart';
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Cubit<SignUpState> {
-  SignUpBloc() : super(SignUpLoadedState(const SignUpStateParams()));
+  SignUpBloc() : super(SignUpLoadedState(SignUpStateParams(signUpEntity: SignUpEntity.empty())));
 
   final signupUsecase = GetIt.instance.get<SignUpUsecase>();
 
@@ -22,9 +22,11 @@ class SignUpBloc extends Cubit<SignUpState> {
   }
 
   void signUp() async {
-    emit(SignUpLoadedState(state.params.copyWith(isLoading: true)));
+    emit(SignUpLoadedState(state.params.copyWith(signUpEntity: _signUpEntity, isLoading: true)));
 
     if (!passwordMatch) {
+      isAvailable.value = false;
+      passwordMatch = false;
       return emit(
         SignUpLoadedState(
           state.params.copyWith(isLoading: false),
@@ -38,7 +40,12 @@ class SignUpBloc extends Cubit<SignUpState> {
 
     final result = await signupUsecase.call(_signUpEntity);
 
-    emit(SignUpLoadedState(state.params.copyWith(isLoading: false), result: result));
+    if (!result.isSuccess) {
+      passwordMatch = false;
+      isAvailable.value = false;
+    }
+
+    emit(SignUpLoadedState(state.params.copyWith(signUpEntity: _signUpEntity, isLoading: false), result: result));
   }
 
   void changeForms({

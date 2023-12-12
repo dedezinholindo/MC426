@@ -2,13 +2,18 @@ part of 'sign_up_bloc.dart';
 
 class SignUpStateParams {
   final bool isLoading;
+  final SignUpEntity signUpEntity;
 
-  const SignUpStateParams({this.isLoading = false});
+  const SignUpStateParams({
+    required this.signUpEntity,
+    this.isLoading = false,
+  });
 
   SignUpStateParams copyWith({
+    SignUpEntity? signUpEntity,
     bool? isLoading,
   }) {
-    return SignUpStateParams(isLoading: isLoading ?? this.isLoading);
+    return SignUpStateParams(signUpEntity: signUpEntity ?? this.signUpEntity, isLoading: isLoading ?? this.isLoading);
   }
 }
 
