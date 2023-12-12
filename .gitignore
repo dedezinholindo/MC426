@@ -46,6 +46,7 @@ app.*.map.json
 # Data
 *.db
 *users.txt
+*coordinates.txt
 
 __pycache__
 

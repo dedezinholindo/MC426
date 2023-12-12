@@ -1,17 +1,15 @@
 import unittest
 import json
-from login_registration import app
+import app
 
-import time
 
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):
-        app.config['TESTING'] = True
-        self.app = app.test_client()
+        self.app = app.create_app()
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
 
-        # Test registration with missing required fields
-        
     def tearDown(self):
         pass
 
@@ -29,7 +27,7 @@ class AppTestCase(unittest.TestCase):
             "safetyNumber": "98765432101"
         }
 
-        response = self.app.post('/registration', json=data)
+        response = self.client.post('/registration', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 201)
@@ -48,7 +46,7 @@ class AppTestCase(unittest.TestCase):
             "safetyNumber": "98765432101"
         }
 
-        response = self.app.post('/registration', json=data)
+        response = self.client.post('/registration', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
@@ -68,7 +66,7 @@ class AppTestCase(unittest.TestCase):
             "safetyNumber": "98765000101"
         }
 
-        response = self.app.post('/registration', json=data)
+        response = self.client.post('/registration', json=data)
 
         # Test successful user login
         data = {
@@ -76,7 +74,7 @@ class AppTestCase(unittest.TestCase):
             "password": "securepassword2"
         }
 
-        response = self.app.post('/login', json=data)
+        response = self.client.post('/login', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 200)
@@ -89,7 +87,7 @@ class AppTestCase(unittest.TestCase):
             "password": "wrong_password"
         }
 
-        response = self.app.post('/login', json=data)
+        response = self.client.post('/login', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 401)
@@ -109,14 +107,14 @@ class AppTestCase(unittest.TestCase):
             "safetyNumber": "98765000101"
         }
 
-        response = self.app.post('/registration', json=data)
+        response = self.client.post('/registration', json=data)
 
         # Test successful "Forget My Password" functionality
         data = {
             "email": "chris.stuart@example.com"
         }
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 200)
@@ -128,7 +126,7 @@ class AppTestCase(unittest.TestCase):
             "email": "invalid_email"
         }
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
@@ -138,7 +136,7 @@ class AppTestCase(unittest.TestCase):
         # Test "Forget My Password" with missing email
         data = {}
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
@@ -150,7 +148,7 @@ class AppTestCase(unittest.TestCase):
             "email": "nonexistent_email@example.com"
         }
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 404)
@@ -162,7 +160,7 @@ class AppTestCase(unittest.TestCase):
             "invalid_key": "john.doe@example.com"
         }
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
@@ -182,17 +180,18 @@ class AppTestCase(unittest.TestCase):
             "safetyNumber": "98765000101"
         }
 
-        response = self.app.post('/registration', json=data)
+        response = self.client.post('/registration', json=data)
 
         data = {
             "email": "Chris.Stuart@example.com"
         }
 
-        response = self.app.post('/forget_password', json=data)
+        response = self.client.post('/forget_password', json=data)
         result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("reset link was successfully sent", result["message"])
+
 
 if __name__ == '__main__':
     unittest.main()
