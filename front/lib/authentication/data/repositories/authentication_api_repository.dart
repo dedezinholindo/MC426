@@ -55,12 +55,16 @@ class AuthenticationApiRepository extends AuthenticationRepository {
   @override
   Future<bool> sendPasswordReset(String email) async {
     try {
-      final uri = Uri.parse('${baseUrl}password_reset');
-      final response = await client.post(uri, headers: {
-        'Content-Type': 'application/json',
-      }, body: {
-        'email': email
-      });
+      final uri = Uri.parse('${baseUrl}forget_password');
+      final response = await client.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(
+          {'email': email},
+        ),
+      );
 
       return response.statusCode == 200;
     } catch (e) {

@@ -30,8 +30,7 @@ class _SignInPageState extends State<SignInPage> {
             SnackBar(
               duration: const Duration(milliseconds: 1000),
               content: Text(state.result!.message),
-              backgroundColor:
-                  state.result!.isSuccess ? Colors.green : Colors.red,
+              backgroundColor: state.result!.isSuccess ? Colors.green : Colors.red,
             ),
           );
         }
@@ -43,7 +42,7 @@ class _SignInPageState extends State<SignInPage> {
                 return AlertDialog(
                   backgroundColor: Colors.green[700],
                   content: const Text(
-                    "Email enviado com sucesso!",
+                    "Se o seu usuário existir, um email será enviado com o link de redefinição de senha!",
                     textAlign: TextAlign.center,
                   ),
                 );

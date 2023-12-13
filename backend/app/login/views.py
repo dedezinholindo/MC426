@@ -151,19 +151,9 @@ def forget_password():
     cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
     user = cursor.fetchone()
 
-    if user:
-        # Generate a unique token for password reset
-        #reset_token = str(uuid.uuid4())
-
-        # Save the reset token to the user's data
-        #cursor.execute('UPDATE users SET reset_token = ? WHERE email = ?', (reset_token, email))
-        #conn.commit()
-        #conn.close()
-
-        return jsonify({"message": "If your email exists in our database, the reset link was successfully sent"}), 200
+    return jsonify({"message": "If your email exists in our database, the reset link was successfully sent"}), 200
 
     conn.close()
-    return jsonify({"message": "Email not found"}), 404
 
 if __name__ == '__main__':
     print(login_bp)
