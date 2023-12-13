@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/home/domain/domain.dart';
@@ -27,6 +29,12 @@ class _HomePostWidgetState extends State<HomePostWidget> {
             CircleAvatar(
               radius: 24,
               backgroundColor: const Color(0xFF5F5F5F),
+              backgroundImage: widget.post.photo != null
+                  ? Image.file(
+                      File(widget.post.photo!),
+                      fit: BoxFit.cover,
+                    ).image
+                  : null,
               child: widget.post.photo == null || widget.post.isAnonymous
                   ? SvgPicture.asset(
                       "assets/images/sign_icon.svg",

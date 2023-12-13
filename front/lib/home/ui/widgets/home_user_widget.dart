@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mc426_front/complaint/complaint.dart';
@@ -20,6 +22,12 @@ class HomeUserWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.black,
+                backgroundImage: user.photo != null
+                    ? Image.file(
+                        File(user.photo!),
+                        fit: BoxFit.cover,
+                      ).image
+                    : null,
                 child: user.photo == null
                     ? SvgPicture.asset(
                         "assets/images/sign_icon.svg",
