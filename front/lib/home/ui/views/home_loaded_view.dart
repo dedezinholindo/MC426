@@ -5,17 +5,18 @@ import 'package:mc426_front/home/home.dart';
 
 class HomeLoadedView extends StatelessWidget {
   final VoidCallback panicButton;
+  final RefreshCallback refreshCallback;
   final HomeEntity home;
   final void Function(int id, bool vote) vote;
 
-  const HomeLoadedView({required this.vote, required this.home, super.key, required this.panicButton});
+  const HomeLoadedView({required this.vote, required this.home, super.key, required this.panicButton, required this.refreshCallback});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return RefreshIndicator(
+      onRefresh: refreshCallback,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
           HomeUserWidget(user: home.user, panicButton: panicButton),
           const SizedBox(height: 24),

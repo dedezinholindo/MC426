@@ -9,8 +9,6 @@ import '../mocks/mocks.dart';
 
 class ClientMock extends Mock implements http.Client {}
 
-const userIdMock = "user_id";
-
 void main() {
   late final http.Client client;
   late final ComplaintsMapRepository repository;
@@ -35,7 +33,7 @@ void main() {
         ),
       );
 
-      final result = await repository.getCoordinates(userIdMock);
+      final result = await repository.getCoordinates();
       expect(result!.length, 5);
 
       final first = result.first;
@@ -57,7 +55,7 @@ void main() {
         ),
       );
 
-      final result = await repository.getCoordinates(userIdMock);
+      final result = await repository.getCoordinates();
       expect(result!.isEmpty, isTrue);
     });
 
@@ -74,7 +72,7 @@ void main() {
         ),
       );
 
-      final result = await repository.getCoordinates(userIdMock);
+      final result = await repository.getCoordinates();
       expect(result, null);
     });
 
@@ -86,7 +84,7 @@ void main() {
         ),
       ).thenThrow(Exception());
 
-      final result = await repository.getCoordinates(userIdMock);
+      final result = await repository.getCoordinates();
       expect(result, null);
     });
   });

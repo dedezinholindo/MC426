@@ -75,14 +75,15 @@ def get_home(user_id:  str):
             complaints.unlikes,
             complaints.address,
             complaints.isAnonymous,
-            CASE WHEN likes.user_id IS NOT NULL THEN likes.is_like ELSE NULL END AS user_like
+            CASE WHEN likes.user_id IS NOT NULL THEN likes.is_like ELSE NULL END AS user_like,
+            CASE WHEN complaints.user_id == ? THEN false ELSE true END AS can_vote
         FROM complaints
-        JOIN users ON complaints.user_id = users.id
+        JOIN users ON complaints.user_id = users.id or complaints.user_id = "anonymous"
         LEFT JOIN likes ON complaints.id = likes.complaint_id AND likes.user_id = ?;
 
     """
 
-    cursor.execute(consulta, (user_id,))
+    cursor.execute(consulta, (user_id, user_id))
 
     posts = cursor.fetchall()
 
@@ -106,7 +107,8 @@ def get_home(user_id:  str):
                 'unlikes': p[5],
                 'address': p[6],
                 'isAnonymous': p[7],
-                'user_like': p[8]
+                'user_like': p[8],
+                'can_vote': p[9],
             }
             for p in posts
         ]

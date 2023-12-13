@@ -10,10 +10,10 @@ class ComplaintsMapApiRepository extends ComplaintsMapRepository {
   ComplaintsMapApiRepository(this.client);
 
   @override
-  Future<List<LatLng>?> getCoordinates(String userId) async {
+  Future<List<LatLng>?> getCoordinates() async {
     try {
       final result = await client.get(
-        Uri.parse("${baseUrl}geocode/$userId"),
+        Uri.parse("${baseUrl}geocode"),
         headers: {
           'Content-Type': 'application/json',
         },

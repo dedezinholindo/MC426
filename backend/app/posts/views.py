@@ -97,10 +97,16 @@ def create_complaint(user_id: str):
         return jsonify({'error': error_msg}), 400
 
     # Saves the new complaint in DB
-    cursor.execute('''
-    INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (user_id, title, description, address, isAnonymous, 0, 0))
+    if isAnonymous == True:
+        cursor.execute('''
+        INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', ("anonymous", title, description, address, isAnonymous, 0, 0))
+    else:
+        cursor.execute('''
+        INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (user_id, title, description, address, isAnonymous, 0, 0))
     conn.commit()
 
     return jsonify({'message': 'Complaint created successfully'}), 201
