@@ -33,16 +33,18 @@ void main() {
       },
       act: (bloc) {
         bloc.changeForms(
-          name: "name_test",
-          username: "username_test",
-          email: "email_test@gmail.com",
-          age: "20",
-          phone: "phone_test",
-          password: "password_test",
+          signUpEntity: const SignUpEntity(
+            name: "name_test",
+            username: "username_test",
+            email: "email_test@gmail.com",
+            age: "20",
+            phone: "phone_test",
+            password: "password_test",
+            address: "address_test",
+            photo: "photo_test",
+            safetyNumber: "190",
+          ),
           passwordMatchParam: true,
-          address: "address_test",
-          photo: "photo_test",
-          safetyNumber: "190",
         );
         bloc.signUp();
       },
@@ -64,16 +66,18 @@ void main() {
       },
       act: (bloc) {
         bloc.changeForms(
-          name: "name_test",
-          username: "username_test",
-          email: "email_test@gmail.com",
-          age: "20",
-          phone: "phone_test",
-          password: "password_test",
+          signUpEntity: const SignUpEntity(
+            name: "name_test",
+            username: "username_test",
+            email: "email_test@gmail.com",
+            age: "20",
+            phone: "phone_test",
+            password: "password_test",
+            address: "address_test",
+            photo: "photo_test",
+            safetyNumber: "190",
+          ),
           passwordMatchParam: true,
-          address: "address_test",
-          photo: "photo_test",
-          safetyNumber: "190",
         );
         bloc.signUp();
       },
@@ -92,16 +96,18 @@ void main() {
       },
       act: (bloc) {
         bloc.changeForms(
-          name: "name_test",
-          username: "username_test",
-          email: "email_test@gmail.com",
-          age: "20",
-          phone: "phone_test",
-          password: "password_test",
+          signUpEntity: const SignUpEntity(
+            name: "name_test",
+            username: "username_test",
+            email: "email_test@gmail.com",
+            age: "20",
+            phone: "phone_test",
+            password: "password_test",
+            address: "address_test",
+            photo: "photo_test",
+            safetyNumber: "190",
+          ),
           passwordMatchParam: false,
-          address: "address_test",
-          photo: "photo_test",
-          safetyNumber: "190",
         );
         bloc.signUp();
       },
@@ -121,16 +127,18 @@ void main() {
         return SignUpBloc();
       },
       act: (bloc) => bloc.changeForms(
-        name: "name_test",
-        username: "username_test",
-        email: "email_test@gmail.com",
-        age: "20",
-        phone: "phone_test",
-        password: "password_test",
+        signUpEntity: const SignUpEntity(
+          name: "name_test",
+          username: "username_test",
+          email: "email_test@gmail.com",
+          age: "20",
+          phone: "phone_test",
+          password: "password_test",
+          address: "address_test",
+          photo: "photo_test",
+          safetyNumber: "190",
+        ),
         passwordMatchParam: true,
-        address: "address_test",
-        photo: "photo_test",
-        safetyNumber: "190",
       ),
       verify: (bloc) {
         expect(bloc.passwordMatch, true);
@@ -144,16 +152,18 @@ void main() {
         return SignUpBloc();
       },
       act: (bloc) => bloc.changeForms(
-        name: "name_test",
-        username: "username_test",
-        email: "email_test@gmail.com",
-        age: "20",
-        phone: "phone_test",
-        password: "password_test",
+        signUpEntity: const SignUpEntity(
+          name: "name_test",
+          username: "username_test",
+          email: "email_test@gmail.com",
+          age: "20",
+          phone: "phone_test",
+          password: "password_test",
+          address: "address_test",
+          photo: "photo_test",
+          safetyNumber: "190",
+        ),
         passwordMatchParam: false,
-        address: "address_test",
-        photo: "photo_test",
-        safetyNumber: "190",
       ),
       verify: (bloc) {
         expect(bloc.passwordMatch, false);
@@ -167,13 +177,17 @@ void main() {
         return SignUpBloc();
       },
       act: (bloc) => bloc.changeForms(
-        name: "name_test",
-        email: "email_test@gmail.com",
-        age: "20",
+        signUpEntity: const SignUpEntity(
+          name: "name_test",
+          email: "email_test@gmail.com",
+          age: "20",
+          phone: "phone_test",
+          password: "password_test",
+          safetyNumber: "190",
+          username: "",
+          address: "",
+        ),
         passwordMatchParam: true,
-        phone: "phone_test",
-        password: "password_test",
-        safetyNumber: "190",
       ),
       verify: (bloc) {
         expect(bloc.passwordMatch, true);
@@ -187,12 +201,15 @@ void main() {
         return SignUpBloc();
       },
       act: (bloc) => bloc.changeForms(
-        name: "name_test",
-        email: "email_test@gmail.com",
-        age: "20",
-        phone: "phone_test",
-        password: "password_test",
-        safetyNumber: "190",
+        signUpEntity: const SignUpEntity(
+            name: "name_test",
+            email: "email_test@gmail.com",
+            age: "20",
+            phone: "phone_test",
+            password: "password_test",
+            safetyNumber: "190",
+            address: "",
+            username: ""),
       ),
       verify: (bloc) {
         expect(bloc.passwordMatch, false);
