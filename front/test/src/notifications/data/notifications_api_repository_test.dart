@@ -37,7 +37,7 @@ void main() {
       );
 
       final result = await repository.changeNotificationConfig(
-        notification: changeNotificationMock,
+        notification: notificationMock,
       );
       expect(result, true);
     });
@@ -57,7 +57,7 @@ void main() {
       );
 
       final result = await repository.changeNotificationConfig(
-        notification: changeNotificationMock,
+        notification: notificationMock,
       );
       expect(result, false);
     });
@@ -72,7 +72,7 @@ void main() {
       ).thenThrow(Exception());
 
       final result = await repository.changeNotificationConfig(
-        notification: changeNotificationMock,
+        notification: notificationMock,
       );
       expect(result, false);
     });

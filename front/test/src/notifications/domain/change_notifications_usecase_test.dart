@@ -21,7 +21,6 @@ void main() {
     storage = StorageInterfaceMock();
     usecase = ChangeNotificationConfigUsecase(repository, storage);
     registerFallbackValue(notificationMock);
-    registerFallbackValue(changeNotificationMock);
   });
 
   group("call", () {
