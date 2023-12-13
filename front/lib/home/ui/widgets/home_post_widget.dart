@@ -75,14 +75,20 @@ class _HomePostWidgetState extends State<HomePostWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(
-              onPressed: !upVote && widget.post.canVote
+              onPressed: widget.post.canVote
                   ? () {
                       widget.vote(true);
                       setState(() {
-                        if (downVote) downVotes--;
-                        upVotes++;
-                        upVote = true;
-                        downVote = false;
+                        if (!upVote) {
+                          if (downVote) downVotes--;
+                          upVotes++;
+                          upVote = true;
+                          downVote = false;
+                          return;
+                        }
+
+                        upVotes--;
+                        upVote = false;
                       });
                     }
                   : null,
@@ -103,14 +109,20 @@ class _HomePostWidgetState extends State<HomePostWidget> {
               ),
             ),
             TextButton(
-              onPressed: !downVote && widget.post.canVote
+              onPressed: widget.post.canVote
                   ? () {
                       widget.vote(false);
                       setState(() {
-                        if (upVote) upVotes--;
-                        downVotes++;
-                        downVote = true;
-                        upVote = false;
+                        if (!downVote) {
+                          if (upVote) upVotes--;
+                          downVotes++;
+                          downVote = true;
+                          upVote = false;
+                          return;
+                        }
+
+                        downVotes--;
+                        downVote = false;
                       });
                     }
                   : null,
