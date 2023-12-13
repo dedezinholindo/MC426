@@ -40,7 +40,7 @@ void main() {
 
       final result = await usecase.call();
       expect(result!.user.username, "username");
-      verify(() => storage.setString(safetyNumberKey, result.user.safetyNumber)).called(1);
+      verify(() => storage.setString(safetyNumberKey, result.user.safetyNumber!)).called(1);
     });
 
     test("should return null when repository returns null", () async {

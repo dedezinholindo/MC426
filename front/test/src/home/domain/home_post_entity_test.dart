@@ -20,8 +20,8 @@ void main() {
       expect(result.photo, "photo");
       expect(result.name, "name");
       expect(result.userUpVoted, true);
-      expect(result.userDownVoted, true);
       expect(result.isAnonymous, true);
+      expect(result.canVote, false);
     });
   });
 }

@@ -15,7 +15,7 @@ class GetHomeUsecase {
     final home = await repository.getHome(userId);
     if (home == null) return home;
 
-    await storage.setString(safetyNumberKey, home.user.safetyNumber);
+    if (home.user.safetyNumber != null) await storage.setString(safetyNumberKey, home.user.safetyNumber!);
     return home;
   }
 }

@@ -45,7 +45,7 @@ def edit_profile(user_id):
     new_photo = user_data.get("photo")
     new_safety_number = user_data.get("safetyNumber")
 
-    if not (user_id and new_name and new_phone and new_address and new_photo and new_safety_number):
+    if not (user_id and new_name and new_phone and new_address):
         return jsonify({"message": "Missing required fields"}), 400
 
     # Check specific criteria for each field

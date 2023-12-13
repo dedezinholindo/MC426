@@ -62,10 +62,7 @@ setupProviders() async {
 
   //complaints map
   getIt.registerLazySingleton<ComplaintsMapRepository>(() => ComplaintsMapApiRepository(client));
-  getIt.registerLazySingleton<GetCoordinatesUsecase>(() => GetCoordinatesUsecase(
-        getIt.get<ComplaintsMapRepository>(),
-        storageShared,
-      ));
+  getIt.registerLazySingleton<GetCoordinatesUsecase>(() => GetCoordinatesUsecase(getIt.get<ComplaintsMapRepository>()));
 
   //notifications
   getIt.registerLazySingleton<NotificationRepository>(() => NotificationApiRepository(client));

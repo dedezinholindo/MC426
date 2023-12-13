@@ -1,25 +1,10 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 import app
-# import sqlite3
-
-# clear_complaints = True
-
 
 class TestComplaints(unittest.TestCase):
 
     def setUp(self) -> None:
-        # global clear_complaints
-
-        # if clear_complaints:
-        #     conn = sqlite3.connect('complaints.db')
-        #     cursor = conn.cursor()
-
-        #     cursor.execute("DELETE FROM complaints")
-        #     conn.commit()
-        #     conn.close()
-        #     clear_complaints = False
-
         # Configurar o cliente de teste Flask
         self.app = app.create_app()
         self.app.config['TESTING'] = True

@@ -12,8 +12,8 @@ class HomePostWidget extends StatefulWidget {
 }
 
 class _HomePostWidgetState extends State<HomePostWidget> {
-  late bool upVote = widget.post.userUpVoted;
-  late bool downVote = widget.post.userDownVoted;
+  late bool upVote = widget.post.userUpVoted == true;
+  late bool downVote = widget.post.userUpVoted == false;
   late int upVotes = widget.post.upVotes;
   late int downVotes = widget.post.downVotes;
 
@@ -67,7 +67,7 @@ class _HomePostWidgetState extends State<HomePostWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(
-              onPressed: !upVote
+              onPressed: !upVote && widget.post.canVote
                   ? () {
                       widget.vote(true);
                       setState(() {
@@ -95,7 +95,7 @@ class _HomePostWidgetState extends State<HomePostWidget> {
               ),
             ),
             TextButton(
-              onPressed: !downVote
+              onPressed: !downVote && widget.post.canVote
                   ? () {
                       widget.vote(false);
                       setState(() {

@@ -18,7 +18,7 @@ TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   bool isAnonymous = false;
-  
+
   final _bloc = ComplaintBloc();
 
   @override
@@ -34,6 +34,7 @@ TextEditingController titleController = TextEditingController();
               backgroundColor: state.result!.isSuccess ? Colors.green : Colors.red,
             ),
           );
+          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {

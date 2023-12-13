@@ -153,13 +153,14 @@ class _HomePageState extends State<HomePage> {
               home: state.home,
               vote: _bloc.vote,
               panicButton: _bloc.emitPanicState,
+              refreshCallback: _bloc.init,
             ),
           HomePanicState() => EmergencyView(
               contactEmergency: _makePhoneCallFromSharedPreferences,
               police: () => _makePhoneCall("190"),
               panicButton: () => _sendPanicAlert(context),
             ),
-          HomeErrorState() => const HomeErrorView(),
+          HomeErrorState() => HomeErrorView(reload: () async => await _bloc.init()),
         };
 
         return Scaffold(
