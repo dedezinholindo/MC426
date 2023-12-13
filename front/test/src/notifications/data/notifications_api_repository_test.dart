@@ -87,7 +87,9 @@ void main() {
         ),
       ).thenAnswer(
         (invocation) async => http.Response(
-          jsonEncode([notificationMockJson]),
+          jsonEncode({
+            "notifications": [notificationMockJson]
+          }),
           200,
         ),
       );
@@ -111,7 +113,7 @@ void main() {
         ),
       ).thenAnswer(
         (invocation) async => http.Response(
-          jsonEncode([]),
+          jsonEncode({"notifications": []}),
           200,
         ),
       );

@@ -35,21 +35,19 @@ const userHeaderNoPhotoJson = {
 const userPostInfoJson = {
   "id": 1,
   "description": "description",
-  "time": "2 horas",
-  "local": "Rua Roxo Moreira, 45",
+  "address": "Rua Roxo Moreira, 45",
   "upVotes": 2,
   "downVotes": 2,
 };
 
 const userPostJson = {
   "header": userHeaderJson,
-  "posts": [
+  "complaints": [
     userPostInfoJson,
     {
       "id": 3,
       "description": "description",
-      "time": "2 horas",
-      "local": "Rua Roxo Moreira, 45",
+      "address": "Rua Roxo Moreira, 45",
       "upVotes": 2,
       "downVotes": 2,
     }
