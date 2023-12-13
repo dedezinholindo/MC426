@@ -51,4 +51,20 @@ class AuthenticationApiRepository extends AuthenticationRepository {
       return const AuthenticationResult(isSuccess: false, message: "Não foi possível concluir a solicitação");
     }
   }
+
+  @override
+  Future<bool> sendPasswordReset(String email) async {
+    try {
+      final uri = Uri.parse('${baseUrl}password_reset');
+      final response = await client.post(uri, headers: {
+        'Content-Type': 'application/json',
+      }, body: {
+        'email': email
+      });
+
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
 }

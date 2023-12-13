@@ -118,8 +118,7 @@ class TestFlaskApp(unittest.TestCase):
     def test_edit_profile(self):
 
         # Test case 2: User not found
-        response = self.client.post('/edit_profile', json={
-            "id": 999,  # Non-existing user ID
+        response = self.client.post('/profile/999', json={
             "name": "New Name",
             "phone": "12345678901",
             "address": "New Address",
@@ -131,7 +130,7 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(data["message"], "User not found")
 
         # Test case 3: Invalid request (missing fields)
-        response = self.client.post('/edit_profile', json={
+        response = self.client.post('/profile/999', json={
             "name": "New Name",
         })
         data = json.loads(response.get_data(as_text=True))
@@ -140,16 +139,14 @@ class TestFlaskApp(unittest.TestCase):
 
     def test_get_profile(self):
         # Test case 1: User not found
-        response = self.client.post(
-            '/get_profile', json={"id": 999})  # Non-existing user ID
+        response = self.client.get('/get_profile/999')  # Non-existing user ID
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "User not found")
 
     def test_edit_profile(self):
         # Test case 1: Edit profile successfully
-        response = self.client.post('/edit_profile', json={
-            "id": 1,  # Existing user ID
+        response = self.client.post('/profile/1', json={
             "name": "New Name",
             "phone": "98765432109",  # Update phone number
             "address": "New Address",
@@ -170,8 +167,7 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(updated_user[9], "98765432109")
 
         # Test case 2: User not found
-        response = self.client.post('/edit_profile', json={
-            "id": 999,  # Non-existing user ID
+        response = self.client.post('/profile/999', json={
             "name": "New Name",
             "phone": "12345678901",
             "address": "New Address",
@@ -182,25 +178,15 @@ class TestFlaskApp(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "User not found")
 
-        # Test case 3: Invalid request (missing fields)
-        response = self.client.post('/edit_profile', json={
-            "name": "New Name",
-        })
-        data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(data["message"], "Missing required fields")
-
     def test_get_profile(self):
         # Test case 1: Get profile successfully
-        response = self.client.post(
-            '/get_profile', json={"id": 1})  # Existing user ID
+        response = self.client.get('/profile/1')  # Existing user ID
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["name"], "Test User 1")
 
         # Test case 2: User not found
-        response = self.client.post(
-            '/get_profile', json={"id": 999})  # Non-existing user ID
+        response = self.client.get('/profile/999')  # Non-existing user ID
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "User not found")

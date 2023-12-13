@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+  run:
+    image: run:latest
+    container_name: run
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    shm_size: "128mb"
+    
