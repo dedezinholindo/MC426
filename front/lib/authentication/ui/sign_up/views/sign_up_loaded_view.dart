@@ -8,15 +8,7 @@ import 'package:mc426_front/authentication/domain/entities/sign_up_entity.dart';
 class SignUpLoadedView extends StatefulWidget {
   final SignUpEntity signUpEntity;
   final void Function({
-    String? name,
-    String? username,
-    String? email,
-    String? age,
-    String? phone,
-    String? password,
-    String? address,
-    String? photo,
-    String? safetyNumber,
+    SignUpEntity? signUpEntity,
     bool? passwordMatchParam,
   }) onChange;
 
@@ -35,12 +27,15 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
 
   ValueNotifier<bool> passwordMatch = ValueNotifier<bool>(true);
 
+  late var _signUpEntity = widget.signUpEntity;
+
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       setState(() => photo = image.path);
-      widget.onChange(photo: photo);
+      _signUpEntity = _signUpEntity.copyWith(photo: photo);
+      widget.onChange(signUpEntity: _signUpEntity);
     } on PlatformException catch (e) {
       if (kDebugMode) {
         print('Failed to pick image: $e');
@@ -96,18 +91,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              initialValue: widget.signUpEntity.name.isNotEmpty ? widget.signUpEntity.name : null,
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite seu nome',
-              ),
-              onChanged: (value) => widget.onChange(name: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                initialValue: _signUpEntity.name.isNotEmpty ? _signUpEntity.name : null,
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite seu nome',
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(name: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //username
             const Text(
@@ -122,18 +119,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              initialValue: widget.signUpEntity.username.isNotEmpty ? widget.signUpEntity.username : null,
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite seu username',
-              ),
-              onChanged: (value) => widget.onChange(username: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                initialValue: _signUpEntity.username.isNotEmpty ? _signUpEntity.username : null,
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite seu username',
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(username: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //email
             const Text(
@@ -148,18 +147,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              initialValue: widget.signUpEntity.email.isNotEmpty ? widget.signUpEntity.email : null,
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite seu email',
-              ),
-              onChanged: (value) => widget.onChange(email: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                initialValue: _signUpEntity.email.isNotEmpty ? _signUpEntity.email : null,
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite seu email',
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(email: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //idade
             const Text(
@@ -174,18 +175,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite sua idade',
-              ),
-              initialValue: widget.signUpEntity.age.isNotEmpty ? widget.signUpEntity.age : null,
-              onChanged: (value) => widget.onChange(age: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite sua idade',
+                ),
+                initialValue: _signUpEntity.age.isNotEmpty ? _signUpEntity.age : null,
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(age: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //telefone
             const Text(
@@ -200,18 +203,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite seu número de celular',
-              ),
-              initialValue: widget.signUpEntity.phone.isNotEmpty ? widget.signUpEntity.phone : null,
-              onChanged: (value) => widget.onChange(phone: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite seu número de celular',
+                ),
+                initialValue: _signUpEntity.phone.isNotEmpty ? _signUpEntity.phone : null,
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(phone: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //senha
             const Text(
@@ -226,27 +231,29 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: passwordController,
-              obscureText: _obscureTextPassword,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              decoration: InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite sua senha',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureTextPassword ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() => _obscureTextPassword = !_obscureTextPassword);
-                  },
+                controller: passwordController,
+                obscureText: _obscureTextPassword,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
                 ),
-              ),
-              onChanged: (value) => widget.onChange(password: value),
-            ),
+                decoration: InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite sua senha',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureTextPassword ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() => _obscureTextPassword = !_obscureTextPassword);
+                    },
+                  ),
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(password: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             //senha verificacao
             const SizedBox(height: 12),
             ValueListenableBuilder<bool>(
@@ -297,18 +304,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              initialValue: widget.signUpEntity.address.isNotEmpty ? widget.signUpEntity.address : null,
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite seu endereço',
-              ),
-              onChanged: (value) => widget.onChange(address: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                initialValue: _signUpEntity.address.isNotEmpty ? _signUpEntity.address : null,
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite seu endereço',
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(address: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //numero de emergência
             const Text(
@@ -323,18 +332,20 @@ class _SignUpLoadedViewState extends State<SignUpLoadedView> {
             ),
             const SizedBox(height: 12),
             TextFormField(
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-              initialValue: widget.signUpEntity.safetyNumber?.isNotEmpty == true ? widget.signUpEntity.safetyNumber : null,
-              decoration: const InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Digite um número de emergência',
-              ),
-              onChanged: (value) => widget.onChange(safetyNumber: value),
-            ),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+                initialValue: _signUpEntity.safetyNumber?.isNotEmpty == true ? _signUpEntity.safetyNumber : null,
+                decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: 'Digite um número de emergência',
+                ),
+                onChanged: (value) {
+                  _signUpEntity = _signUpEntity.copyWith(safetyNumber: value);
+                  widget.onChange(signUpEntity: _signUpEntity);
+                }),
             const SizedBox(height: 24),
             //photoController
             ElevatedButton(

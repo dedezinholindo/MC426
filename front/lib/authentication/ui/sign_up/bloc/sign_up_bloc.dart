@@ -49,28 +49,10 @@ class SignUpBloc extends Cubit<SignUpState> {
   }
 
   void changeForms({
-    String? name,
-    String? username,
-    String? email,
-    String? age,
-    String? phone,
-    String? password,
-    String? address,
-    String? photo,
-    String? safetyNumber,
+    SignUpEntity? signUpEntity,
     bool? passwordMatchParam,
   }) async {
-    _signUpEntity = _signUpEntity.copyWith(
-      name: name,
-      username: username,
-      email: email,
-      age: age,
-      phone: phone,
-      password: password,
-      address: address,
-      photo: photo,
-      safetyNumber: safetyNumber,
-    );
+    _signUpEntity = signUpEntity ?? _signUpEntity;
 
     passwordMatch = passwordMatchParam ?? passwordMatch;
     isAvailable.value = _signUpEntity.isAvailable && passwordMatch;
