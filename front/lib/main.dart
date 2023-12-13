@@ -20,12 +20,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await setupProviders();
-
-  try {
+Future<void> initializeFirebase() async{
+  try{
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -35,10 +31,16 @@ void main() async {
     await messaging.requestPermission();
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  } catch (e) {
+} catch (e) {
     log("Could not initialize Firebase");
   }
+}
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await setupProviders();
+  await initializeFirebase();
   runApp(const MyApp());
 }
 
