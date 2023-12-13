@@ -22,6 +22,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> initializeFirebase() async{
   try{
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -37,8 +38,6 @@ Future<void> initializeFirebase() async{
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   await setupProviders();
   await initializeFirebase();
   runApp(const MyApp());
