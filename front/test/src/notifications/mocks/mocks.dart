@@ -13,11 +13,6 @@ final notificationMock = NotificationEntity(
   description: "description",
   title: "title",
   isActivated: true,
-  topicName: "topic_name",
-);
-
-final changeNotificationMock = ChangeNotificationEntity(
-  id: 1,
   userId: "userId",
-  isActivated: true,
+  topicName: "topic_name",
 );

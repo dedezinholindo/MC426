@@ -1,5 +1,6 @@
 class NotificationEntity {
   final int id;
+  final String? userId;
   final String description;
   final String title;
   final String topicName;
@@ -11,6 +12,7 @@ class NotificationEntity {
     required this.title,
     required this.isActivated,
     required this.topicName,
+    this.userId,
   });
 
   factory NotificationEntity.fromMap(Map<String, dynamic> map) {
@@ -23,12 +25,19 @@ class NotificationEntity {
     );
   }
 
+  Map<String, dynamic> get toMap => {
+        "id": id,
+        "user_id": userId,
+        "is_active": isActivated,
+      };
+
   NotificationEntity copyWith({
     int? id,
     String? description,
     String? title,
     bool? isActivated,
     String? topicName,
+    String? userId,
   }) {
     return NotificationEntity(
       id: id ?? this.id,
@@ -36,6 +45,7 @@ class NotificationEntity {
       title: title ?? this.title,
       isActivated: isActivated ?? this.isActivated,
       topicName: topicName ?? this.topicName,
+      userId: userId ?? this.userId,
     );
   }
 }

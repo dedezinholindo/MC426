@@ -11,8 +11,7 @@ class ChangeNotificationConfigUsecase {
   Future<bool> call(NotificationEntity notificationEntity) async {
     final userId = storage.getString(userIdKey);
     if (userId == null) return false;
-    final changeNotification = ChangeNotificationEntity(
-      id: notificationEntity.id,
+    final changeNotification = notificationEntity.copyWith(
       userId: userId,
       isActivated: !notificationEntity.isActivated,
     );
