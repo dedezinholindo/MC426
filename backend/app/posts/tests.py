@@ -49,7 +49,7 @@ class TestComplaints(unittest.TestCase):
         # Verifica se a resposta é 400 Bad Request
         self.assertEqual(response.status_code, 400)
 
-    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.db.cursor')
     def test_get_complaints(self, mock_cursor):
         userid = '1'
 
@@ -100,7 +100,7 @@ class TestComplaints(unittest.TestCase):
         }
         self.assertDictEqual(response.json, expected_response)
 
-    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.db.cursor')
     def test_likes_complaint1_equal_7(self, mock_cursor):
         # Configurar mocks para o cursor
         mock_cursor.fetchone.return_value = (7,)
@@ -118,7 +118,7 @@ class TestComplaints(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['likes'], 7)
 
-    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.db.cursor')
     def test_get_likes_complaint_not_found(self, mock_cursor):
         # Configurar mocks para o cursor
         mock_cursor.fetchone.return_value = None
@@ -135,7 +135,7 @@ class TestComplaints(unittest.TestCase):
         # Verifica resposta
         self.assertEqual(response.status_code, 404)
 
-    @patch('app.posts.views.cursor')
+    @patch('app.posts.views.db.cursor')
     def test_unlikes_complaint1_equal_3(self, mock_cursor):
         # Mock para retorno do banco de dados
         mock_cursor.fetchone.return_value = (3,)

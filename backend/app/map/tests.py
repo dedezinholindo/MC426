@@ -9,7 +9,7 @@ class TestGeocodingApp(unittest.TestCase):
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
 
-    @patch('app.map.views.cursor')
+    @patch('app.map.views.db.cursor')
     def test_get_coordinates_address(self, mock_cursor):
         mock_cursor.fetchall.return_value = [
             "1600 Amphitheatre Pkwy, Mountain View, CA",

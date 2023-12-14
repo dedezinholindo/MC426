@@ -1,16 +1,15 @@
 from flask import Blueprint, request, jsonify, make_response
-import sqlite3
+from ..database import DatabaseManager
 import uuid
 
 login_bp = Blueprint('login', __name__)
 
 # Function to initialize the database
+db = DatabaseManager()
 def init_db():
-    conn = sqlite3.connect('press2safe.db')
-    cursor = conn.cursor()
 
     # Create the users table if it doesn't exist
-    cursor.execute('''
+    db.cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -25,8 +24,7 @@ def init_db():
         )
     ''')
 
-    conn.commit()
-    conn.close()
+    db.conn.commit()
 
 # Initialize the database
 init_db()
@@ -79,26 +77,21 @@ def registration():
     if not address:
         return jsonify({"message": "Address is required"}), 400
 
-    conn = sqlite3.connect('press2safe.db')
-    cursor = conn.cursor()
-
     # Check if the username already exists
-    cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-    existing_user = cursor.fetchone()
+    db.cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+    existing_user = db.cursor.fetchone()
     if existing_user:
-        conn.close()
         return jsonify({"message": "Username already exists"}), 400
 
     # Generate a unique ID for the new user
     user_id = str(uuid.uuid4())
 
-    cursor.execute('''
+    db.cursor.execute('''
         INSERT INTO users (id, name, username, email, age, phone, password, address, photo, safetyNumber)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (user_id, name, username, email, age, phone, password, address, photo, safety_number))
 
-    conn.commit()
-    conn.close()
+    db.conn.commit()
 
     response = make_response(jsonify({"message": "User registered successfully", "id": user_id}), 201)
     response.set_cookie('username', username)
@@ -117,14 +110,11 @@ def login():
     if not (username and password):
         return jsonify({"message": "Missing required fields"}), 400
 
-    conn = sqlite3.connect('press2safe.db')
-    cursor = conn.cursor()
 
     # Check if the username and password match a registered user
-    cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
-    user = cursor.fetchone()
+    db.cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+    user = db.cursor.fetchone()
 
-    conn.close()
 
     if user:
         response = make_response(jsonify({"message": "Authentication successful", "id": user[0]}), 200)
@@ -144,16 +134,12 @@ def forget_password():
     if not email or '@' not in email or '.' not in email:
         return jsonify({"message": "Invalid email address"}), 400
 
-    conn = sqlite3.connect('press2safe.db')
-    cursor = conn.cursor()
-
     # Check if the email exists
-    cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
-    user = cursor.fetchone()
+    db.cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
+    user = db.cursor.fetchone()
 
     return jsonify({"message": "If your email exists in our database, the reset link was successfully sent"}), 200
 
-    conn.close()
 
 if __name__ == '__main__':
     print(login_bp)

@@ -1,14 +1,13 @@
 from flask import Blueprint, request, jsonify
-import sqlite3
+from ..database import DatabaseManager
 
 posts_bp = Blueprint('posts', __name__)
 
 # Complaint database
-conn = sqlite3.connect('press2safe.db', check_same_thread=False)
+db = DatabaseManager()
 
 # Inicia tabela de complaints
-cursor = conn.cursor()
-cursor.execute('''
+db.cursor.execute('''
     CREATE TABLE IF NOT EXISTS complaints (
         id INTEGER PRIMARY KEY,
         user_id TEXT NOT NULL,
@@ -20,10 +19,10 @@ cursor.execute('''
         unlikes INTEGER NOT NULL
     )
 ''')
-conn.commit()
+db.conn.commit()
 
 # Inicia tabela de likes
-cursor.execute('''
+db.cursor.execute('''
     CREATE TABLE IF NOT EXISTS likes (
         id INTEGER PRIMARY KEY,
         complaint_id INTEGER,
@@ -32,20 +31,20 @@ cursor.execute('''
         FOREIGN KEY (complaint_id) REFERENCES complaints(id)
     )
 ''')
-conn.commit()
+db.conn.commit()
 
 #pega os posts do usuário 
 def get_complaints_by_id(user_id):
-    cursor.execute("SELECT * FROM complaints WHERE user_id=?", (user_id,))
+    db.cursor.execute("SELECT * FROM complaints WHERE user_id=?", (user_id,))
 
-    user = cursor.fetchall()
+    user = db.cursor.fetchall()
 
     return user
 
 def get_user_by_id(user_id):
-    cursor.execute("SELECT name, photo FROM users WHERE id=?", (user_id,))
+    db.cursor.execute("SELECT name, photo FROM users WHERE id=?", (user_id,))
 
-    user = cursor.fetchone()
+    user = db.cursor.fetchone()
 
     return user
 
@@ -98,16 +97,16 @@ def create_complaint(user_id: str):
 
     # Saves the new complaint in DB
     if isAnonymous == True:
-        cursor.execute('''
+        db.cursor.execute('''
         INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', ("anonymous", title, description, address, isAnonymous, 0, 0))
     else:
-        cursor.execute('''
+        db.cursor.execute('''
         INSERT INTO complaints (user_id, title, description, address, isAnonymous, likes, unlikes)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (user_id, title, description, address, isAnonymous, 0, 0))
-    conn.commit()
+    db.conn.commit()
 
     return jsonify({'message': 'Complaint created successfully'}), 201
 
@@ -149,25 +148,25 @@ def get_complaints(user_id):
 def like_complaint(complaint_id, user_id):
 
     # Checar se o post existe
-    cursor.execute("SELECT likes, unlikes FROM complaints WHERE id = ?",
+    db.cursor.execute("SELECT likes, unlikes FROM complaints WHERE id = ?",
                    (complaint_id,))
-    likes = cursor.fetchone()
+    likes = db.cursor.fetchone()
     if likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
     # Se o post existir checar o like
-    cursor.execute('''
+    db.cursor.execute('''
         SELECT * FROM likes
         WHERE complaint_id = ? AND user_id = ?
     ''', (complaint_id, user_id))
-    like = cursor.fetchone()
+    like = db.cursor.fetchone()
 
     like_inc = 0
     unlike_inc = 0
     # Se não deu like:
     if like is None:
         # Adiciona o like
-        cursor.execute('''
+        db.cursor.execute('''
         INSERT INTO likes (complaint_id, user_id, is_like)
         VALUES (?, ?, ?)
         ''', (complaint_id, user_id, True))
@@ -178,7 +177,7 @@ def like_complaint(complaint_id, user_id):
     elif like[3]:
         # Se for like retira o like
 
-        cursor.execute('''
+        db.cursor.execute('''
         DELETE FROM likes
         WHERE id = ?
         ''', (like[0],))
@@ -187,7 +186,7 @@ def like_complaint(complaint_id, user_id):
 
     else:
         # Se for unlike, transforma em like
-        cursor.execute('''
+        db.cursor.execute('''
         UPDATE likes
         SET is_like = ?
         WHERE id = ?
@@ -198,18 +197,18 @@ def like_complaint(complaint_id, user_id):
 
     current_likes = likes[0]
     current_unlikes = likes[1]
-    cursor.execute("UPDATE complaints SET likes = ?, unlikes = ? WHERE id = ?",
+    db.cursor.execute("UPDATE complaints SET likes = ?, unlikes = ? WHERE id = ?",
                    (current_likes + like_inc, current_unlikes + unlike_inc, complaint_id))
-    conn.commit()
+    db.conn.commit()
 
     return jsonify({'message': message}), 200
 
 
 @posts_bp.route('/complaints/<int:complaint_id>/likes', methods=['GET'])
 def get_complaint_likes(complaint_id):
-    cursor.execute("SELECT likes FROM complaints WHERE id = ?",
+    db.cursor.execute("SELECT likes FROM complaints WHERE id = ?",
                    (complaint_id,))
-    current_likes = cursor.fetchone()
+    current_likes = db.cursor.fetchone()
 
     if current_likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
@@ -224,25 +223,25 @@ def get_complaint_likes(complaint_id):
 def unlike_complaint(complaint_id, user_id):
 
     # Checar se o post existe
-    cursor.execute("SELECT likes, unlikes FROM complaints WHERE id = ?",
+    db.cursor.execute("SELECT likes, unlikes FROM complaints WHERE id = ?",
                    (complaint_id,))
-    likes = cursor.fetchone()
+    likes = db.cursor.fetchone()
     if likes is None:
         return jsonify({'error': 'Complaint not found'}), 404
 
     # Se o post existir checar o unlike
-    cursor.execute('''
+    db.cursor.execute('''
         SELECT * FROM likes
         WHERE complaint_id = ? AND user_id = ?
     ''', (complaint_id, user_id))
-    like = cursor.fetchone()
+    like = db.cursor.fetchone()
 
     like_inc = 0
     unlike_inc = 0
     # Se não deu unlike:
     if like is None:
         # Adiciona o unlike
-        cursor.execute('''
+        db.cursor.execute('''
         INSERT INTO likes (complaint_id, user_id, is_like)
         VALUES (?, ?, ?)
         ''', (complaint_id, user_id, False))
@@ -253,7 +252,7 @@ def unlike_complaint(complaint_id, user_id):
     elif like[3] == False:
         # Se for like retira o unlike
 
-        cursor.execute('''
+        db.cursor.execute('''
         DELETE FROM likes
         WHERE id = ?
         ''', (like[0],))
@@ -262,7 +261,7 @@ def unlike_complaint(complaint_id, user_id):
 
     else:
         # Se for like, transforma em unlike
-        cursor.execute('''
+        db.cursor.execute('''
         UPDATE likes
         SET is_like = ?
         WHERE id = ?
@@ -273,18 +272,18 @@ def unlike_complaint(complaint_id, user_id):
 
     current_likes = likes[0]
     current_unlikes = likes[1]
-    cursor.execute("UPDATE complaints SET likes = ?, unlikes = ? WHERE id = ?",
+    db.cursor.execute("UPDATE complaints SET likes = ?, unlikes = ? WHERE id = ?",
                    (current_likes + like_inc, current_unlikes + unlike_inc, complaint_id))
-    conn.commit()
+    db.conn.commit()
 
     return jsonify({'message': message}), 200
 
 
 @posts_bp.route('/complaints/<int:complaint_id>/unlikes', methods=['GET'])
 def get_complaint_unlikes(complaint_id):
-    cursor.execute(
+    db.cursor.execute(
         "SELECT unlikes FROM complaints WHERE id = ?", (complaint_id,))
-    current_unlikes = cursor.fetchone()
+    current_unlikes = db.cursor.fetchone()
 
     if current_unlikes is None:
         return jsonify({'error': 'Complaint not found'}), 404
