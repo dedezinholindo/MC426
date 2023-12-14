@@ -14,7 +14,7 @@ Criar uma aplicação que ajuda a garantir a segurança geral no local.
 
 André Ricardo Pereira Silva (RA 2313191)
 
-Igor Henrique Buranello dos Santos (RA 171953) .
+Igor Henrique Buranello dos Santos (RA 171953)
 
 Isabela Paulino de Souza (RA 247178)
 
@@ -208,69 +208,14 @@ Cada controlador receberá solicitações da View, interagirá com o Model corre
 
 
 
-# Padrão de projeto adotado: Composite (Sugestão de melhoria, pois este padrão de projeto não chegou a ser implementado definitivamente)
+# Padrão de projeto adotado: _Singleton_
 
-O padrão de projeto Composite é utilizado para tratar objetos individuais e composições de objetos da mesma forma. Neste caso, poderíamos aplicar o padrão Composite para representar as diferentes funcionalidades do backend (seus microserviços) do aplicativo de alertas de segurança como um conjunto hierárquico de operações. Seria implementado uma classe base para cada microserviço para realizar as operações de cada microserviço elementar. Estas são vistas como folhas no padrão de projeto Composite. Aí classes mais gerais que herdam as classes mais elementares seriam criadas, para fornecer as operações necessárias para os serviços que utilizam esses microserviços.  
-Por exemplo, cada funcionalidade seria uma folha e um conjunto de funcionalidades agrupadas em uma única funcionalidade composta (Composite). Depois, poderíamos criar instâncias dessas classes para representar as operações específicas do seu backend, como cada uma das funcionalidades listadas (1 a 17). O Composite pode então ser usado para agrupar funcionalidades relacionadas, se necessário.  
+A nossa aplicação representa uma solução que realiza diversas operações em um banco de dados contendo informações cruciais para seu funcionamento, incluindo dados de usuários e postagens. As funcionalidades implementadas na API, em resumo, concentram-se em executar operações específicas nesse banco de dados.
 
-Templates das classes:  
+Anteriormente, cada _Blueprint_ da API _Flask_ desenvolvida estabelecia sua própria conexão com o banco de dados e realizava os procedimentos necessários. O propósito desta adaptação reside na criação de uma classe denominada `DatabaseManager` seguindo o padrão de projetos _Singleton_. Esta classe desempenha a função de intermediar a conexão entre os componentes da API e o banco de dados.
 
-#### Componente interface  
-    class BackendOperation:  
-        def execute(self, *args, **kwargs):  
-            pass  
+A ideia subjacente a essa adaptação consiste em proporcionar uma única conexão global ao banco por meio da instância da classe `DatabaseManager`. Desse modo, cada componente necessita apenas instanciar a respectiva classe para realizar operações no banco de dados. 
 
+Abaixo o diagrama de conexão entre os _Blueprints_, a classe `DatabaseManager` e o banco de dados:
 
-#### Folha  
-    class SimpleOperation(BackendOperation):  
-        def __init__(self, name):  
-            self.name = name  
-
-        def execute(self, *args, **kwargs):  
-            print(f"Executing {self.name} operation with args: {args}, kwargs: {kwargs}")  
-
-
-#### Composite class  
-    class CompositeOperation(BackendOperation):  
-        def __init__(self, name):  
-            self.name = name  
-            self.operations: List[BackendOperation] = []  
-
-        def add_operation(self, operation: BackendOperation):  
-            self.operations.append(operation)  
-
-        def remove_operation(self, operation: BackendOperation):  
-            self.operations.remove(operation)  
-
-        def execute(self, *args, **kwargs):  
-            print(f"Executing {self.name} operation with args: {args}, kwargs: {kwargs}")  
-            for operation in self.operations: operation.execute(*args, **kwargs)  
-
-
-Assim, de acordo com o estilo arquitetural de microserviços apresentado, 17 instâncias da classe SimpleOperation seriam implementadas para cada um dos 17 microserviços, e 4 instâncias da classe CompositeOperation seriam implementadas para cada uma dos serviços.
-
-## CompositeOperation's
-> Serviço de Autenticação (AuthService)  
-> Serviço de Geolocalização (GeoService)  
-> Serviço de Notificações (NotificationService)  
-> Serviço de Reclamações (ComplaintService)  
-
-## SimpleOperation's
-> Cadastrar uma conta (método POST)  
-> Logar em uma conta (método POST)  
-> Esqueci minha senha (método POST)  
-> Atualizar informações da conta de um usuário (método POST)  
-> Obter a identificação de um usuário (método GET)  
-> Obter um endereço através de uma coordenada do mapa (método POST)  
-> Obter uma coordenada no mapa através de um endereço (método POST)  
-> Salvar as coordenadas de um usuário no mapa (método POST)  
-> Obter as coordenadas de um usuário no mapa (método GET)  
-> Retornar as notificações já feitas por um usuário (método GET)  
-> Realizar uma notificação (método POST)  
-> Criar uma reclamação do usuário (método POST)  
-> Devolver todas as reclamações de um usuário (método GET)  
-> Curtir uma reclamação feita por algum usuário (método POST)  
-> Obter as curtidas feitas por um usuário em reclamações (método GET)  
-> Não curtir uma reclamação que foi feita por algum usuário (método POST)  
-> Obter as não curtidas feitas por um usuário (método GET)  
-
+![Diagrama de conexão entre os Blueprints, a classe DatabaseManager e o banco de dados.](https://github.com/dedezinholindo/MC426/assets/79698396/407362c9-1144-4f76-b0e8-ab86b14bfd80)
