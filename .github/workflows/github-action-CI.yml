@@ -106,6 +106,14 @@ jobs:
         run: |
           cd backend
           python3 -m app.profile.tests
+      - name: Testing the aplication of home functionalitiy
+        run: |
+          cd backend
+          python3 -m app.home.tests
+      - name: Testing the aplication of noifications functionalitiy
+        run: |
+          cd backend
+          python3 -m app.notifications.tests
       - run: echo "This job's status is ${{ job.status }}."
   
   test-front:
