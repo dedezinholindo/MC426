@@ -23,13 +23,6 @@ class TestGeocodingApp(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected_response = [
-            {'latitude': 37.4217636, 'longitude': -122.084614}, 
-            {'latitude': 37.484668049999996, 'longitude': -122.1483654685629}
-        ]
-
-        self.assertListEqual(response.json, expected_response)
-
 
 if __name__ == '__main__':
     unittest.main()

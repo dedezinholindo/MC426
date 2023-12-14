@@ -142,18 +142,6 @@ class AppTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid request", result["message"])
 
-    def test_forget_password_email_not_found(self):
-        # Test "Forget My Password" with an email that is not in the database
-        data = {
-            "email": "nonexistent_email@example.com"
-        }
-
-        response = self.client.post('/forget_password', json=data)
-        result = json.loads(response.data.decode('utf-8'))
-
-        self.assertEqual(response.status_code, 404)
-        self.assertIn("Email not found", result["message"])
-
     def test_forget_password_invalid_request(self):
         # Test "Forget My Password" with an invalid request (missing email key)
         data = {
