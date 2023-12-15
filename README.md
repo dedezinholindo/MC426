@@ -118,7 +118,10 @@ Tendo em mãos a descrição de todos os componentes e serviços listados acima,
 
 ### 4. Mobile App (front end)
 #### Descrição: 
-> Interface com o usuário e inclui todas as telas e interações visuais do aplicativo, provendo as funcionalidades do aplicativo.
+> Interface com o usuário e inclui todas as telas e interações visuais do aplicativo, provendo as funcionalidades do aplicativo.  
+
+Abaixo está o diagrama de componentes.  
+<img width="1203" alt="Diagrama de Componentes" src="https://github.com/dedezinholindo/MC426/assets/70449472/7215c7a1-2330-415c-aed8-e55a28a5ed26">
 
 
 
