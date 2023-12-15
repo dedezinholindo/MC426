@@ -1,20 +1,11 @@
 from flask import Blueprint, jsonify
 from app.map.views import geocode_address
-import sqlite3
+from ..database import DatabaseManager
 
 home_bp = Blueprint('home', __name__)
 
-
-def setup_home_db():
-    conn = sqlite3.connect('press2safe.db', check_same_thread=False)
-    cursor = conn.cursor()
-
-    return conn, cursor
-
-
-conn, cursor = setup_home_db()
-
-# Rotas
+# Database
+db = DatabaseManager()
 
 
 @home_bp.route('/home/<string:user_id>/', methods=['GET'])
@@ -36,9 +27,9 @@ def get_home(user_id:  str):
         WHERE id = ?
     """
 
-    cursor.execute(consulta, (user_id,))
+    db.cursor.execute(consulta, (user_id,))
 
-    user_return = cursor.fetchone()
+    user_return = db.cursor.fetchone()
 
     if user_return is None:
         return jsonify({'error': 'User not found, check the user ID.'}), 404
@@ -56,9 +47,9 @@ def get_home(user_id:  str):
         WHERE user_id = ?
     """
 
-    cursor.execute(consulta, (user_id,))
+    db.cursor.execute(consulta, (user_id,))
 
-    number_of_posts = cursor.fetchone()[0]
+    number_of_posts = db.cursor.fetchone()[0]
 
     # Get latitude and longitude
     location = geocode_address(address)
@@ -83,9 +74,9 @@ def get_home(user_id:  str):
 
     """
 
-    cursor.execute(consulta, (user_id, user_id))
+    db.cursor.execute(consulta, (user_id, user_id))
 
-    posts = cursor.fetchall()
+    posts = db.cursor.fetchall()
 
     return jsonify({
         'user': {

@@ -1,40 +1,38 @@
 from flask import Blueprint, jsonify, request
-import sqlite3
+from ..database import DatabaseManager
 
 notifications_bp = Blueprint('notifications', __name__)
 
 # Setup database for notifications
+db = DatabaseManager()
 
 
 def setup_notifications_db():
-    conn = sqlite3.connect('press2safe.db', check_same_thread=False)
-
-    cursor = conn.cursor()
-    cursor.execute('''
+    db.cursor.execute('''
             CREATE TABLE IF NOT EXISTS notifications (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             description TEXT NOT NULL,
             topic_name TEXT NOT NULL)
     ''')
-    conn.commit()
+    db.conn.commit()
 
-    cursor.execute(
+    db.cursor.execute(
         '''
         DELETE FROM notifications
         '''
     )
-    conn.commit()
+    db.conn.commit()
 
-    cursor.execute('''
+    db.cursor.execute('''
         INSERT INTO notifications (title, description, topic_name)
                 VALUES ('Notificações de SOS', 
                 'Notificação de pedidos de socorro de outros usuários, receba notificações quando algum usuário acionar o botão de pânico e ajude a comunidade', 
                 'sos_message_topic')
         ''')
-    conn.commit()
+    db.conn.commit()
 
-    cursor.execute('''
+    db.cursor.execute('''
         INSERT INTO notifications  (title, description, topic_name)
                 VALUES
                 (
@@ -44,11 +42,11 @@ def setup_notifications_db():
                 )
         ''')
 
-    conn.commit()
+    db.conn.commit()
 
     #
 
-    cursor.execute('''
+    db.cursor.execute('''
         CREATE TABLE IF NOT EXISTS notifications_users (
             id INTEGER PRIMARY KEY,
             user_id TEXT NOT NULL,
@@ -56,9 +54,9 @@ def setup_notifications_db():
             is_active BOOLEAN NOT NULL
             )
     ''')
-    conn.commit()
+    db.conn.commit()
 
-    cursor.execute(
+    db.cursor.execute(
         '''
         CREATE TRIGGER IF NOT EXISTS trg_UserAdded
         BEFORE INSERT ON users
@@ -74,11 +72,7 @@ def setup_notifications_db():
         END
         '''
     )
-    conn.commit()
-    return conn, cursor
-
-
-conn, cursor = setup_notifications_db()
+    db.conn.commit()
 
 # Rotas
 
@@ -105,9 +99,9 @@ def get_notifications(user_id:  str):
         WHERE notifications_users.user_id = ?
     """
 
-    cursor.execute(consulta, (user_id,))
+    db.cursor.execute(consulta, (user_id,))
 
-    users_notifications = cursor.fetchall()
+    users_notifications = db.cursor.fetchall()
 
     users_notifications = [
         {
@@ -120,6 +114,7 @@ def get_notifications(user_id:  str):
     ]
 
     return jsonify({'notifications': users_notifications})
+
 
 @notifications_bp.route('/notifications/', methods=['POST'])
 def setup_notifications():
@@ -134,22 +129,20 @@ def setup_notifications():
     user_id = data.get('user_id')
     is_active = data.get('is_active')
 
-
     consulta = """
         UPDATE notifications_users
         SET is_active = ?
         WHERE user_id = ? AND notification_id = ?
     """
 
-    cursor.execute(consulta, (is_active, user_id, notification_id,))
+    db.cursor.execute(consulta, (is_active, user_id, notification_id,))
 
-    affected = cursor.rowcount
+    affected = db.cursor.rowcount
     print(affected)
 
-    conn.commit()
+    db.conn.commit()
 
     if affected > 0:
         return jsonify({'message': 'Notification updated successfully!'}), 200
     else:
-        return  jsonify({'error': 'Notification not found, check the ID or user ID.'}), 404
-    
+        return jsonify({'error': 'Notification not found, check the ID or user ID.'}), 404

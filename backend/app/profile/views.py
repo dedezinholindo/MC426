@@ -1,38 +1,38 @@
 from flask import Blueprint, request, jsonify
-import sqlite3
+from ..database import DatabaseManager
 
 profile_bp = Blueprint('profile', __name__)
 
-# Function to update user information in the database
-def update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number):
-    conn = sqlite3.connect("press2safe.db")
-    cursor = conn.cursor()
+db = DatabaseManager()
 
-    cursor.execute('''
+# Function to update user information in the database
+
+
+def update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number):
+
+    db.cursor.execute('''
         UPDATE users
         SET name=?, phone=?, address=?, photo=?, safetyNumber=?
         WHERE id=?
     ''', (new_name, new_phone, new_address, new_photo, new_safety_number, user_id))
 
-    conn.commit()
-    conn.close()
+    db.conn.commit()
+
 
 # Function to retrieve user information from the database by user ID
 def get_user_by_id(user_id):
-    conn = sqlite3.connect("press2safe.db")
-    cursor = conn.cursor()
 
-    cursor.execute('''
+    db.cursor.execute('''
         SELECT * FROM users WHERE id=?
     ''', (user_id,))
 
-    user = cursor.fetchone()
-
-    conn.close()
+    user = db.cursor.fetchone()
 
     return user
 
 # Route for updating user information (edit profile)
+
+
 @profile_bp.route('/profile/<string:user_id>', methods=['POST'])
 def edit_profile(user_id):
     user_data = request.json
@@ -65,12 +65,15 @@ def edit_profile(user_id):
 
     if user:
         # Do not allow changing username or email
-        update_user(user_id, new_name, new_phone, new_address, new_photo, new_safety_number)
+        update_user(user_id, new_name, new_phone,
+                    new_address, new_photo, new_safety_number)
         return jsonify({"message": "Profile updated successfully"}), 200
     else:
         return jsonify({"message": "User not found"}), 404
 
 # Route for getting user profile by id
+
+
 @profile_bp.route('/profile/<string:user_id>', methods=['GET'])
 def get_profile(user_id):
     if not user_id:
@@ -92,6 +95,7 @@ def get_profile(user_id):
         return jsonify(user_info), 200
     else:
         return jsonify({"message": "User not found"}), 404
+
 
 if __name__ == '__main__':
     print(profile_bp)
